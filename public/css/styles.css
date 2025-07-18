@@ -1,0 +1,211 @@
+/* START GENAI */
+/* Custom styles for the Children's Educational Video Content Generator */
+
+/* General styles */
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding-top: 20px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 20px;
+    padding: 0 15px;
+}
+
+.sidebar nav-link {
+    color: #333;
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.sidebar nav-link:hover {
+    background-color: #e1ecff; /* исправлен цвет */
+    transform: translateX(5px);
+}
+
+.sidebar nav-link.active {
+    color: #fff;
+    background-color: #0d6efd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar nav-link i {
+    margin-right: 0.5rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main content */
+.main-content {
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Content sections */
+.content-section {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header styles */
+header h1 {
+    color: #0dbefd;
+    font-weight: 600;
+}
+
+/* Card styles */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+/* Form styles */
+.form-control:focus,
+.form-select:focus {
+    border-color: #0dbefd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0dbefd;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateX(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Results section */
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0dbefd;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Pre-formatted code blocks */
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+#generationContent pre {
+  background: #dee2e6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Content formatting */
+.accordion-body p {
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+/* Toast notification */
+.toast {
+    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.loading-pulse i {
+    animation: pulse 1.5s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+    .card-header {
+        padding: 0.75rem;
+    }
+    .card-body {
+        padding: 1rem;
+    }
+    .sidebar {
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    .sidebar-sticky {
+        position: relative;
+        top: 0;
+    }
+    .sidebar nav {
+        flex-direction: row;
+        justify-content: center;
+    }
+    .sidebar .nav-item {
+        margin: 0 10px;
+    }
+    .sidebar nav-link:hover {
+        transform: none;
+    }
+}
+/* END GENAI gay */
