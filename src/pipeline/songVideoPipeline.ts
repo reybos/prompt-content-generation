@@ -29,9 +29,9 @@ export async function runSongVideoPipeline(
 
     // Set models and temperatures for each step here (as in contentPipeline)
     const mediaModel = 'anthropic/claude-3.7-sonnet';
-    const mediaTemperature = 0.3;
+    const mediaTemperature = 0.4;
     const enhanceMediaModel = 'anthropic/claude-3.7-sonnet';
-    const enhanceMediaTemperature = 0.3;
+    const enhanceMediaTemperature = 0.4;
     const shortenModel = 'anthropic/claude-3.7-sonnet';
     const shortenTemperature = 0.1;
     const titleDescModel = 'anthropic/claude-3.7-sonnet';

@@ -11,16 +11,17 @@ Do NOT change the "duration" values. Only 6 or 10 seconds are allowed, and you m
 For scene 0: enhance both "image_prompt" and "video_prompt".
 For all other scenes: enhance only "video_prompt".
 
-For each prompt, improve while maintaining SIMPLE, FLAT, CARTOONISH style:
-- Keep designs minimal and uncluttered
-- Use basic shapes and simple backgrounds
-- Avoid complex textures, shadows, or realistic details
-- Maintain flat, 2D cartoon style with minimal depth
-- Add simple, clear visual details that support the educational topic
-- Use bright, solid colors and basic geometric shapes
-- Keep movements gentle and simple
-- Ensure all scenes clearly represent the main educational topic
-- For "only melody" scenes, use very simple, minimal animations of topic-related objects
+For each prompt, enhance while maintaining a playful, flat, cartoonish style, but with a clear and relatable focus:
+- Limit each scene to 1–3 main focus objects (e.g., sun, bus, banana) that are the clear center of attention
+- Use a relatable, simple setting (e.g., a road, a park, a garden, a room) that a child can imagine
+- Add only subtle, minimal background details (e.g., a few clouds, a hill, a couple of flowers) to create atmosphere, but do not let them compete with the main objects
+- Only the main object(s) should have prominent movement; background elements should move gently or remain mostly still
+- Whimsical, child-friendly details and friendly faces are encouraged, but not every object needs a face or to be anthropomorphized
+- Avoid fantasy 'object parades' or scenes crowded with too many characters or items
+- Use a bright, varied, and cheerful color palette in a flat, 2D cartoon style (no 3D, no realistic shading)
+- Avoid empty or plain backgrounds—always include some playful, flat scenery or patterns, but keep the composition uncluttered and easy to understand
+- All visuals must clearly and recognizably show the main educational topic
+- For "only melody" scenes, create a playful, minimal, topic-themed visual scene with gentle, simple movement (e.g., a butterfly flutters, a flower sways, a bus bounces)
 
 Maintain strong visual continuity:
 Each new scene should continue visually from where the previous scene ended, unless a transition is clearly required by the song.
@@ -29,15 +30,14 @@ The environment must not change abruptly; transitions between scenes should be s
 If the previous scene contained objects that remain in the new scene, mention their presence and position.
 
 Never add any dialogue, text, or lyrics in the prompt.
-CRITICALLY IMPORTANT: Make sure that no single prompt (image_prompt or video_prompt) exceeds 1500 characters. If a prompt becomes too long during enhancement, shorten it by focusing on the most important and visually relevant details, while preserving clarity and simplicity.
+CRITICALLY IMPORTANT: Make sure that no single prompt (image_prompt or video_prompt) exceeds 1500 characters. If a prompt becomes too long during enhancement, shorten it by focusing on the most important and visually relevant details, while preserving clarity and playfulness.
 All prompts must be in English.
 
-Output must be a JSON array in the same structure as input, with enhanced prompts that maintain the simple, flat, cartoonish style.
+Output must be a JSON array in the same structure as input, with enhanced prompts that maintain a playful, flat, cartoonish style, are visually engaging for children, and have a clear, relatable focus.
 
 Input:
 topic: {topic}
 segments: {timings}
 prompts: {media_prompts}
 
-Output: A JSON array, same structure as input, but with all prompts enhanced as described above while maintaining simple, flat, cartoonish style.
-No prompt (image_prompt or video_prompt) should exceed 1500 characters in length.`; 
+Output: A JSON array, same structure as input, but with all prompts enhanced as described above while maintaining a playful, flat, cartoonish style and a clear, relatable focus. No prompt (image_prompt or video_prompt) should exceed 1500 characters in length.`; 

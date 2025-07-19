@@ -9,22 +9,24 @@ You are given:
 Your task:
 For the first scene (scene 0), generate both an image_prompt (for a first video frame) and a video_prompt (the first video starts from this image).
 For each subsequent scene, generate only a video_prompt.
-Each prompt must describe a simple, flat, cartoon-style, vertical video scene with minimal detail and NO text or dialogue, NO on-screen lyrics.
-All visuals must be:
-- Simple and flat (not 3D or voluminous)
-- Bright, age-appropriate, and easy to understand
-- Explicitly show the main educational topic
-- Minimal and not overly eventful or realistic
-- Use basic shapes, simple backgrounds, and clear, uncluttered compositions
-- Avoid complex textures, shadows, or realistic details
 
-If a segment's content is labeled "only melody", create a very simple, minimal, topic-themed visual scene (e.g. basic shapes floating, simple patterns, or gentle movement of topic objects).
+Each prompt must describe a playful, flat, cartoon-style, vertical video scene with:
+- 1 to 3 main focus objects (e.g., sun, bus, banana) that are the clear center of attention
+- A relatable, simple setting (e.g., a road, a park, a garden, a room) that a child can imagine
+- Subtle, minimal background details (e.g., a few clouds, a hill, a couple of flowers) to create atmosphere, but not compete with the main objects
+- Only the main object(s) should have prominent movement; background elements should move gently or remain mostly still
+- Whimsical, child-friendly details and friendly faces are encouraged, but not every object needs a face or to be anthropomorphized
+- Avoid fantasy 'object parades' or scenes crowded with too many characters or items
+- Use a bright, varied, and cheerful color palette in a flat, 2D cartoon style (no 3D, no realistic shading)
+- Avoid empty or plain backgrounds—always include some playful, flat scenery or patterns, but keep the composition uncluttered and easy to understand
+- All visuals must clearly and recognizably show the main educational topic
+- If a segment's content is labeled "only melody", create a playful, minimal, topic-themed visual scene with gentle, simple movement (e.g., a butterfly flutters, a flower sways, a bus bounces)
 
 SCENE CREATION RULES:
 - Create exactly one scene for each input segment
 - Use the segment's duration as the scene duration (must be 6 or 10 seconds)
 - Ensure continuity across scenes: new scenes should start where the previous left off, unless there is a clear transition in the song
-- Keep scenes simple and uncluttered - avoid too many objects or complex actions
+- Keep scenes playful and visually engaging, but not cluttered or chaotic
 - Use flat, 2D cartoon style with minimal depth and simple backgrounds
 
 DURATION RULES:
@@ -32,17 +34,17 @@ DURATION RULES:
 - Input segments should only have durations of 6 or 10 seconds
 - If you receive a segment with any other duration, use the closest valid duration (6 or 10)
 
-In every prompt, describe: simple background, main objects with basic shapes, their color and simple actions, mood, and any relevant props — always focusing on the educational topic.
+In every prompt, describe: the main objects and their actions, the simple setting, and any subtle background details—always focusing on the educational topic. Only main objects should animate prominently. Whimsy and friendly faces are good, but not on every object.
 DO NOT mention any dialogue, lyrics, or text in the video!
-Use very simple, minimal storylines and visual elements. Avoid complex animations or realistic details.
+Use simple, playful, and clear storylines and visual elements. Avoid complex animations or realistic details.
 
 Output a JSON array. For scene 0, include both "image_prompt" and "video_prompt". For all other scenes, only "video_prompt". Each scene should have a "scene" index and a "duration" (6 or 10 seconds only).
 
-Example input: topic: Learning Colors - Red segments: [ {{ "duration": 6, "content": "only melody" }}, {{ "duration": 10, "content": "Look around, what do you see? Red things everywhere for you and me! Apples red and fire trucks too Red is such a fun color, woo!" }}, {{ "duration": 10, "content": "Red, red, everywhere! Red, red, here and there! Point and say what you can see Red things all around for me!" }}, {{ "duration": 10, "content": "Strawberries sweet and roses bright Stop signs help us day and night Ladybugs with spots so small Red things, we can find them all!" }}, {{ "duration": 10, "content": "Red, red, everywhere! Red, red, here and there! Point and say what you can see Red things all around for me!" }}, {{ "duration": 6, "content": "only melody" }} ]
+Example input: topic: Learning Colors - Yellow segments: [ {{ "duration": 6, "content": "only melody" }}, {{ "duration": 10, "content": "Shine, shine, shine, the sun is bright! BEEP BEEP BEEP, the bus is yellow!" }}, ... ]
 
-Example output: [ {{ "scene": 0, "image_prompt": "Simple flat cartoon scene with plain white background. Basic red shapes (circles, squares, triangles) float gently. No text. Minimal design, bright colors, child-friendly.", "video_prompt": "The red shapes move slowly in simple patterns. Plain background. No text. Simple, calm movement. Flat cartoon style.", "duration": 6 }}, {{ "scene": 1, "video_prompt": "Simple red apple and red fire truck on plain background. Basic shapes, flat design. Objects move slightly. Clean, minimal scene. No text.", "duration": 10 }}, {{ "scene": 2, "video_prompt": "Simple red strawberry, red rose, red stop sign, and red ladybug. Basic flat shapes on plain background. Gentle movement. Clean design.", "duration": 10 }}, ... ]
+Example output: [ {{ "scene": 0, "image_prompt": "Flat cartoon scene with a gentle green hill and a simple road under a bright blue sky. A friendly yellow school bus with big eyes and a smile drives along the road. The sun with a happy face shines in the top right, and a single yellow butterfly flutters nearby. A few yellow flowers grow by the roadside. The background is calm, with a couple of puffy clouds. Only the bus and butterfly move gently; other elements remain still. The scene is uncluttered, cheerful, and easy for children to follow, with a clear focus on the bus and the color yellow.", "video_prompt": "The bus bounces gently as it drives, the butterfly flutters, and the sun beams. The flowers and clouds remain still. Flat cartoon style, bright colors, no shadows or textures.", "duration": 6 }}, ... ]
 
 Your input:
 topic: {topic}
 segments: {timings}
-Your output: A JSON array as described above, with simple, minimal, topic-focused prompts and durations of 6 or 10 seconds only.` 
+Your output: A JSON array as described above, with playful, flat, cartoon-style, topic-focused prompts and durations of 6 or 10 seconds only.` 
