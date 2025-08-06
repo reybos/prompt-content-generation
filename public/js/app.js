@@ -1,6 +1,6 @@
 // START GENAI
 /**
- * Frontend JavaScript for the Children's Educational Video Content Generator
+ * Frontend JavaScript for the Educational Promt Content Generator
  */
 
 // DOM Elements - Navigation

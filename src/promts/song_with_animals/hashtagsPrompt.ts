@@ -6,14 +6,14 @@
 import {PromptTemplate} from '@langchain/core/prompts';
 
 const songWithAnimalsHashtagsPromptTemplate: string = `You are a social media expert specializing in children's content.
-Input is a children's song with animal characters ({songLyrics}).
+Input is a 4-line segment from a children's song with animal characters ({songLyrics}).
 
 TASK
-Generate relevant hashtags for a children's video featuring this song.
+Generate relevant hashtags for a children's video featuring this 4-line song segment.
 
 HASHTAG REQUIREMENTS:
 • Include educational hashtags (learning, kids, education)
-• Include animal-related hashtags based on the song
+• Include animal-related hashtags based on the song segment
 • Include fun/entertainment hashtags
 • Include age-appropriate hashtags (toddlers, preschoolers)
 • Include parent-focused hashtags
@@ -22,7 +22,7 @@ HASHTAG REQUIREMENTS:
 • No spaces in hashtags, use camelCase if needed
 
 EXAMPLES:
-#KidsLearning #AnimalSounds #ToddlerFun #PreschoolEducation #AnimalSong #KidsEntertainment #LearningThroughPlay #ParentingTips #ChildrensContent #EducationalVideo
+#shorts #KidsLearning #AnimalSounds #ToddlerFun #PreschoolEducation #AnimalSong #KidsEntertainment #LearningThroughPlay #ParentingTips #ChildrensContent #EducationalVideo
 
 OUTPUT:
 Return only the hashtags as a single string, separated by spaces, no extra text or commentary.

@@ -144,3 +144,31 @@ export const SongVideoOutputSchema = z.object({
     description: z.string(),
     hashtags: z.string(),
 });
+
+/**
+ * Song with animals schemas
+ */
+export const SongWithAnimalsInputItemSchema = z.object({
+    lyrics: z.string(),
+});
+
+export const SongWithAnimalsInputSchema = z.array(SongWithAnimalsInputItemSchema);
+
+export const SongWithAnimalsImagePromptSchema = z.object({
+    line: z.string(),
+    prompt: z.string(),
+});
+
+export const SongWithAnimalsVideoPromptSchema = z.object({
+    line: z.string(),
+    video_prompt: z.string(),
+});
+
+export const SongWithAnimalsOutputSchema = z.object({
+    global_style: z.string(),
+    prompts: z.array(SongWithAnimalsImagePromptSchema),
+    video_prompts: z.array(SongWithAnimalsVideoPromptSchema),
+    titles: z.array(z.string()),
+    descriptions: z.array(z.string()),
+    hashtags: z.array(z.string()),
+});

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Children's Educational Video Content Generator</title>
+    <title>Educational Promt Content Generator</title>
 
     <!-- Add Bootstrap for styling -->
     <link
@@ -24,25 +24,45 @@
         <!-- Sidebar -->
         <div class="col-md-4 col-lg-3 sidebar">
             <header class="text-center mb-4 p-3">
-                <h1 class="h3">Content Generator</h1>
+                <h1 class="h3">Promt Generator</h1>
                 <p class="small text-muted">Educational videos for children</p>
             </header>
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
+                    <!-- Mini Marvels Group -->
+                    <li class="nav-item">
+                        <h6 class="sidebar-heading text-muted text-uppercase small fw-bold px-3 py-2 mb-1">
+                            Mini Marvels
+                        </h6>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link active" id="generate-link" href="#">
-                            <i class="fas fa-magic"></i> Generate Content
+                            <i class="fas fa-magic"></i> Long Video by theme
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="song-generate-link" href="#">
-                            <i class="fas fa-music"></i> Generate Song Video
+                            <i class="fas fa-music"></i> Long Video by Song
                         </a>
+                    </li>
+                    
+                    <!-- Mini Discoveries Group -->
+                    <li class="nav-item">
+                        <h6 class="sidebar-heading text-muted text-uppercase small fw-bold px-3 py-2 mb-1 mt-3">
+                            Mini Discoveries
+                        </h6>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="song-with-animals-link" href="#">
-                            <i class="fas fa-paw"></i> Song with Animals
+                            <i class="fas fa-paw"></i> Shorts by Song
                         </a>
+                    </li>
+                    
+                    <!-- Storage Group -->
+                    <li class="nav-item">
+                        <h6 class="sidebar-heading text-muted text-uppercase small fw-bold px-3 py-2 mb-1 mt-3">
+                            Storage
+                        </h6>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="saved-link" href="#">
@@ -56,7 +76,7 @@
         <!-- Main Content -->
         <div class="col-md-8 col-lg-9 main-content">
             <header class="text-center mb-5 mt-4">
-                <h1 class="display-4">Children's Educational Video Content Generator</h1>
+                <h1 class="display-4">Educational Promt Content Generator</h1>
                 <p class="lead">
                     Generate complete content packages for educational videos targeted
                     at children aged 2-6 years
@@ -69,7 +89,7 @@
                     <div class="col-md-6 mx-auto">
                         <div class="card shadow">
                             <div class="card-header bg-primary text-white">
-                                <h2 class="h4 mb-0">Generate Content</h2>
+                                <h2 class="h4 mb-0">Long videos for the Mini Marvels channel</h2>
                             </div>
                             <div class="card-body">
                                 <form id="generationForm">
@@ -86,10 +106,6 @@
   "Learning Colors": [
     "All Red!",
     "Light and Dark Colors"
-  ],
-  "Learning Shapes": [
-    "Circles Around Us",
-    "Squares Around Us"
   ]
 }</textarea>
                                         <div class="form-text">
@@ -187,7 +203,7 @@
                     <div class="col-md-8 mx-auto">
                         <div class="card shadow">
                             <div class="card-header bg-info text-white">
-                                <h2 class="h4 mb-0">Generate Song Video</h2>
+                                <h2 class="h4 mb-0">Long songs for the Mini Marvels channel</h2>
                             </div>
                             <div class="card-body">
                                 <form id="songGenerationForm">
@@ -255,7 +271,7 @@
                     <div class="col-md-8 mx-auto">
                         <div class="card shadow">
                             <div class="card-header bg-warning text-dark">
-                                <h2 class="h4 mb-0">Generate Song with Animals</h2>
+                                <h2 class="h4 mb-0">Mini Discoveries Channel Shorts</h2>
                             </div>
                             <div class="card-body">
                                 <form id="songWithAnimalsForm">

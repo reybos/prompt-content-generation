@@ -194,7 +194,7 @@ export interface SongWithAnimalsOutput {
     global_style: string;
     prompts: SongWithAnimalsImagePrompt[];
     video_prompts: SongWithAnimalsVideoPrompt[];
-    title: string;
-    description: string;
-    hashtags: string;
+    titles: string[];
+    descriptions: string[];
+    hashtags: string[];
 }

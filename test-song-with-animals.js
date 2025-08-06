@@ -1,40 +1,88 @@
-// Load environment variables
-import 'dotenv/config';
+// Test script for song with animals pipeline
+// This script tests the logic for splitting songs into 4-line segments
 
-import { runSongWithAnimalsPipeline } from './dist/pipeline/index.js';
+function splitLyricsIntoSegments(lyrics) {
+  const lines = lyrics.split('\n').filter(line => line.trim().length > 0);
+  const segments = [];
+  
+  for (let i = 0; i < lines.length; i += 4) {
+    const segment = lines.slice(i, i + 4).join('\n');
+    if (segment.trim()) {
+      segments.push(segment);
+    }
+  }
+  
+  return segments;
+}
 
-// Тестовые данные
-const testInput = [
+// Test cases
+const testSongs = [
   {
-    topic: "Robot Animals Song",
-    lyrics: `The robot dog says, "Beep, beep, beep!"
-The robot cat says, "Whirr, whirr, whirr!"
-The robot bird says, "Chirp, chirp, chirp!"
-The robot fish says, "Blub, blub, blub!"`
+    name: "16-line song",
+    lyrics: `Old MacDonald had a farm
+E-I-E-I-O
+And on his farm he had some cows
+E-I-E-I-O
+With a moo moo here
+And a moo moo there
+Here a moo, there a moo
+Everywhere a moo moo
+Old MacDonald had a farm
+E-I-E-I-O
+And on his farm he had some pigs
+E-I-E-I-O
+With an oink oink here
+And an oink oink there
+Here an oink, there an oink
+Everywhere an oink oink
+Old MacDonald had a farm
+E-I-E-I-O`
+  },
+  {
+    name: "12-line song", 
+    lyrics: `Twinkle twinkle little star
+How I wonder what you are
+Up above the world so high
+Like a diamond in the sky
+Twinkle twinkle little star
+How I wonder what you are
+When the blazing sun is gone
+When he nothing shines upon
+Then you show your little light
+Twinkle twinkle all the night
+Twinkle twinkle little star
+How I wonder what you are`
+  },
+  {
+    name: "8-line song",
+    lyrics: `Mary had a little lamb
+Its fleece was white as snow
+And everywhere that Mary went
+The lamb was sure to go
+It followed her to school one day
+Which was against the rule
+It made the children laugh and play
+To see a lamb at school`
   }
 ];
 
-// Функция для логирования
-const emitLog = (message, requestId) => {
-  console.log(`[${requestId || 'TEST'}] ${message}`);
-};
+console.log('Testing song segmentation logic:\n');
 
-// Запуск пайплайна
-async function testPipeline() {
-  try {
-    console.log('🚀 Starting Song with Animals Pipeline Test...');
-    
-    const results = await runSongWithAnimalsPipeline(testInput, {
-      requestId: 'test-123',
-      emitLog: emitLog
-    });
-    
-    console.log('\n📋 Results:');
-    console.log(JSON.stringify(results, null, 2));
-    
-  } catch (error) {
-    console.error('❌ Error:', error);
-  }
-}
+testSongs.forEach(song => {
+  console.log(`\n=== ${song.name} ===`);
+  console.log(`Original lyrics (${song.lyrics.split('\n').filter(line => line.trim().length > 0).length} lines):`);
+  console.log(song.lyrics);
+  
+  const segments = splitLyricsIntoSegments(song.lyrics);
+  console.log(`\nSegments (${segments.length} total):`);
+  segments.forEach((segment, index) => {
+    const lineCount = segment.split('\n').filter(line => line.trim().length > 0).length;
+    console.log(`\nSegment ${index + 1} (${lineCount} lines):`);
+    console.log(segment);
+  });
+  
+  console.log(`\nExpected shorts: ${segments.length}`);
+  console.log('---');
+});
 
-testPipeline(); 
+console.log('\n✅ Test completed!'); 

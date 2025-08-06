@@ -1,104 +1,124 @@
 # Song with Animals Pipeline
 
-Новый пайплайн для генерации контента на основе детских песен с животными.
+## Overview
 
-## Описание
+The Song with Animals Pipeline generates content for children's songs featuring animal characters. The pipeline automatically splits songs into 4-line segments and generates separate content for each segment, allowing for the creation of multiple short videos from a single song.
 
-Пайплайн `song_with_animals` предназначен для обработки детских песен с животными персонажами и генерации:
-- Промтов для изображений (image prompts)
-- Глобального стиля для всех изображений
-- Заголовка и описания для видео
-- Хештегов для социальных сетей
+## Key Features
 
-## Входные данные
+- **Automatic Segmentation**: Songs are automatically split into 4-line segments
+- **Multiple Outputs**: Generates separate titles, descriptions, and hashtags for each segment
+- **Consistent Style**: Maintains visual consistency across all segments
+- **Educational Focus**: Optimized for children's educational content
+
+## Pipeline Flow
+
+1. **Input Processing**: Receives song lyrics as input
+2. **Segmentation**: Splits lyrics into 4-line segments
+3. **Image Generation**: Creates image prompts for the entire song
+4. **Content Generation**: For each 4-line segment:
+   - Generates title and description
+   - Generates hashtags
+5. **Video Generation**: Creates video prompts for the entire song
+6. **Output**: Returns structured data for multiple short videos
+
+## Input Format
 
 ```typescript
 interface SongWithAnimalsInputItem {
-  lyrics: string;     // Текст песни
+  lyrics: string; // The complete song lyrics
 }
 
 type SongWithAnimalsInput = SongWithAnimalsInputItem[];
 ```
 
-### Пример входных данных
-
-```javascript
-const input = [
-  {
-    lyrics: `The robot dog says, "Beep, beep, beep!"
-The robot cat says, "Whirr, whirr, whirr!"
-The robot bird says, "Chirp, chirp, chirp!"
-The robot fish says, "Blub, blub, blub!"`
-  }
-];
-```
-
-### Использование в UI
-
-В веб-интерфейсе пользователь просто вводит текст песни:
-
-```
-The robot dog says, "Beep, beep, beep!"
-The robot cat says, "Whirr, whirr, whirr!"
-The robot bird says, "Chirp, chirp, chirp!"
-The robot fish says, "Blub, blub, blub!"
-```
-
-Система автоматически создает массив с одним объектом, содержащим введенный текст.
-
-## Выходные данные
+## Output Format
 
 ```typescript
 interface SongWithAnimalsOutput {
-  global_style: string;                    // Глобальный стиль для всех изображений
-  prompts: SongWithAnimalsImagePrompt[];   // Промты для каждого изображения
-  title: string;                           // Заголовок видео
-  description: string;                     // Описание видео
-  hashtags: string;                        // Хештеги для социальных сетей
-}
-
-interface SongWithAnimalsImagePrompt {
-  line: string;    // Оригинальная строка песни
-  prompt: string;  // Промт для генерации изображения
+  global_style: string;                    // Visual style for the entire song
+  prompts: SongWithAnimalsImagePrompt[];   // Image prompts for each line
+  video_prompts: SongWithAnimalsVideoPrompt[]; // Video prompts for each line
+  titles: string[];                        // Array of titles (one per segment)
+  descriptions: string[];                  // Array of descriptions (one per segment)
+  hashtags: string[];                     // Array of hashtag strings (one per segment)
 }
 ```
 
-## Структура пайплайна
+## Segmentation Logic
 
-1. **Генерация промтов для изображений** - создает `global_style` и промты для каждой строки песни
-2. **Генерация заголовка и описания** - создает привлекательный заголовок и описание для видео
-3. **Генерация хештегов** - создает релевантные хештеги для социальных сетей
+The pipeline automatically splits songs into 4-line segments:
 
-## Использование
+- **16-line song** → 4 shorts (4 + 4 + 4 + 4 lines)
+- **12-line song** → 3 shorts (4 + 4 + 4 lines)
+- **8-line song** → 2 shorts (4 + 4 lines)
+- **20-line song** → 5 shorts (4 + 4 + 4 + 4 + 4 lines)
+
+## Usage Example
 
 ```javascript
 import { runSongWithAnimalsPipeline } from './pipeline/index.js';
 
+const input = [
+  {
+    lyrics: `Old MacDonald had a farm
+E-I-E-I-O
+And on his farm he had some cows
+E-I-E-I-O
+With a moo moo here
+And a moo moo there
+Here a moo, there a moo
+Everywhere a moo moo`
+  }
+];
+
 const results = await runSongWithAnimalsPipeline(input, {
-  requestId: 'unique-id',
-  emitLog: (message, requestId) => console.log(message)
+  requestId: 'test-123',
+  emitLog: (log, reqId) => console.log(`[${reqId}] ${log}`)
 });
+
+// Results will contain:
+// - titles: ["Title for segment 1", "Title for segment 2"]
+// - descriptions: ["Description for segment 1", "Description for segment 2"]
+// - hashtags: ["#hashtags #for #segment1", "#hashtags #for #segment2"]
 ```
 
-## Промты
+## Prompts
 
-Пайплайн использует следующие промты из папки `src/promts/song_with_animals/`:
+### Title and Description Prompt
 
-- `imagePrompt.ts` - генерация промтов для изображений
-- `titleDescPrompt.ts` - генерация заголовка и описания
-- `hashtagsPrompt.ts` - генерация хештегов
+Generates engaging titles and descriptions for each 4-line segment:
 
-## Особенности
+- **Input**: 4-line song segment
+- **Output**: JSON with `title` and `description` fields
+- **Focus**: Age-appropriate, educational, engaging content
 
-- Поддерживает множественные попытки генерации (до 3 попыток)
-- Сохраняет результаты в папку `unprocessed`
-- Логирует процесс генерации
-- Обрабатывает ошибки и продолжает работу с другими песнями
-- Использует Claude 3.7 Sonnet для всех шагов
+### Hashtags Prompt
 
-## Расширение
+Generates relevant hashtags for each 4-line segment:
 
-Для добавления новых промтов:
-1. Создайте новый файл в `src/promts/song_with_animals/`
-2. Добавьте экспорт в `src/promts/song_with_animals/index.ts`
-3. Обновите пайплайн для использования нового промта 
+- **Input**: 4-line song segment
+- **Output**: Space-separated hashtag string
+- **Requirements**: 15-25 hashtags, mix of popular and niche
+
+## Error Handling
+
+The pipeline includes comprehensive error handling:
+
+- **Retry Logic**: Up to 3 attempts per song
+- **Segment-level Logging**: Detailed progress tracking
+- **Graceful Degradation**: Continues processing other songs if one fails
+
+## File Output
+
+Generated content is automatically saved to the `unprocessed` folder with the format:
+`{fileNumber}-song_with_animals.json`
+
+## Configuration
+
+The pipeline uses the following models and temperatures:
+
+- **Image Generation**: Claude 3.7 Sonnet (temperature: 0.3)
+- **Title/Description**: Claude 3.7 Sonnet (temperature: 0.7)
+- **Hashtags**: Claude 3.7 Sonnet (temperature: 0.4)
+- **Video Generation**: Claude 3.7 Sonnet (temperature: 0.5) 
