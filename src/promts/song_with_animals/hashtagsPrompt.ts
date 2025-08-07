@@ -17,12 +17,12 @@ HASHTAG REQUIREMENTS:
 • Include fun/entertainment hashtags
 • Include age-appropriate hashtags (toddlers, preschoolers)
 • Include parent-focused hashtags
-• 15-25 hashtags total
+• 3-6 hashtags total
 • Mix of popular and niche hashtags
 • No spaces in hashtags, use camelCase if needed
 
 EXAMPLES:
-#shorts #KidsLearning #AnimalSounds #ToddlerFun #PreschoolEducation #AnimalSong #KidsEntertainment #LearningThroughPlay #ParentingTips #ChildrensContent #EducationalVideo
+#shorts ...
 
 OUTPUT:
 Return only the hashtags as a single string, separated by spaces, no extra text or commentary.
