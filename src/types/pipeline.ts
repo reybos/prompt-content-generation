@@ -139,6 +139,7 @@ export type SongWithAnimalsInput = SongWithAnimalsInputItem[];
  * Song with animals image prompt (output of image generation step)
  */
 export interface SongWithAnimalsImagePrompt {
+    index: number; // Scene index starting from 0 for easier identification
     line: string;
     prompt: string;
 }
@@ -147,6 +148,7 @@ export interface SongWithAnimalsImagePrompt {
  * Song with animals video prompt (output of video generation step)
  */
 export interface SongWithAnimalsVideoPrompt {
+    index: number; // Scene index starting from 0 for easier identification
     line: string;
     video_prompt: string;
 }
@@ -161,4 +163,30 @@ export interface SongWithAnimalsOutput {
     titles: string[];
     descriptions: string[];
     hashtags: string[];
+}
+
+/**
+ * Input for generating titles, descriptions and hashtags for existing video prompts
+ */
+export interface TitlesDescriptionsHashtagsInput {
+    video_prompts: SongWithAnimalsVideoPrompt[];
+    global_style: string;
+}
+
+/**
+ * Output for generating titles, descriptions and hashtags
+ */
+export interface TitlesDescriptionsHashtagsOutput {
+    titles: string[];
+    descriptions: string[];
+    hashtags: string[];
+}
+
+/**
+ * Enhanced output with indices for titles, descriptions and hashtags
+ */
+export interface TitlesDescriptionsHashtagsOutputWithIndices {
+    titles: Array<{ index: number; title: string }>;
+    descriptions: Array<{ index: number; description: string }>;
+    hashtags: Array<{ index: number; hashtags: string }>;
 }

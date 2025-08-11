@@ -118,6 +118,29 @@ app.post('/api/generate-song-with-animals', async (req, res) => {
     }
 });
 
+// API endpoint for generating titles, descriptions and hashtags
+app.post('/api/generate-titles-descriptions-hashtags', async (req, res) => {
+    try {
+        const { input } = req.body;
+        if (!input) {
+            return res.status(400).json({ error: 'Missing input' });
+        }
+        // Generate a unique requestId for this generation
+        const requestId = crypto.randomUUID();
+        // Start titles, descriptions and hashtags generation in the background (do not await)
+        processTitlesDescriptionsHashtagsGeneration(input, requestId)
+            .catch(err => {
+                console.error('Error in background titles, descriptions and hashtags generation:', err);
+                emitLog('Error during titles, descriptions and hashtags generation: ' + (err?.message || err), requestId);
+            });
+        // Respond immediately so frontend can connect to SSE
+        return res.json({ success: true, requestId });
+    } catch (err) {
+        console.error('Error in /api/generate-titles-descriptions-hashtags:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // SSE endpoint for streaming logs to the frontend
 app.get('/api/logs/stream', (req, res) => {
     const { requestId } = req.query;
@@ -235,6 +258,31 @@ async function processSongWithAnimalsGeneration(
         emitLog(`Song with animals generation complete. Generated ${result.length} song(s).`, requestId);
     } catch (err) {
         const error = `Error during song with animals generation: ${err}`;
+        logs.push(error);
+        emitLog(error, requestId);
+    }
+}
+
+// Titles, descriptions and hashtags generation processor
+async function processTitlesDescriptionsHashtagsGeneration(
+    input: any,
+    requestId: string
+): Promise<void> {
+    const logs: string[] = [];
+
+    // Wait for SSE client to connect
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log(`[TITLES DESCRIPTIONS HASHTAGS] Checking for active connection for requestId: ${requestId}`);
+    console.log(`[TITLES DESCRIPTIONS HASHTAGS] Active connections: ${activeConnections.size}`);
+
+    try {
+        const result = await import('./pipeline/titlesDescriptionsHashtagsPipeline.js').then(m => m.runTitlesDescriptionsHashtagsPipeline(input, { requestId, emitLog: (log: string, reqId?: string) => emitLog(log, reqId) }));
+        
+        // Emit completion message with results
+        emitLog(`Titles, descriptions and hashtags generation complete. Generated ${result.titles.length} titles, ${result.descriptions.length} descriptions, and ${result.hashtags.length} hashtags.`, requestId);
+    } catch (err) {
+        const error = `Error during titles, descriptions and hashtags generation: ${err}`;
         logs.push(error);
         emitLog(error, requestId);
     }

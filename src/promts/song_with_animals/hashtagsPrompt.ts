@@ -6,6 +6,43 @@
 import {PromptTemplate} from '@langchain/core/prompts';
 
 const songWithAnimalsHashtagsPromptTemplate: string = `You are a social media expert specializing in children's content.
+Input is a segment from a children's song with animal characters ({songLyrics}) and its corresponding video prompt ({videoPrompt}).
+
+TASK
+Generate relevant hashtags for a children's video featuring this song segment and video content.
+
+HASHTAG REQUIREMENTS:
+• Include educational hashtags (learning, kids, education)
+• Include animal-related hashtags based on the song segment
+• Include fun/entertainment hashtags
+• Include age-appropriate hashtags (toddlers, preschoolers)
+• Include parent-focused hashtags
+• Include hashtags related to the video content described
+• 7-10 hashtags total
+• Mix of popular and niche hashtags
+• No spaces in hashtags, use camelCase if needed
+
+EXAMPLES:
+#shorts ...
+
+OUTPUT:
+Return only the hashtags as a single string, separated by spaces, no extra text or commentary.
+
+INPUT:
+Song Lyrics: {songLyrics}
+Video Prompt: {videoPrompt}
+Global Style: {globalStyle}
+
+OUTPUT:
+(return hashtags as space-separated string)`;
+
+const songWithAnimalsHashtagsPrompt: PromptTemplate = new PromptTemplate({
+    inputVariables: ["songLyrics", "videoPrompt", "globalStyle"],
+    template: songWithAnimalsHashtagsPromptTemplate
+});
+
+// Backward compatible version for lyrics-only input
+const songWithAnimalsHashtagsPromptLyricsOnlyTemplate: string = `You are a social media expert specializing in children's content.
 Input is a segment from a children's song with animal characters ({songLyrics}).
 
 TASK
@@ -33,11 +70,12 @@ INPUT:
 OUTPUT:
 (return hashtags as space-separated string)`;
 
-const songWithAnimalsHashtagsPrompt: PromptTemplate = new PromptTemplate({
+const songWithAnimalsHashtagsPromptLyricsOnly: PromptTemplate = new PromptTemplate({
     inputVariables: ["songLyrics"],
-    template: songWithAnimalsHashtagsPromptTemplate
+    template: songWithAnimalsHashtagsPromptLyricsOnlyTemplate
 });
 
 export {
     songWithAnimalsHashtagsPrompt,
+    songWithAnimalsHashtagsPromptLyricsOnly,
 }; 

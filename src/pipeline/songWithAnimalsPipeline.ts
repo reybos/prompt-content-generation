@@ -1,6 +1,6 @@
 import { SongWithAnimalsInput, SongWithAnimalsOutput, SongWithAnimalsImagePrompt, SongWithAnimalsVideoPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
-import { imagePrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsHashtagsPrompt, songWithAnimalsVideoPrompt } from '../promts/index.js';
+import { imagePrompt, songWithAnimalsVideoPrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
 import config from '../config/index.js';
@@ -48,10 +48,6 @@ export async function runSongWithAnimalsPipeline(
     // Set models and temperatures for each step
     const imageModel = 'anthropic/claude-3.7-sonnet';
     const imageTemperature = 0.3;
-    const titleDescModel = 'anthropic/claude-3.7-sonnet';
-    const titleDescTemperature = 0.7;
-    const hashtagsModel = 'anthropic/claude-3.7-sonnet';
-    const hashtagsTemperature = 0.4;
     const videoModel = 'anthropic/claude-3.7-sonnet';
     const videoTemperature = 0.5;
 
@@ -67,7 +63,7 @@ export async function runSongWithAnimalsPipeline(
 
         // Step 1: Generate image prompts
         if (options.emitLog && options.requestId) {
-          options.emitLog(`🖼️ Generating image prompts...`, options.requestId);
+          options.emitLog(`🖼️ Generating image prompts for ${segments.length} segments...`, options.requestId);
         }
         const imageChain = createChain(imagePrompt, { model: imageModel, temperature: imageTemperature });
         const imageJson: string | Record<string, any> | null = await executePipelineStep(
@@ -81,7 +77,12 @@ export async function runSongWithAnimalsPipeline(
           const parsed = typeof imageJson === 'string' ? safeJsonParse(imageJson, 'SONG WITH ANIMALS IMAGE PROMPTS') : imageJson;
           if (parsed && typeof parsed === 'object') {
             globalStyle = parsed.global_style || '';
-            prompts = Array.isArray(parsed.prompts) ? parsed.prompts : [];
+            const rawPrompts = Array.isArray(parsed.prompts) ? parsed.prompts : [];
+            // Add indices to image prompts (starting from 0)
+            prompts = rawPrompts.map((prompt, index) => ({
+              ...prompt,
+              index: index
+            }));
           }
         } else {
           if (options.emitLog && options.requestId) {
@@ -90,95 +91,9 @@ export async function runSongWithAnimalsPipeline(
           break;
         }
 
-        // Step 2: Generate title & description for each segment
+        // Step 2: Generate video prompts (titles, descriptions and hashtags will be generated separately)
         if (options.emitLog && options.requestId) {
-          options.emitLog(`🏷️ Generating titles and descriptions for ${segments.length} segments...`, options.requestId);
-        }
-        const titles: string[] = [];
-        const descriptions: string[] = [];
-        
-        for (let i = 0; i < segments.length; i++) {
-          const segment = segments[i];
-          if (options.emitLog && options.requestId) {
-            options.emitLog(`🏷️ Generating title/description for segment ${i + 1}/${segments.length}...`, options.requestId);
-          }
-          
-          let title = '';
-          let description = '';
-          let titleDescJson: string | Record<string, any> | null = null;
-          try {
-            const titleDescChain = createChain(songWithAnimalsTitleDescPrompt, { model: titleDescModel, temperature: titleDescTemperature });
-            titleDescJson = await executePipelineStep(
-              'SONG WITH ANIMALS TITLE & DESCRIPTION',
-              titleDescChain,
-              { songLyrics: segment }
-            );
-            if (titleDescJson) {
-              const parsed = typeof titleDescJson === 'string' ? safeJsonParse(titleDescJson, 'SONG WITH ANIMALS TITLE & DESCRIPTION') : titleDescJson;
-              if (parsed && typeof parsed === 'object') {
-                title = parsed.title || '';
-                description = parsed.description || '';
-              }
-            } else {
-              if (options.emitLog && options.requestId) {
-                options.emitLog(`❌ Failed to generate title/description for segment ${i + 1}. Retrying...`, options.requestId);
-              }
-              break; // Retry the whole song
-            }
-          } catch (e) {
-            if (options.emitLog && options.requestId) {
-              options.emitLog(`❌ Error generating title/description for segment ${i + 1}: ${e instanceof Error ? e.message : String(e)}`, options.requestId);
-            }
-            break; // Retry the whole song
-          }
-          
-          titles.push(title);
-          descriptions.push(description);
-        }
-
-        // Step 3: Generate hashtags for each segment
-        if (options.emitLog && options.requestId) {
-          options.emitLog(`#️⃣ Generating hashtags for ${segments.length} segments...`, options.requestId);
-        }
-        const hashtagsArray: string[] = [];
-        
-        for (let i = 0; i < segments.length; i++) {
-          const segment = segments[i];
-          if (options.emitLog && options.requestId) {
-            options.emitLog(`#️⃣ Generating hashtags for segment ${i + 1}/${segments.length}...`, options.requestId);
-          }
-          
-          let hashtags = '';
-          let hashtagsStr: string | null = null;
-          try {
-            const hashtagsChain = createChain(songWithAnimalsHashtagsPrompt, { model: hashtagsModel, temperature: hashtagsTemperature });
-            hashtagsStr = await executePipelineStep(
-              'SONG WITH ANIMALS HASHTAGS',
-              hashtagsChain,
-              { songLyrics: segment },
-              false // Don't parse as JSON, hashtags are returned as plain string
-            );
-            if (hashtagsStr && typeof hashtagsStr === 'string') {
-              hashtags = hashtagsStr.trim();
-            } else {
-              if (options.emitLog && options.requestId) {
-                options.emitLog(`❌ Failed to generate hashtags for segment ${i + 1}. Retrying...`, options.requestId);
-              }
-              break; // Retry the whole song
-            }
-          } catch (e) {
-            if (options.emitLog && options.requestId) {
-              options.emitLog(`❌ Error generating hashtags for segment ${i + 1}: ${e instanceof Error ? e.message : String(e)}`, options.requestId);
-            }
-            break; // Retry the whole song
-          }
-          
-          hashtagsArray.push(hashtags);
-        }
-
-        // Step 4: Generate video prompts
-        if (options.emitLog && options.requestId) {
-          options.emitLog(`🎬 Generating video prompts...`, options.requestId);
+          options.emitLog(`🎬 Generating video prompts for ${prompts.length} image prompts...`, options.requestId);
         }
         let videoPrompts: SongWithAnimalsVideoPrompt[] = [];
         let videoJson: string | Record<string, any> | null = null;
@@ -199,7 +114,12 @@ export async function runSongWithAnimalsPipeline(
           if (videoJson) {
             const parsed = typeof videoJson === 'string' ? safeJsonParse(videoJson, 'SONG WITH ANIMALS VIDEO PROMPTS') : videoJson;
             if (parsed && typeof parsed === 'object' && Array.isArray(parsed.video_prompts)) {
-              videoPrompts = parsed.video_prompts;
+              const rawVideoPrompts = parsed.video_prompts;
+              // Add indices to video prompts (starting from 0)
+              videoPrompts = rawVideoPrompts.map((prompt, index) => ({
+                ...prompt,
+                index: index
+              }));
             }
           } else {
             if (options.emitLog && options.requestId) {
@@ -218,9 +138,9 @@ export async function runSongWithAnimalsPipeline(
           global_style: globalStyle,
           prompts,
           video_prompts: videoPrompts,
-          titles: titles,
-          descriptions: descriptions,
-          hashtags: hashtagsArray
+          titles: [],
+          descriptions: [],
+          hashtags: []
         };
         results.push(songResult);
 
