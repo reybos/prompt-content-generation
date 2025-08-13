@@ -89,3 +89,12 @@ The web interface provides a user-friendly form to:
 - Enter topics organized by themes in JSON format
 - Generate content for multiple topics at once
 - View real-time logs of the generation process
+
+### Song with Animals Pipeline
+
+The application also includes a specialized pipeline for generating short educational videos with animals:
+
+- **Unified Pipeline**: Generates image prompts, video prompts, titles, descriptions, and hashtags in one complete workflow
+- **Visual Styles**: Support for different visual styles (Classic, Steampunk)
+- **Segment-based Generation**: Automatically groups content into segments for better organization
+- **Complete Output**: All necessary content is generated and saved automatically

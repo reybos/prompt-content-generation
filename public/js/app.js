@@ -56,14 +56,7 @@ const songWithAnimalsErrorAlert = document.getElementById('songWithAnimalsErrorA
 const songWithAnimalsErrorMessage = document.getElementById('songWithAnimalsErrorMessage');
 const songWithAnimalsLoadingSpinner = document.getElementById('songWithAnimalsLoadingSpinner');
 
-// DOM Elements for Titles, Descriptions and Hashtags Generation
-const titlesDescriptionsHashtagsForm = document.getElementById('titlesDescriptionsHashtagsForm');
-const titlesDescriptionsHashtagsResultsSection = document.getElementById('titlesDescriptionsHashtagsResultsSection');
-const titlesDescriptionsHashtagsResultsContainer = document.getElementById('titlesDescriptionsHashtagsResultsContainer');
-const titlesDescriptionsHashtagsErrorAlert = document.getElementById('titlesDescriptionsHashtagsErrorAlert');
-const titlesDescriptionsHashtagsErrorMessage = document.getElementById('titlesDescriptionsHashtagsErrorMessage');
-const titlesDescriptionsHashtagsLoadingSpinner = document.getElementById('titlesDescriptionsHashtagsLoadingSpinner');
-const copyTitlesDescriptionsHashtagsBtn = document.getElementById('copyTitlesDescriptionsHashtagsBtn');
+
 
 // Bootstrap instances
 const toast = new window.bootstrap.Toast(copyToast);
@@ -74,7 +67,7 @@ const viewModal = new window.bootstrap.Modal(viewGenerationModal);
 let generatedContent = null;
 let logEventSource = null;
 let songWithAnimalsLogEventSource = null;
-let titlesDescriptionsHashtagsLogEventSource = null;
+
 
 /**
  * Connect to the SSE log stream for song with animals generation
@@ -193,122 +186,9 @@ function appendSongWithAnimalsLogEntry(log, timestamp) {
     songWithAnimalsResultsContainer.scrollTop = songWithAnimalsResultsContainer.scrollHeight;
 }
 
-/**
- * Connect to the SSE log stream for titles, descriptions and hashtags generation
- * @param {string} requestId - The request ID to filter logs by
- */
-function connectToTitlesDescriptionsHashtagsLogStream(requestId) {
-    // Close any existing connection
-    if (titlesDescriptionsHashtagsLogEventSource) {
-        console.log('Closing existing titles, descriptions and hashtags log stream connection');
-        titlesDescriptionsHashtagsLogEventSource.close();
-    }
 
-    console.log(`Connecting to titles, descriptions and hashtags log stream with requestId: ${requestId}`);
 
-    // Create a new EventSource connection
-    titlesDescriptionsHashtagsLogEventSource = new EventSource(`/api/logs/stream?requestId=${requestId}`);
 
-    // Handle connection open
-    titlesDescriptionsHashtagsLogEventSource.onopen = () => {
-        console.log('Titles, descriptions and hashtags log stream connection established');
-        if (titlesDescriptionsHashtagsResultsContainer && titlesDescriptionsHashtagsResultsContainer.querySelector('.list-group')) {
-            titlesDescriptionsHashtagsResultsContainer.innerHTML = '<div class="alert alert-info">Connected to log stream. Waiting for logs...</div>';
-        }
-    };
-
-    // Handle incoming messages
-    titlesDescriptionsHashtagsLogEventSource.onmessage = (event) => {
-        console.log('Received titles, descriptions and hashtags SSE message:', event.data);
-        try {
-            const data = JSON.parse(event.data);
-
-            if (data.type === 'connected') {
-                console.log('Connected to titles, descriptions and hashtags log stream');
-            } else if (data.type === 'log') {
-                console.log('Received titles, descriptions and hashtags log:', data.log, 'timestamp:', data.timestamp);
-                if (titlesDescriptionsHashtagsResultsContainer && titlesDescriptionsHashtagsResultsContainer.querySelector('.alert-info')) {
-                    titlesDescriptionsHashtagsResultsContainer.innerHTML = '';
-                }
-                appendTitlesDescriptionsHashtagsLogEntry(data.log, data.timestamp);
-            } else if (data.type === 'complete') {
-                console.log('Titles, descriptions and hashtags generation complete:', data.message);
-                appendTitlesDescriptionsHashtagsLogEntry(data.message, data.timestamp);
-                if (titlesDescriptionsHashtagsLoadingSpinner) titlesDescriptionsHashtagsLoadingSpinner.classList.add('d-none');
-                setTimeout(() => {
-                    if (titlesDescriptionsHashtagsLogEventSource) {
-                        console.log('Closing titles, descriptions and hashtags log stream connection after completion');
-                        titlesDescriptionsHashtagsLogEventSource.close();
-                        titlesDescriptionsHashtagsLogEventSource = null;
-                    }
-                }, 1000);
-            } else {
-                console.warn('Unknown titles, descriptions and hashtags message type:', data.type);
-            }
-        } catch (error) {
-            console.error('Error parsing titles, descriptions and hashtags SSE message:', error, event.data);
-        }
-    };
-
-    // Handle errors
-    titlesDescriptionsHashtagsLogEventSource.onerror = (error) => {
-        console.error('Titles, descriptions and hashtags log stream error:', error);
-        if (titlesDescriptionsHashtagsResultsContainer && titlesDescriptionsHashtagsResultsContainer.querySelector('.alert-info')) {
-            titlesDescriptionsHashtagsResultsContainer.innerHTML = '<div class="alert alert-danger">Error connecting to log stream. Logs may be unavailable.</div>';
-        }
-        if (titlesDescriptionsHashtagsLoadingSpinner) titlesDescriptionsHashtagsLoadingSpinner.classList.add('d-none');
-        titlesDescriptionsHashtagsLogEventSource.close();
-        titlesDescriptionsHashtagsLogEventSource = null;
-    };
-}
-
-/**
- * Append a single log entry to the titles, descriptions and hashtags display
- * @param {string} log - The log message to append
- * @param {string} timestamp - The timestamp for the log entry
- */
-function appendTitlesDescriptionsHashtagsLogEntry(log, timestamp) {
-    // Skip logs containing "Using default channel name"
-    if (log && log.includes("Using default channel name")) {
-        console.log('Skipping channel name log:', log);
-        return;
-    }
-
-    console.log('Appending titles, descriptions and hashtags log entry:', log, 'timestamp:', timestamp);
-
-    // Make sure the results section is visible
-    if (titlesDescriptionsHashtagsResultsSection) titlesDescriptionsHashtagsResultsSection.classList.remove('d-none');
-
-    // Create the log item list if it doesn't exist yet
-    if (!titlesDescriptionsHashtagsResultsContainer.querySelector('.list-group')) {
-        console.log('Creating new titles, descriptions and hashtags log list');
-        const logList = document.createElement('div');
-        logList.className = 'list-group';
-        titlesDescriptionsHashtagsResultsContainer.appendChild(logList);
-    }
-
-    const logList = titlesDescriptionsHashtagsResultsContainer.querySelector('.list-group');
-
-    // Create and append the new log entry
-    const logItem = document.createElement('div');
-    logItem.className = 'list-group-item';
-
-    if (timestamp) {
-        logItem.innerHTML = `
-      <div class="d-flex justify-content-between align-items-start">
-        <p class="mb-0">${log}</p>
-        <small class="text-muted ms-2">${timestamp}</small>
-      </div>
-    `;
-    } else {
-        logItem.innerHTML = `<p class="mb-0">${log}</p>`;
-    }
-
-    logList.appendChild(logItem);
-
-    // Scroll to the bottom
-    titlesDescriptionsHashtagsResultsContainer.scrollTop = titlesDescriptionsHashtagsResultsContainer.scrollHeight;
-}
 
 /**
  * Connect to the SSE log stream
@@ -1124,126 +1004,10 @@ async function viewGeneration(filename, retryCount = 0, maxRetries = 5, retryDel
     }
 }
 
-// Event listener for titles, descriptions and hashtags form
-if (titlesDescriptionsHashtagsForm) {
-    titlesDescriptionsHashtagsForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Show loading state
-        if (titlesDescriptionsHashtagsLoadingSpinner) titlesDescriptionsHashtagsLoadingSpinner.classList.remove('d-none');
-        
-        // Hide any previous errors
-        if (titlesDescriptionsHashtagsErrorAlert) titlesDescriptionsHashtagsErrorAlert.classList.add('d-none');
-        
-        // Get form data
-        const globalStyle = document.getElementById('globalStyleInput')?.value;
-        const videoPromptsText = document.getElementById('videoPromptsInput')?.value;
-        
-        if (!globalStyle || !videoPromptsText) {
-            if (titlesDescriptionsHashtagsErrorAlert && titlesDescriptionsHashtagsErrorMessage) {
-                titlesDescriptionsHashtagsErrorMessage.textContent = 'Please fill in all required fields';
-                titlesDescriptionsHashtagsErrorAlert.classList.remove('d-none');
-            }
-            if (titlesDescriptionsHashtagsLoadingSpinner) titlesDescriptionsHashtagsLoadingSpinner.classList.add('d-none');
-            return;
-        }
-        
-        // Parse video prompts JSON
-        let videoPrompts;
-        try {
-            videoPrompts = JSON.parse(videoPromptsText);
-            if (!Array.isArray(videoPrompts)) {
-                throw new Error('Video prompts must be an array');
-            }
-            
-            // Validate that each prompt has required fields including index
-            for (let i = 0; i < videoPrompts.length; i++) {
-                const prompt = videoPrompts[i];
-                if (prompt.index === undefined || prompt.index === null || !prompt.line || !prompt.video_prompt) {
-                    throw new Error(`Video prompt ${i + 1} is missing required fields (index, line, or video_prompt)`);
-                }
-            }
-        } catch (error) {
-            if (titlesDescriptionsHashtagsErrorAlert && titlesDescriptionsHashtagsErrorMessage) {
-                titlesDescriptionsHashtagsErrorMessage.textContent = error.message || 'Invalid JSON format for video prompts. Please check your input.';
-                titlesDescriptionsHashtagsErrorAlert.classList.remove('d-none');
-            }
-            if (titlesDescriptionsHashtagsLoadingSpinner) titlesDescriptionsHashtagsLoadingSpinner.classList.add('d-none');
-            return;
-        }
-        
-        // Create the input format expected by the pipeline
-        const input = {
-            global_style: globalStyle,
-            video_prompts: videoPrompts
-        };
-        
-        try {
-            const response = await fetch('/api/generate-titles-descriptions-hashtags', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ input })
-            });
 
-            const data = await response.json();
 
-            if (!response.ok || !data.success) {
-                throw new Error(data.error || 'An error occurred during titles, descriptions and hashtags generation');
-            }
 
-            if (data.requestId) {
-                console.log('Received requestId for titles, descriptions and hashtags generation:', data.requestId);
 
-                // Clear previous results and show results section
-                if (titlesDescriptionsHashtagsResultsContainer) titlesDescriptionsHashtagsResultsContainer.innerHTML = '';
-                if (titlesDescriptionsHashtagsResultsSection) titlesDescriptionsHashtagsResultsSection.classList.remove('d-none');
-                
-                // Connect to log stream for titles, descriptions and hashtags generation
-                connectToTitlesDescriptionsHashtagsLogStream(data.requestId);
-
-                // Add initial message
-                appendTitlesDescriptionsHashtagsLogEntry('Titles, descriptions and hashtags generation started: You will see logs in real-time as they are generated.');
-
-                // Fallback message if logs are delayed
-                setTimeout(() => {
-                    const logGroup = titlesDescriptionsHashtagsResultsContainer.querySelector('.list-group');
-                    if (!logGroup || logGroup.children.length <= 1) {
-                        console.log('No logs received via SSE yet for titles, descriptions and hashtags, adding a status message');
-                        appendTitlesDescriptionsHashtagsLogEntry('Waiting for logs. This may take a moment.');
-                    }
-                }, 3000);
-            } else {
-                throw new Error('No requestId received from server');
-            }
-        } catch (error) {
-            if (titlesDescriptionsHashtagsErrorAlert && titlesDescriptionsHashtagsErrorMessage) {
-                titlesDescriptionsHashtagsErrorMessage.textContent = error.message || 'An error occurred during titles, descriptions and hashtags generation';
-                titlesDescriptionsHashtagsErrorAlert.classList.remove('d-none');
-            }
-            if (titlesDescriptionsHashtagsLoadingSpinner) titlesDescriptionsHashtagsLoadingSpinner.classList.add('d-none');
-        }
-    });
-}
-
-// Event listener for copy titles, descriptions and hashtags button
-if (copyTitlesDescriptionsHashtagsBtn) {
-    copyTitlesDescriptionsHashtagsBtn.addEventListener('click', () => {
-        if (titlesDescriptionsHashtagsResultsContainer) {
-            const resultsText = titlesDescriptionsHashtagsResultsContainer.textContent || '';
-            if (resultsText.trim()) {
-                navigator.clipboard.writeText(resultsText).then(() => {
-                    // Show toast notification
-                    if (copyToast) {
-                        const toast = new window.bootstrap.Toast(copyToast);
-                        toast.show();
-                    }
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                });
-            }
-        }
-    });
-}
 
 /**
  * Check server status on page load with retry logic

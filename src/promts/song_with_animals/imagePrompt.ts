@@ -20,10 +20,9 @@ TASK
 detailed description of the character, pose, emotion, background concept per rule above, colors, lighting, camera, keywords
 
 BASE STYLE REQUIREMENTS (apply to all images):
-• Cartoon/animated style, NOT realistic, photographic, or 3D rendered
+• Cartoon/animated or 3D rendered style, NOT realistic or photographic
 • Characters should look at camera or slightly to the side (3/4 view)
 • Colorful, friendly, highly detailed, eye-catching
-• Flat, 2D cartoon rendering with bold outlines and simple shading
 • Exaggerated, expressive features typical of cartoon animation
 • NO text, letters, words, symbols, or any written content on the image
 • NO speech bubbles, signs, labels, or any textual elements

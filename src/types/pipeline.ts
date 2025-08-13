@@ -166,28 +166,3 @@ export interface SongWithAnimalsOutput {
     hashtags: string[];
 }
 
-/**
- * Input for generating titles, descriptions and hashtags for existing video prompts
- */
-export interface TitlesDescriptionsHashtagsInput {
-    video_prompts: SongWithAnimalsVideoPrompt[];
-    global_style: string;
-}
-
-/**
- * Output for generating titles, descriptions and hashtags
- */
-export interface TitlesDescriptionsHashtagsOutput {
-    titles: string[];
-    descriptions: string[];
-    hashtags: string[];
-}
-
-/**
- * Enhanced output with indices for titles, descriptions and hashtags
- */
-export interface TitlesDescriptionsHashtagsOutputWithIndices {
-    titles: Array<{ index: number; title: string }>;
-    descriptions: Array<{ index: number; description: string }>;
-    hashtags: Array<{ index: number; hashtags: string }>;
-}

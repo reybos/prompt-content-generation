@@ -1,7 +1,7 @@
 import { SongWithAnimalsInput, SongWithAnimalsOutput, SongWithAnimalsImagePrompt, SongWithAnimalsVideoPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
 import { createImagePromptWithStyle } from '../promts/song_with_animals/imagePrompt.js';
-import { songWithAnimalsVideoPrompt } from '../promts/index.js';
+import { songWithAnimalsVideoPrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsHashtagsPrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
 import config from '../config/index.js';
@@ -31,7 +31,26 @@ function splitLyricsIntoSegments(lyrics: string): string[] {
 }
 
 /**
- * Run the song with animals generation pipeline for multiple songs
+ * Group video prompts into segments based on configuration
+ * @param video_prompts - Array of video prompts
+ * @returns Array of segments with configured number of video prompts
+ */
+function groupVideoPromptsIntoSegments(video_prompts: SongWithAnimalsVideoPrompt[]): SongWithAnimalsVideoPrompt[][] {
+    const segments: SongWithAnimalsVideoPrompt[][] = [];
+    const segmentLines = config.songSegmentLines;
+    
+    for (let i = 0; i < video_prompts.length; i += segmentLines) {
+        const segment = video_prompts.slice(i, i + segmentLines);
+        if (segment.length > 0) {
+            segments.push(segment);
+        }
+    }
+    
+    return segments;
+}
+
+/**
+ * Run the complete song with animals generation pipeline (including titles, descriptions and hashtags)
  * @param input - The song with animals input (array of song objects with lyrics)
  * @param options - Pipeline options
  * @returns The generated song with animals outputs (one per song)
@@ -52,6 +71,10 @@ export async function runSongWithAnimalsPipeline(
     const imageTemperature = 0.3;
     const videoModel = 'anthropic/claude-3.7-sonnet';
     const videoTemperature = 0.5;
+    const titleDescModel = 'anthropic/claude-3.7-sonnet';
+    const titleDescTemperature = 0.7;
+    const hashtagsModel = 'anthropic/claude-3.7-sonnet';
+    const hashtagsTemperature = 0.4;
 
     let attempt = 0;
     const maxAttempts = 3;
@@ -97,7 +120,7 @@ export async function runSongWithAnimalsPipeline(
           break;
         }
 
-        // Step 2: Generate video prompts (titles, descriptions and hashtags will be generated separately)
+        // Step 2: Generate video prompts
         if (options.emitLog && options.requestId) {
           options.emitLog(`🎬 Generating video prompts for ${prompts.length} image prompts...`, options.requestId);
         }
@@ -150,13 +173,155 @@ export async function runSongWithAnimalsPipeline(
           break; // Retry the whole song
         }
 
+        // Step 3: Generate titles, descriptions and hashtags
+        if (options.emitLog && options.requestId) {
+          options.emitLog(`🏷️ Generating titles, descriptions and hashtags...`, options.requestId);
+        }
+
+        // Group video prompts into segments
+        const videoSegments = groupVideoPromptsIntoSegments(videoPrompts);
+        if (options.emitLog && options.requestId) {
+          options.emitLog(`📚 Grouped ${videoPrompts.length} video prompts into ${videoSegments.length} segments of ${config.songSegmentLines} lines each`, options.requestId);
+        }
+
+        const titles: string[] = [];
+        const descriptions: string[] = [];
+        const hashtags: string[] = [];
+
+        // Generate title & description for each segment
+        if (options.emitLog && options.requestId) {
+          options.emitLog(`🏷️ Generating titles and descriptions for ${videoSegments.length} segments...`, options.requestId);
+        }
+        
+        for (let segmentIndex = 0; segmentIndex < videoSegments.length; segmentIndex++) {
+          const segment = videoSegments[segmentIndex];
+          if (!segment || segment.length === 0) {
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`❌ Segment ${segmentIndex + 1} is empty. Skipping...`, options.requestId);
+            }
+            continue;
+          }
+          
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`🏷️ Generating title/description for segment ${segmentIndex + 1}/${videoSegments.length} (${segment.length} video prompts)...`, options.requestId);
+          }
+          
+          // Combine all lines from the segment
+          const segmentLines = segment.map(prompt => prompt.line).join('\n');
+          // Combine all video prompts from the segment
+          const segmentVideoPrompts = segment.map(prompt => prompt.video_prompt).join('\n\n');
+          
+          let title = '';
+          let description = '';
+          let titleDescJson: string | Record<string, any> | null = null;
+          try {
+            const titleDescChain = createChain(songWithAnimalsTitleDescPrompt, { model: titleDescModel, temperature: titleDescTemperature });
+            titleDescJson = await executePipelineStep(
+              'SONG WITH ANIMALS TITLE & DESCRIPTION',
+              titleDescChain,
+              { 
+                songLyrics: segmentLines,
+                videoPrompt: segmentVideoPrompts,
+                globalStyle: globalStyle
+              }
+            );
+            if (titleDescJson) {
+              const parsed = typeof titleDescJson === 'string' ? safeJsonParse(titleDescJson, 'SONG WITH ANIMALS TITLE & DESCRIPTION') : titleDescJson;
+              if (parsed && typeof parsed === 'object') {
+                title = parsed.title || '';
+                description = parsed.description || '';
+              }
+            } else {
+              if (options.emitLog && options.requestId) {
+                options.emitLog(`❌ Failed to generate title/description for segment ${segmentIndex + 1}. Retrying...`, options.requestId);
+              }
+              break; // Retry the whole song
+            }
+          } catch (e) {
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`❌ Error generating title/description for segment ${segmentIndex + 1}: ${e instanceof Error ? e.message : String(e)}`, options.requestId);
+            }
+            break; // Retry the whole song
+          }
+          
+          titles.push(title);
+          descriptions.push(description);
+        }
+
+        // Generate hashtags for each segment
+        if (options.emitLog && options.requestId) {
+          options.emitLog(`#️⃣ Generating hashtags for ${videoSegments.length} segments...`, options.requestId);
+        }
+        
+        for (let segmentIndex = 0; segmentIndex < videoSegments.length; segmentIndex++) {
+          const segment = videoSegments[segmentIndex];
+          if (!segment || segment.length === 0) {
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`❌ Segment ${segmentIndex + 1} is empty. Skipping...`, options.requestId);
+            }
+            continue;
+          }
+          
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`#️⃣ Generating hashtags for segment ${segmentIndex + 1}/${videoSegments.length} (${segment.length} video prompts)...`, options.requestId);
+          }
+          
+          // Combine all lines from the segment
+          const segmentLines = segment.map(prompt => prompt.line).join('\n');
+          // Combine all video prompts from the segment
+          const segmentVideoPrompts = segment.map(prompt => prompt.video_prompt).join('\n\n');
+          
+          let hashtagsStr: string | null = null;
+          try {
+            const hashtagsChain = createChain(songWithAnimalsHashtagsPrompt, { model: hashtagsModel, temperature: hashtagsTemperature });
+            hashtagsStr = await executePipelineStep(
+              'SONG WITH ANIMALS HASHTAGS',
+              hashtagsChain,
+              { 
+                songLyrics: segmentLines,
+                videoPrompt: segmentVideoPrompts,
+                globalStyle: globalStyle
+              },
+              false // Don't parse as JSON, hashtags are returned as plain string
+            );
+            if (hashtagsStr && typeof hashtagsStr === 'string') {
+              hashtags.push(hashtagsStr.trim());
+            } else {
+              if (options.emitLog && options.requestId) {
+                options.emitLog(`❌ Failed to generate hashtags for segment ${segmentIndex + 1}. Retrying...`, options.requestId);
+              }
+              break; // Retry the whole song
+            }
+          } catch (e) {
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`❌ Error generating hashtags for segment ${segmentIndex + 1}: ${e instanceof Error ? e.message : String(e)}`, options.requestId);
+            }
+            break; // Retry the whole song
+          }
+        }
+
+        // Check if we have all the required data
+        if (titles.length === videoSegments.length && 
+            descriptions.length === videoSegments.length && 
+            hashtags.length === videoSegments.length) {
+          
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`✅ Successfully generated all titles, descriptions and hashtags!`, options.requestId);
+          }
+        } else {
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`❌ Incomplete data generated. Expected ${videoSegments.length} items, got: titles=${titles.length}, descriptions=${descriptions.length}, hashtags=${hashtags.length}. Retrying...`, options.requestId);
+          }
+          continue; // Retry the whole song
+        }
+
         const songResult: SongWithAnimalsOutput = {
           global_style: globalStyle,
           prompts,
           video_prompts: videoPrompts,
-          titles: [],
-          descriptions: [],
-          hashtags: []
+          titles,
+          descriptions,
+          hashtags
         };
         results.push(songResult);
 
@@ -169,7 +334,7 @@ export async function runSongWithAnimalsPipeline(
           const unprocessedDir = path.join(generationsDir, 'unprocessed');
           await fs.mkdir(unprocessedDir, { recursive: true });
           const fileNumber = await getNextFileNumber(generationsDir);
-          const filename = `${fileNumber}-song_with_animals.json`;
+          const filename = `${fileNumber}-${selectedStyle}.json`;
           const filePath = path.join(unprocessedDir, filename);
           await fs.writeFile(filePath, JSON.stringify(songResult, null, 2), 'utf-8');
         }
