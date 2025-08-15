@@ -68,6 +68,37 @@ let generatedContent = null;
 let logEventSource = null;
 let songWithAnimalsLogEventSource = null;
 
+/**
+ * Load available styles from the server and populate the style select
+ */
+async function loadStyles() {
+    try {
+        const response = await fetch('/api/styles');
+        const data = await response.json();
+        
+        if (data.success && data.styles) {
+            const styleSelect = document.getElementById('songWithAnimalsStyle');
+            if (styleSelect) {
+                // Clear existing options except the first placeholder
+                styleSelect.innerHTML = '<option value="">Choose a visual style...</option>';
+                
+                // Add new options from the server
+                data.styles.forEach(style => {
+                    const option = document.createElement('option');
+                    option.value = style.name;
+                    option.textContent = `${style.displayName} - ${style.description}`;
+                    styleSelect.appendChild(option);
+                });
+                
+                console.log('Styles loaded successfully:', data.styles);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading styles:', error);
+        // Fallback to static styles if API fails
+    }
+}
+
 
 /**
  * Connect to the SSE log stream for song with animals generation
@@ -1051,3 +1082,9 @@ async function checkServerStatus(retryCount = 0, maxRetries = 5, retryDelay = 20
         return false;
     }
 }
+
+// Initialize the application when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Load styles from the server
+    loadStyles();
+});

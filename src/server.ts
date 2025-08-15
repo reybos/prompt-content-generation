@@ -111,6 +111,18 @@ app.post('/api/generate-song-with-animals', async (req, res) => {
 
 
 
+// API endpoint for getting available styles
+app.get('/api/styles', async (req, res) => {
+    try {
+        const { getAvailableStyles } = await import('./promts/song_with_animals/styles/styleConfig.js');
+        const styles = getAvailableStyles();
+        res.json({ success: true, styles });
+    } catch (error) {
+        console.error('Error getting styles:', error);
+        res.status(500).json({ error: 'Failed to get styles' });
+    }
+});
+
 // SSE endpoint for streaming logs to the frontend
 app.get('/api/logs/stream', (req, res) => {
     const { requestId } = req.query;

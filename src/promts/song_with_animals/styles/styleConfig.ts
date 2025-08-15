@@ -5,11 +5,15 @@
 
 import { defaultStyle } from './defaultStyle.js';
 import { steampunkStyle } from './steampunkStyle.js';
+import { futuristicRobotsStyle } from './futuristicRobotsStyle.js';
+import { retroRobotsStyle } from './retroRobotsStyle.js';
 
 // Доступные стили
 export const AVAILABLE_STYLES = {
   default: 'default',
-  steampunk: 'steampunk'
+  steampunk: 'steampunk',
+  'futuristic-robots': 'futuristic-robots',
+  'retro-robots': 'retro-robots'
 } as const;
 
 export type StyleName = keyof typeof AVAILABLE_STYLES;
@@ -29,6 +33,8 @@ export function getStyle(styleName: string): VisualStyle {
   const styles: Record<string, VisualStyle> = {
     default: defaultStyle,
     steampunk: steampunkStyle,
+    'futuristic-robots': futuristicRobotsStyle,
+    'retro-robots': retroRobotsStyle,
   };
   
   return styles[styleName] || defaultStyle;
@@ -39,6 +45,8 @@ export function getAvailableStyles(): { name: string; displayName: string; descr
   return [
     { name: defaultStyle.name, displayName: defaultStyle.displayName, description: defaultStyle.description },
     { name: steampunkStyle.name, displayName: steampunkStyle.displayName, description: steampunkStyle.description },
+    { name: futuristicRobotsStyle.name, displayName: futuristicRobotsStyle.displayName, description: futuristicRobotsStyle.description },
+    { name: retroRobotsStyle.name, displayName: retroRobotsStyle.displayName, description: retroRobotsStyle.description },
   ];
 }
 
