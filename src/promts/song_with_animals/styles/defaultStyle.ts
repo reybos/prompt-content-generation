@@ -10,5 +10,8 @@ export const defaultStyle = {
   environmentStyle: "Simple, bright, child-friendly backgrounds with bold, cartoon-style elements. Clean, uncluttered spaces with basic geometric shapes and thick outlines. Simple decorative elements like flowers, clouds, or basic shapes drawn in cartoon style. Minimalist furniture and structures with flat colors and simple shading. Bright, cheerful lighting with minimal shadows. Playful, educational atmosphere suitable for young children, drawn in classic cartoon animation style",
   
   // Детальная цветовая палитра
-  colorPalette: "Primary colors: bright, saturated primary colors (red, blue, yellow, green) with bold, flat application. Accent colors: contrasting bright colors (orange, purple, pink) for highlights and details. Background colors: light, pastel tones (light blue, soft pink, pale yellow, mint green) for a gentle, welcoming feel. All colors should be applied in a flat, cartoon style with minimal gradients or shading"
+  colorPalette: "Primary colors: bright, saturated primary colors (red, blue, yellow, green) with bold, flat application. Accent colors: contrasting bright colors (orange, purple, pink) for highlights and details. Background colors: light, pastel tones (light blue, soft pink, pale yellow, mint green) for a gentle, welcoming feel. All colors should be applied in a flat, cartoon style with minimal gradients or shading",
+  
+  // Технические детали рендера
+  renderStyle: "Classic 2D cartoon animation style with bold outlines, flat colors, and minimal shading. Clean, simple rendering suitable for children's content with high contrast and clear visibility."
 };

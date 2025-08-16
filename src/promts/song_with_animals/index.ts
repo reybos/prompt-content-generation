@@ -6,10 +6,11 @@
 export { imagePrompt, createImagePromptWithStyle } from './imagePrompt.js';
 export { 
     songWithAnimalsTitleDescPrompt, 
-    songWithAnimalsTitleDescPromptLyricsOnly 
+    songWithAnimalsTitleDescPromptLyricsOnly,
+    logTitleDescPrompt
 } from './titleDescPrompt.js';
 export { 
     songWithAnimalsHashtagsPrompt, 
     songWithAnimalsHashtagsPromptLyricsOnly 
 } from './hashtagsPrompt.js';
-export { songWithAnimalsVideoPrompt } from './videoPrompt.js'; 
+export { songWithAnimalsVideoPrompt, logVideoPrompt } from './videoPrompt.js'; 

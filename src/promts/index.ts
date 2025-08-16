@@ -12,7 +12,7 @@ import { musicPrompt } from './video/musicPrompt.js';
 import { hashtagsPrompt } from './video/hashtagsPrompt.js';
 import { characterPrompt } from './video/characterPrompt.js';
 import { shortenVideoPrompt } from './video/shortenVideoPrompt.js';
-import { imagePrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsTitleDescPromptLyricsOnly, songWithAnimalsHashtagsPrompt, songWithAnimalsHashtagsPromptLyricsOnly, songWithAnimalsVideoPrompt } from './song_with_animals/index.js';
+import { imagePrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsTitleDescPromptLyricsOnly, songWithAnimalsHashtagsPrompt, songWithAnimalsHashtagsPromptLyricsOnly, songWithAnimalsVideoPrompt, logVideoPrompt, logTitleDescPrompt } from './song_with_animals/index.js';
 
 export {
     narrationPrompt,
@@ -30,4 +30,6 @@ export {
     songWithAnimalsHashtagsPrompt,
     songWithAnimalsHashtagsPromptLyricsOnly,
     songWithAnimalsVideoPrompt,
+    logVideoPrompt,
+    logTitleDescPrompt,
 };

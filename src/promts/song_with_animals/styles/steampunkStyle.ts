@@ -10,5 +10,8 @@ export const steampunkStyle = {
   environmentStyle: "Steampunk inventor's workshop background. Wooden walls with brass panels. Gears hanging on chains. Huge wall clocks with pendulum. Steam pipes along walls and ceiling (with controlled steam emission from specific valve points). Table with scattered tools (screwdrivers, wrenches). Floor made of dark wooden boards with copper inserts. Atmosphere: warm lighting, vintage coziness with industrial touch. Effects: flickering light bulbs, rotating gears in the distance, small steam clouds from pipe joints and machinery",
   
   // Детальная цветовая палитра
-  colorPalette: "Primary colors: bronze, copper, warm brown, amber, brass. Accent colors: turquoise or emerald (for eyes or light bulbs). Background colors: dark purple, deep blue or black for contrast"
+  colorPalette: "Primary colors: bronze, copper, warm brown, amber, brass. Accent colors: turquoise or emerald (for eyes or light bulbs). Background colors: dark purple, deep blue or black for contrast",
+  
+  // Технические детали рендера
+  renderStyle: "Vintage steampunk 3D render with warm lighting, metallic textures, and industrial atmosphere. High-quality rendering with detailed mechanical elements and steam effects."
 };

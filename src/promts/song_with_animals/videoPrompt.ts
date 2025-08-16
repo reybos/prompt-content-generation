@@ -1,7 +1,6 @@
 import {PromptTemplate} from '@langchain/core/prompts';
 
-export const songWithAnimalsVideoPrompt = PromptTemplate.fromTemplate(`
-You are a creative video director specializing in children's content for kids' shorts. Your task is to create video prompts for short animations featuring characters from a children's song.
+const videoPromptTemplate = `You are a creative video director specializing in children's content for kids' shorts. Your task is to create video prompts for short animations featuring characters from a children's song.
 
 Given the global style and image prompts for each character, create engaging video prompts that will animate each character with simple, child-friendly movements.
 
@@ -53,4 +52,18 @@ Return your response as a JSON object with this structure:
 }}
 
 Make each video prompt engaging, colorful, and perfect for children's entertainment. Keep the movements simple but entertaining, and maintain the visual style while being approachable for young viewers. The movements should be gentle, playful, and appropriate for the character's personality and the overall theme of the song.
-`); 
+`;
+
+export const songWithAnimalsVideoPrompt = PromptTemplate.fromTemplate(videoPromptTemplate);
+
+// Функция для логирования видео промта
+export function logVideoPrompt(global_style: string, image_prompts: string): void {
+    const fullVideoPrompt = videoPromptTemplate
+        .replace('{global_style}', global_style)
+        .replace('{image_prompts}', image_prompts);
+    
+    console.log('=== VIDEO PROMPT SENT TO LLM ===');
+    console.log('Full Video Prompt:');
+    console.log(fullVideoPrompt);
+    console.log('=== END VIDEO PROMPT ===');
+} 

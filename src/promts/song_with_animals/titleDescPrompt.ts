@@ -58,6 +58,19 @@ const songWithAnimalsTitleDescPrompt: PromptTemplate = new PromptTemplate({
     template: songWithAnimalsTitleDescPromptTemplate
 });
 
+// Функция для логирования title/description промта
+export function logTitleDescPrompt(songLyrics: string, videoPrompt: string, globalStyle: string): void {
+    const fullTitleDescPrompt = songWithAnimalsTitleDescPromptTemplate
+        .replace('{songLyrics}', songLyrics)
+        .replace('{videoPrompt}', videoPrompt)
+        .replace('{globalStyle}', globalStyle);
+    
+    console.log('=== TITLE/DESCRIPTION PROMPT SENT TO LLM ===');
+    console.log('Full Title/Description Prompt:');
+    console.log(fullTitleDescPrompt);
+    console.log('=== END TITLE/DESCRIPTION PROMPT ===');
+}
+
 // Backward compatible version for lyrics-only input
 const songWithAnimalsTitleDescPromptLyricsOnlyTemplate: string = `You are a social media expert specializing in viral content optimization.
 Input is a segment from a song with animal characters ({songLyrics}).

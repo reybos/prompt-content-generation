@@ -1,12 +1,12 @@
 /**
  * Image Prompt for Song with Animals
- * Generates image prompts for children's songs with animal characters
+ * Generates image prompts for songs with animal characters
  */
 
 import {PromptTemplate} from '@langchain/core/prompts';
 import { getStyle, VisualStyle } from './styles/styleConfig.js';
 
-const imagePromptTemplate: string = `You are a senior visual director and prompt engineer specializing in children's content for kids' shorts.
+const imagePromptTemplate: string = `You are a senior visual director and prompt engineer specializing in viral content suitable for both children and adults.
 Input is a sequence of valid call-and-response lines from a children\'s song ({songLyrics}).
 
 VISUAL STYLE CONFIGURATION:
@@ -20,8 +20,8 @@ TASK
 detailed description of the character, pose, emotion, background concept per rule above, colors, lighting, camera, keywords
 
 BASE STYLE REQUIREMENTS (apply to all images):
-• Cartoon/animated or 3D rendered style, NOT realistic or photographic
 • Characters should look at camera or slightly to the side (3/4 view)
+• Characters should occupy no more than half of the image space
 • Colorful, friendly, highly detailed, eye-catching
 • Exaggerated, expressive features typical of cartoon animation
 • NO text, letters, words, symbols, or any written content on the image
@@ -56,25 +56,47 @@ const imagePrompt: PromptTemplate = new PromptTemplate({
 
 // Функция для создания промта с конкретным стилем
 export function createImagePromptWithStyle(styleName: string = 'default'): PromptTemplate {
-    const style = getStyle(styleName);
+    console.log('=== CREATE IMAGE PROMPT DEBUG ===');
+    console.log('Requested styleName:', styleName);
     
-    const styleConfiguration = `
+    try {
+        const style = getStyle(styleName);
+        console.log('Resolved style:', style.name, 'Display name:', style.displayName);
+        
+        const styleConfiguration = `
 STYLE NAME: ${style.displayName}
 DESCRIPTION: ${style.description}
 
-CHARACTER STYLE ENHANCEMENTS: ${style.characterStyle}
+CHARACTER STYLE: ${style.characterStyle}
 
-ENVIRONMENT STYLE ENHANCEMENTS: ${style.environmentStyle}
+ENVIRONMENT STYLE: ${style.environmentStyle}
 
-COLOR PALETTE ENHANCEMENTS: ${style.colorPalette}
+COLOR PALETTE: ${style.colorPalette}
+
+RENDER STYLE: ${style.renderStyle || 'High-quality 3D render with realistic details'}
 
 IMPORTANT: The global_style you generate should combine the base cartoon/animated requirements with these style enhancements to create a consistent visual approach for all images in the group.
 `;
 
-    return new PromptTemplate({
-        inputVariables: ["songLyrics"],
-        template: imagePromptTemplate.replace('{styleConfiguration}', styleConfiguration)
-    });
+        // Логируем полный промт в консоль
+        const fullPrompt = imagePromptTemplate.replace('{styleConfiguration}', styleConfiguration);
+        console.log('=== IMAGE PROMPT SENT TO LLM ===');
+        console.log('Style:', styleName, '-> Resolved to:', style.name);
+        console.log('Full Prompt:');
+        console.log(fullPrompt);
+        console.log('=== END IMAGE PROMPT ===');
+
+        return new PromptTemplate({
+            inputVariables: ["songLyrics"],
+            template: fullPrompt
+        });
+    } catch (error) {
+        console.error('=== STYLE RESOLUTION ERROR ===');
+        console.error('Failed to resolve style:', styleName);
+        console.error('Error:', error);
+        console.error('=== END STYLE RESOLUTION ERROR ===');
+        throw error;
+    }
 }
 
 export {

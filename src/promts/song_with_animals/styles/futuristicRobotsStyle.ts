@@ -7,5 +7,8 @@ export const futuristicRobotsStyle = {
   
     environmentStyle: "Vivid futuristic backdrops tailored to the character type: neon jungle for wild animals, glowing coral reefs for sea creatures, cyber cityscapes for vehicles, cosmic nebula for space beings, and floating crystal gardens for magical robots. Backgrounds have soft depth-of-field blur to keep focus on the character. Additional elements like floating drones, holograms, and light trails create a lively, dynamic world.",
   
-    colorPalette: "Primary colors: chrome silver, glossy white, pearl grey. Accent colors: neon blue, electric pink, lime green, and glowing purple. Background colors: gradient skies from deep navy to magenta, luminous cyan water, or emerald-tinted forests."
-  };
+    colorPalette: "Primary colors: chrome silver, glossy white, pearl grey. Accent colors: neon blue, electric pink, lime green, and glowing purple. Background colors: gradient skies from deep navy to magenta, luminous cyan water, or emerald-tinted forests.",
+  
+    // Технические детали рендера
+    renderStyle: "High-tech futuristic 3D render with chrome and metallic surfaces, neon lighting effects, and holographic elements. Clean, polished rendering with glowing accents and smooth animations."
+};

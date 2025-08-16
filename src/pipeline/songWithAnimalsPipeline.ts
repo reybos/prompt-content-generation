@@ -1,7 +1,7 @@
 import { SongWithAnimalsInput, SongWithAnimalsOutput, SongWithAnimalsImagePrompt, SongWithAnimalsVideoPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
 import { createImagePromptWithStyle } from '../promts/song_with_animals/imagePrompt.js';
-import { songWithAnimalsVideoPrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsHashtagsPrompt } from '../promts/index.js';
+import { songWithAnimalsVideoPrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsHashtagsPrompt, logVideoPrompt, logTitleDescPrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
 import config from '../config/index.js';
@@ -132,6 +132,9 @@ export async function runSongWithAnimalsPipeline(
           // Prepare image prompts as formatted string for the prompt
           const imagePromptsFormatted = prompts.map(p => `Line: "${p.line}"\nPrompt: ${p.prompt}`).join('\n\n');
           
+          // Логируем видео промт в консоль
+          logVideoPrompt(globalStyle, imagePromptsFormatted);
+          
           videoJson = await executePipelineStep(
             'SONG WITH ANIMALS VIDEO PROMPTS',
             videoChain,
@@ -216,6 +219,10 @@ export async function runSongWithAnimalsPipeline(
           let titleDescJson: string | Record<string, any> | null = null;
           try {
             const titleDescChain = createChain(songWithAnimalsTitleDescPrompt, { model: titleDescModel, temperature: titleDescTemperature });
+            
+            // Логируем title/description промт в консоль
+            logTitleDescPrompt(segmentLines, segmentVideoPrompts, globalStyle);
+            
             titleDescJson = await executePipelineStep(
               'SONG WITH ANIMALS TITLE & DESCRIPTION',
               titleDescChain,
