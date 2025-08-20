@@ -10,7 +10,7 @@ IMAGE PROMPTS:
 {image_prompts}
 
 Create a video prompt for each character that includes:
-1. The same visual style and setting as the image prompt
+1. The EXACT same visual style, setting, background, and environment as specified in the image prompt - DO NOT change or modify the surroundings
 2. A simple, playful animation movement appropriate for children
 3. The character making its characteristic sound or action
 4. Smooth, gentle movements that are easy to follow
@@ -18,6 +18,7 @@ Create a video prompt for each character that includes:
 6. NO text, letters, words, symbols, or any written content in the video
 7. NO speech bubbles, signs, labels, or any textual elements
 8. NO sound effects, sound waves, or any visual representations of sounds
+9. MAINTAIN CONSISTENT ENVIRONMENT: Keep the exact same background, lighting, colors, and overall scene composition as described in the image prompt
 
 For each character, suggest a different type of movement based on their nature:
 - Dogs: wagging tail, bouncing, scratching, playful jumping, or running in place
