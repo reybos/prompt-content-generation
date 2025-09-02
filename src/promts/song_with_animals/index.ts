@@ -6,7 +6,6 @@
 export { imagePrompt, createImagePromptWithStyle } from './imagePrompt.js';
 export { 
     songWithAnimalsTitleDescPrompt, 
-    songWithAnimalsTitleDescPromptLyricsOnly,
     logTitleDescPrompt
 } from './titleDescPrompt.js';
 export { 
