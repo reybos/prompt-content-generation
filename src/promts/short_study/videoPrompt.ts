@@ -16,8 +16,12 @@ TASK:
 4. Include suggestions for characters, backgrounds, movements, objects, and interactive elements that will **capture and hold children's attention**.
 5. Suggest a style that is **cartoonish or Pixar-like**, cheerful, and visually rich.
 6. Think like a top YouTube Shorts creator for toddlers: the video should be **catchy, visually appealing, and instantly engaging**.
-7. **CRITICAL: Do NOT include any text, letters, symbols, numbers, or written words in the video**. The video should be purely visual with no text overlays, subtitles, or written content of any kind.
-8. **IMPORTANT: Break down the video into specific scenes that correspond to each line of the song**. Each scene should be timed and described with visual elements that match the lyrics.
+7. **IMPORTANT: Break down the video into specific scenes that correspond to each line of the song**. Each scene should be timed and described with visual elements that match the lyrics.
+
+TECHNICAL CONSTRAINTS (for your reference only - do NOT include these in the video_prompt):
+- Do NOT include any text, letters, symbols, numbers, or written words in the video
+- Characters should NOT speak, shout, or make any vocal sounds
+- All communication should be through visual expressions, gestures, and actions only
 
 CRITICAL OUTPUT FORMAT REQUIREMENTS:
 1. Return ONLY valid JSON - no markdown, no code blocks, no extra text
@@ -40,7 +44,7 @@ VIDEO GENERATION ELEMENTS TO INCLUDE:
 - **Transitions**: How scenes flow from one to another
 
 EXAMPLE OF CORRECT FORMAT:
-{{ "video_prompts": [ {{ "line": "topic description", "video_prompt": "A bright, colorful, cartoonish animation featuring [main characters]. Scene 1 (0-2s): [description of first scene matching first line] Scene 2 (2-5s): [description of second scene matching second line] [continue with scenes based on song lines] Backgrounds are [description]. Add [movements and camera effects]. The overall style should be [style description]: [specific style details]. No text or letters appear on screen, focus only on lively visuals and character actions." }} ] }}
+{{ "video_prompts": [ {{ "line": "topic description", "video_prompt": "A bright, colorful, cartoonish animation featuring [main characters]. Scene 1 (0-2s): [description of first scene matching first line] Scene 2 (2-5s): [description of second scene matching second line] [continue with scenes based on song lines] Backgrounds are [description]. Add [movements and camera effects]. The overall style should be [style description]: [specific style details]. Focus on lively visuals and character actions." }} ] }}
 
 INPUT:
 Song: {song_text}

@@ -155,6 +155,14 @@ export async function runShortStudyPipeline(
           break;
         }
 
+        // Check video prompt length and retry if too long
+        if (videoPrompt.video_prompt && videoPrompt.video_prompt.length > 2000) {
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`⚠️ Video prompt too long (${videoPrompt.video_prompt.length} chars). Retrying...`, options.requestId);
+          }
+          break; // Retry the whole topic
+        }
+
         // Step 3: Generate title, description and hashtags for the topic
         if (options.emitLog && options.requestId) {
           options.emitLog(`🏷️ Generating title, description and hashtags for topic...`, options.requestId);
