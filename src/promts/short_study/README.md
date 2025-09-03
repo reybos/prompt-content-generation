@@ -4,7 +4,6 @@ This directory contains prompts for generating short study content for children.
 
 ## Files
 
-- `imagePrompt.ts` - Generates image prompts based on study topics
 - `videoPrompt.ts` - Generates video prompts based on image prompts
 - `titleDescPrompt.ts` - Generates titles and descriptions for study content
 - `hashtagsPrompt.ts` - Generates hashtags for study content

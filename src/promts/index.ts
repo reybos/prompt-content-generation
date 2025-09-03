@@ -3,18 +3,18 @@
  * Exports all prompt templates
  */
 
-import { narrationPrompt } from './video/narrationPrompt.js';
-import { enhanceMediaPrompt } from './video/enhanceMediaPrompt.js';
-import { mediaPrompt } from './video/mediaPrompt.js';
-import { scriptPrompt } from './video/scriptPrompt.js';
-import { titleDescPrompt } from './video/titleDescPrompt.js';
-import { musicPrompt } from './video/musicPrompt.js';
-import { hashtagsPrompt } from './video/hashtagsPrompt.js';
-import { characterPrompt } from './video/characterPrompt.js';
-import { shortenVideoPrompt } from './video/shortenVideoPrompt.js';
+import { narrationPrompt } from './long_study/narrationPrompt.js';
+import { enhanceMediaPrompt } from './long_study/enhanceMediaPrompt.js';
+import { mediaPrompt } from './long_study/mediaPrompt.js';
+import { scriptPrompt } from './long_study/scriptPrompt.js';
+import { titleDescPrompt } from './long_study/titleDescPrompt.js';
+import { musicPrompt } from './long_study/musicPrompt.js';
+import { hashtagsPrompt } from './long_study/hashtagsPrompt.js';
+import { characterPrompt } from './long_study/characterPrompt.js';
+import { shortenVideoPrompt } from './long_study/shortenVideoPrompt.js';
 import { imagePrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsHashtagsPrompt, songWithAnimalsHashtagsPromptLyricsOnly, songWithAnimalsVideoPrompt, logVideoPrompt, logTitleDescPrompt } from './song_with_animals/index.js';
 import { horrorVideoPrompt, horrorTitleDescPrompt, horrorHashtagsPrompt } from './horror/index.js';
-import { shortStudyVideoPrompt, shortStudyTitleDescPrompt, shortStudyHashtagsPrompt } from './short_study/index.js';
+import { shortStudyVideoPrompt, shortStudyTitleDescPrompt, shortStudyHashtagsPrompt, shortStudySongPrompt, logTitleDescPrompt as shortStudyLogTitleDescPrompt } from './short_study/index.js';
 
 export {
     narrationPrompt,
@@ -39,4 +39,6 @@ export {
     shortStudyVideoPrompt,
     shortStudyTitleDescPrompt,
     shortStudyHashtagsPrompt,
+    shortStudySongPrompt,
+    shortStudyLogTitleDescPrompt,
 };

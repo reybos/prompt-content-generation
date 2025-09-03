@@ -233,14 +233,21 @@ export interface ShortStudyVideoPrompt {
 }
 
 /**
+ * Short study song prompt (output of song generation step)
+ */
+export interface ShortStudySongPrompt {
+    song_text: string;
+    music_prompt: string;
+}
+
+/**
  * Short study output (final result)
  */
 export interface ShortStudyOutput {
-    global_style: string;
-    prompts: ShortStudyImagePrompt[];
-    video_prompts: ShortStudyVideoPrompt[];
-    titles: string[];
-    descriptions: string[];
-    hashtags: string[];
+    song: ShortStudySongPrompt | null;
+    video_prompt: ShortStudyVideoPrompt;
+    title: string;
+    description: string;
+    hashtags: string;
 }
 

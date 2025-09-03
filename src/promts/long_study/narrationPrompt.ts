@@ -14,6 +14,7 @@ You will be given:
 
 Your task:
 * For each scene (including introduction, all main scenes, and finale), write a detailed, engaging, and age-appropriate narration for the voiceover.
+* CRITICAL: You MUST create narration for exactly the same number of scenes as in the enhanced media prompts. Count the scenes in the enhanced media array and create exactly that many narration objects.
 * Narration must always be delivered as a neutral, third-person voiceover (from the author or narrator), not from the perspective of any character. Do not use phrases like "I'm...", "Let's...", or address the viewer as a character.
 * Expand and enrich the original narration from the script, using the visual details and actions described in the enhanced media prompts.
 * Make sure each narration is short enough to be spoken comfortably within the scene's duration (6 or 10 seconds).

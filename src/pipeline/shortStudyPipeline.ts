@@ -1,7 +1,6 @@
-import { ShortStudyInput, ShortStudyOutput, ShortStudyImagePrompt, ShortStudyVideoPrompt } from '../types/pipeline.js';
+import { ShortStudyInput, ShortStudyOutput, ShortStudyVideoPrompt, ShortStudySongPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
-import { shortStudyImagePrompt } from '../promts/short_study/imagePrompt.js';
-import { shortStudyVideoPrompt, shortStudyTitleDescPrompt, shortStudyHashtagsPrompt, logVideoPrompt, logTitleDescPrompt } from '../promts/index.js';
+import { shortStudyVideoPrompt, shortStudyTitleDescPrompt, shortStudyHashtagsPrompt, shortStudySongPrompt, logVideoPrompt, shortStudyLogTitleDescPrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
 import fs from 'fs/promises';
@@ -25,13 +24,13 @@ export async function runShortStudyPipeline(
     const topicDescription = topic.topic;
 
     // Set models and temperatures for each step
-    const imageModel = 'anthropic/claude-3.7-sonnet';
-    const imageTemperature = 0.3;
-    const videoModel = 'anthropic/claude-3.7-sonnet';
-    const videoTemperature = 0.5;
-    const titleDescModel = 'anthropic/claude-3.7-sonnet';
+    const songModel = 'openai/gpt-5-chat';
+    const songTemperature = 0.6;
+    const videoModel = 'openai/gpt-5-chat';
+    const videoTemperature = 0;
+    const titleDescModel = 'openai/gpt-5-chat';
     const titleDescTemperature = 0.7;
-    const hashtagsModel = 'anthropic/claude-3.7-sonnet';
+    const hashtagsModel = 'openai/gpt-5-chat';
     const hashtagsTemperature = 0.4;
 
     let attempt = 0;
@@ -44,66 +43,74 @@ export async function runShortStudyPipeline(
           options.emitLog(`📚 Generating short study content... (Attempt ${attempt})`, options.requestId);
         }
 
-        // Step 1: Generate image prompts
+        // Step 1: Generate song
         if (options.emitLog && options.requestId) {
-          options.emitLog(`🖼️ Generating image prompts for topic: ${topicDescription.substring(0, 50)}...`, options.requestId);
+          options.emitLog(`🎵 Generating song for topic: ${topicDescription.substring(0, 50)}...`, options.requestId);
         }
         
-        // Создаем промт для изображений
-        const imageChain = createChain(shortStudyImagePrompt, { model: imageModel, temperature: imageTemperature });
-        
-        const imageJson: string | Record<string, any> | null = await executePipelineStep(
-          'SHORT STUDY IMAGE PROMPTS',
-          imageChain,
-          { topicDescription: topicDescription }
-        );
-        let prompt: ShortStudyImagePrompt | null = null;
-        if (imageJson) {
-          const parsed = typeof imageJson === 'string' ? safeJsonParse(imageJson, 'SHORT STUDY IMAGE PROMPTS') : imageJson;
-          if (parsed && typeof parsed === 'object') {
-            const rawPrompts = Array.isArray(parsed.prompts) ? parsed.prompts : [];
-            if (rawPrompts.length > 0) {
-              // Take the first (and only) prompt for the topic
-              prompt = {
-                ...rawPrompts[0],
-                index: 0
+        let songPrompt: ShortStudySongPrompt | null = null;
+        try {
+          const songChain = createChain(shortStudySongPrompt, { model: songModel, temperature: songTemperature });
+          
+          const songJson: string | Record<string, any> | null = await executePipelineStep(
+            'SHORT STUDY SONG',
+            songChain,
+            { topicDescription: topicDescription }
+          );
+          
+          if (songJson) {
+            const parsed = typeof songJson === 'string' ? safeJsonParse(songJson, 'SHORT STUDY SONG') : songJson;
+            if (parsed && typeof parsed === 'object' && parsed.song_text && parsed.music_prompt) {
+              songPrompt = {
+                song_text: parsed.song_text,
+                music_prompt: parsed.music_prompt
               };
+              if (options.emitLog && options.requestId) {
+                options.emitLog(`✅ Successfully generated song`, options.requestId);
+              }
+            } else {
+              if (options.emitLog && options.requestId) {
+                options.emitLog(`⚠️ Song generation parsing issue: missing song_text or music_prompt`, options.requestId);
+              }
             }
+          } else {
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`❌ Failed to generate song. Retrying...`, options.requestId);
+            }
+            break;
           }
-        } else {
+        } catch (e) {
           if (options.emitLog && options.requestId) {
-            options.emitLog(`❌ Failed to generate image prompt. Retrying...`, options.requestId);
+            options.emitLog(`❌ Error generating song: ${e instanceof Error ? e.message : String(e)}`, options.requestId);
           }
           break;
         }
 
-        if (!prompt) {
+        if (!songPrompt) {
           if (options.emitLog && options.requestId) {
-            options.emitLog(`❌ No image prompt generated. Retrying...`, options.requestId);
+            options.emitLog(`❌ No song generated. Retrying...`, options.requestId);
           }
           break;
         }
 
         // Step 2: Generate video prompt
         if (options.emitLog && options.requestId) {
-          options.emitLog(`🎬 Generating video prompt for image prompt...`, options.requestId);
+          options.emitLog(`🎬 Generating video prompt based on song...`, options.requestId);
         }
         let videoPrompt: ShortStudyVideoPrompt | null = null;
         let videoJson: string | Record<string, any> | null = null;
         try {
           const videoChain = createChain(shortStudyVideoPrompt, { model: videoModel, temperature: videoTemperature });
           
-          // Prepare image prompt as formatted string for the prompt
-          const imagePromptFormatted = `Line: "${prompt.line}"\nPrompt: ${prompt.prompt}`;
-          
           // Логируем видео промт в консоль
-          logVideoPrompt('', imagePromptFormatted);
+          logVideoPrompt(songPrompt.song_text, topicDescription);
           
           videoJson = await executePipelineStep(
             'SHORT STUDY VIDEO PROMPTS',
             videoChain,
             { 
-              image_prompts: imagePromptFormatted
+              song_text: songPrompt.song_text,
+              topic_description: topicDescription
             }
           );
           if (videoJson) {
@@ -153,9 +160,9 @@ export async function runShortStudyPipeline(
           options.emitLog(`🏷️ Generating title, description and hashtags for topic...`, options.requestId);
         }
 
-        // Get topic line and video prompt
-        const topicLine = prompt.line;
-        const topicVideoPrompt = videoPrompt.video_prompt;
+        // Get topic line and song text
+        const topicLine = topicDescription;
+        const songText = songPrompt.song_text;
         
         let title = '';
         let description = '';
@@ -164,14 +171,14 @@ export async function runShortStudyPipeline(
           const titleDescChain = createChain(shortStudyTitleDescPrompt, { model: titleDescModel, temperature: titleDescTemperature });
           
           // Логируем title/description промт в консоль
-          logTitleDescPrompt(topicLine, topicVideoPrompt, '');
+          shortStudyLogTitleDescPrompt(topicLine, songText, '');
           
           titleDescJson = await executePipelineStep(
             'SHORT STUDY TITLE & DESCRIPTION',
             titleDescChain,
             { 
               topicDescription: topicLine,
-              videoPrompt: topicVideoPrompt
+              song_text: songText
             }
           );
           if (titleDescJson) {
@@ -206,7 +213,7 @@ export async function runShortStudyPipeline(
             hashtagsChain,
             { 
               topicDescription: topicLine,
-              videoPrompt: topicVideoPrompt
+              song_text: songText
             },
             false // Don't parse as JSON, hashtags are returned as plain string
           );
@@ -226,14 +233,27 @@ export async function runShortStudyPipeline(
         }
 
         const topicResult: ShortStudyOutput = {
-          global_style: '',
-          prompts: [prompt],
-          video_prompts: [videoPrompt],
-          titles: [title],
-          descriptions: [description],
-          hashtags: [hashtagsStr]
+          song: songPrompt,
+          video_prompt: videoPrompt,
+          title: title,
+          description: description,
+          hashtags: hashtagsStr
         };
         results.push(topicResult);
+
+        // Save to file in unprocessed folder
+        if (options.emitLog && options.requestId) {
+          options.emitLog(`💾 Saving result...`, options.requestId);
+        }
+        const generationsDir = getGenerationsDir();
+        if (generationsDir) {
+          const unprocessedDir = path.join(generationsDir, 'unprocessed');
+          await fs.mkdir(unprocessedDir, { recursive: true });
+          const fileNumber = await getNextFileNumber(generationsDir);
+          const filename = `${fileNumber}-short-study.json`;
+          const filePath = path.join(unprocessedDir, filename);
+          await fs.writeFile(filePath, JSON.stringify(topicResult, null, 2), 'utf-8');
+        }
         
         if (options.emitLog && options.requestId) {
           options.emitLog(`✅ Short study topic generation finished`, options.requestId);
@@ -252,30 +272,7 @@ export async function runShortStudyPipeline(
     }
   }
 
-  // Save all results to one file at the end
-  if (results.length > 0) {
-    try {
-      const generationsDir = getGenerationsDir();
-      if (generationsDir) {
-        const unprocessedDir = path.join(generationsDir, 'unprocessed');
-        await fs.mkdir(unprocessedDir, { recursive: true });
-        const fileNumber = await getNextFileNumber(generationsDir);
-        const filename = `${fileNumber}-short-study-all.json`;
-        const filePath = path.join(unprocessedDir, filename);
-        
-        // Save all results as one array
-        await fs.writeFile(filePath, JSON.stringify(results, null, 2), 'utf-8');
-        
-        if (options.emitLog && options.requestId) {
-          options.emitLog(`💾 Saved all ${results.length} short study topic results to ${filename}`, options.requestId);
-        }
-      }
-    } catch (error) {
-      if (options.emitLog && options.requestId) {
-        options.emitLog(`⚠️ Warning: Failed to save results to file: ${error instanceof Error ? error.message : String(error)}`, options.requestId);
-      }
-    }
-  }
+
 
   return results;
 }

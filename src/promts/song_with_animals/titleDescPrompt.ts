@@ -89,10 +89,11 @@ GOALS:
   2. VIDEO SUMMARY (theme, setting, main animals, animation style, unique features)
   3. EDUCATIONAL VALUE (learning animal names, sounds, colors, movements, early learning)
   4. CALL TO ACTION (Subscribe, Like, Share, Watch More)
-• Include **search keywords naturally**: "nursery rhymes", "kids songs", "learning songs", "educational videos for toddlers", "songs for preschoolers"
-• Add **hashtags** at the end for visibility: #KidsSongs #AnimalSounds #NurseryRhymes
-• Use engaging **emojis** to make it friendly and fun
-• Write in **professional yet playful tone** for parents & kids
+• Describe the song's unique features and animal characters
+• Mention educational benefits (learning animal names, sounds, etc.)
+• Include search keywords naturally: "nursery rhymes", "kids songs", "learning songs", "educational videos for toddlers", "songs for preschoolers"
+• Use engaging emojis to make it friendly and fun
+• Write in professional yet playful tone for parents & kids
 • Emphasize SAFE and FAMILY-FRIENDLY content
 
 ---

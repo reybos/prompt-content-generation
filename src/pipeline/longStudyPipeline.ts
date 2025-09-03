@@ -94,6 +94,20 @@ async function runContentPipeline(
                     );
                     if (!mediaJson) { results[theme][topic] = null; break; }
 
+                    // Validate that media has the same number of scenes as script
+                    const scriptScenes = Array.isArray(scriptJson) ? scriptJson : (scriptJson as any)?.scenes;
+                    const mediaScenes = Array.isArray(mediaJson) ? mediaJson : (mediaJson as any)?.scenes || mediaJson;
+                    if (scriptScenes && mediaScenes && scriptScenes.length !== mediaScenes.length) {
+                        console.warn(`Scene count mismatch: Script has ${scriptScenes.length} scenes, Media has ${mediaScenes.length} scenes. Retrying...`);
+                        if (options.emitLog && options.requestId) {
+                            options.emitLog(`⚠️ Scene count mismatch detected. Retrying media generation... (Attempt ${attempt} of ${maxTopicAttempts})`, options.requestId);
+                        }
+                        if (attempt >= maxTopicAttempts) {
+                            results[theme][topic] = null;
+                        }
+                        continue; // Retry the topic from the beginning
+                    }
+
                     if (options.emitLog && options.requestId) {
                         options.emitLog(`✨ Generating enhanced media prompts for "${topic}"...`, options.requestId);
                     }
@@ -211,6 +225,29 @@ async function runContentPipeline(
                         false
                     );
                     if (!hashtagsText) { results[theme][topic] = null; break; }
+
+                    // Final validation: ensure all parts have consistent scene counts
+                    const finalScriptScenes = Array.isArray(scriptJson) ? scriptJson : (scriptJson as any)?.scenes;
+                    const finalMediaScenes = Array.isArray(mediaJson) ? mediaJson : (mediaJson as any)?.scenes || mediaJson;
+                    const finalEnhancedScenes = Array.isArray(finalEnhancedMedia) ? finalEnhancedMedia : (finalEnhancedMedia as any)?.scenes || finalEnhancedMedia;
+                    const finalNarrationScenes = Array.isArray(narrationJson) ? narrationJson : (narrationJson as any)?.scenes || narrationJson;
+                    
+                    if (finalScriptScenes && finalMediaScenes && finalEnhancedScenes && finalNarrationScenes) {
+                        const sceneCounts = {
+                            script: finalScriptScenes.length,
+                            media: finalMediaScenes.length,
+                            enhanced: finalEnhancedScenes.length,
+                            narration: finalNarrationScenes.length
+                        };
+                        
+                        const allSame = Object.values(sceneCounts).every(count => count === sceneCounts.script);
+                        if (!allSame) {
+                            console.warn(`Final scene count validation failed:`, sceneCounts);
+                            if (options.emitLog && options.requestId) {
+                                options.emitLog(`⚠️ Scene count mismatch in final validation: Script(${sceneCounts.script}), Media(${sceneCounts.media}), Enhanced(${sceneCounts.enhanced}), Narration(${sceneCounts.narration})`, options.requestId);
+                            }
+                        }
+                    }
 
                     // Return all generated data as ContentPackage
                     results[theme][topic] = {

@@ -23,10 +23,33 @@ export function safeJsonParse<T = Record<string, any>>(
         // Remove markdown code block formatting if present
         let cleanedJson: string = jsonString
             .replace(/^```(?:json)?\s*/i, '')   // remove opening ```
-            .replace(/\s*```$/, '');            // remove closing ```
+            .replace(/\s*```$/, '')             // remove closing ```
+            .trim();                            // remove leading/trailing whitespace
 
-        // Attempt to parse the cleaned JSON
-        return JSON.parse(cleanedJson) as T;
+        // Try to fix common JSON issues by attempting to parse and re-stringify
+        try {
+            // First attempt: parse as-is
+            return JSON.parse(cleanedJson) as T;
+        } catch (firstError) {
+            // Second attempt: fix unescaped control characters in string values
+            try {
+                // This regex finds string values and escapes control characters within them
+                const fixedJson = cleanedJson.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match, content) => {
+                    const escaped = content
+                        .replace(/\n/g, '\\n')
+                        .replace(/\r/g, '\\r')
+                        .replace(/\t/g, '\\t')
+                        .replace(/\f/g, '\\f')
+                        .replace(/\b/g, '\\b')
+                        .replace(/\v/g, '\\v');
+                    return `"${escaped}"`;
+                });
+                return JSON.parse(fixedJson) as T;
+            } catch (secondError) {
+                // If both attempts fail, throw the original error
+                throw firstError;
+            }
+        }
     } catch (error) {
         if (error instanceof Error) {
             console.error(`Error parsing JSON for ${contextName}: ${error.message}`);

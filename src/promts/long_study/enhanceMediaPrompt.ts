@@ -8,7 +8,7 @@ import { PromptTemplate } from '@langchain/core/prompts';
 // --- Duration Requirements ---
 const DURATION_REQUIREMENTS = `
 * IMPORTANT - SCENE DURATION:
- - Each scene has a specific duration value (6 or 10 seconds)
+ - Each scene has a specific duration value (6 seconds)
  - DO NOT modify the duration values provided in the input
  - Preserve the exact duration value for each scene in your output
  - The duration is provided as a separate field in the JSON, not in the prompt text
@@ -70,16 +70,20 @@ const TOPIC_REQUIREMENTS = `
 // --- Output Format ---
 const OUTPUT_FORMAT = `
 Return the improved prompts as a JSON array without any markdown formatting or code blocks. The JSON structure should include image_prompt only for Scene 0, video_prompt for all scenes, and duration for all scenes:
+
+CRITICAL: You MUST output exactly the same number of scenes as in the input media_prompts. Do NOT add or remove any scenes.
+
 [
  {{ "scene": 0, "scene_type": "introduction", "image_prompt": "...", "video_prompt": "...", "duration": 6 }},
- {{ "scene": 1, "scene_type": "main", "video_prompt": "...", "duration": 10 }},
+ {{ "scene": 1, "scene_type": "main", "video_prompt": "...", "duration": 6 }},
  {{ "scene": 2, "scene_type": "main", "video_prompt": "...", "duration": 6 }},
  ...
- {{ "scene": "final", "scene_type": "finale", "video_prompt": "...", "duration": 6 }}
+ {{ "scene": N, "scene_type": "finale", "video_prompt": "...", "duration": 6 }}
 ]
 
-IMPORTANT: The duration field must be preserved exactly as it was in the input. Only the values 6 and 10 are allowed, with no additional symbols or text.
+IMPORTANT: The duration field must be preserved exactly as it was in the input. Only the value 6 is allowed, with no additional symbols or text.
 CRITICAL: Each video_prompt and image_prompt in the output must be no more than 1500 characters in length.
+CRITICAL: Count the input scenes and output exactly that many scenes. If input has 10 scenes, output exactly 10 scenes.
 `;
 
 // --- General Instructions ---
@@ -109,7 +113,7 @@ ${OUTPUT_FORMAT}
 `;
 
 const enhanceMediaPrompt = new PromptTemplate({
-    inputVariables: ["media_prompts", "character", "script"],
+    inputVariables: ["media_prompts", "script"],
     template: enhanceMediaPromptTemplate
 });
 
