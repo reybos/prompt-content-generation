@@ -5,11 +5,7 @@
 
 export { imagePrompt, createImagePromptWithStyle } from './imagePrompt.js';
 export { 
-    songWithAnimalsTitleDescPrompt, 
-    logTitleDescPrompt
+    songWithAnimalsTitlePrompt, 
+    logTitlePrompt
 } from './titleDescPrompt.js';
-export { 
-    songWithAnimalsHashtagsPrompt, 
-    songWithAnimalsHashtagsPromptLyricsOnly 
-} from './hashtagsPrompt.js';
 export { songWithAnimalsVideoPrompt, logVideoPrompt } from './videoPrompt.js'; 

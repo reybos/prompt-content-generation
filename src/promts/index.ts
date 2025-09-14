@@ -12,7 +12,7 @@ import { musicPrompt } from './long_study/musicPrompt.js';
 import { hashtagsPrompt } from './long_study/hashtagsPrompt.js';
 import { characterPrompt } from './long_study/characterPrompt.js';
 import { shortenVideoPrompt } from './long_study/shortenVideoPrompt.js';
-import { imagePrompt, songWithAnimalsTitleDescPrompt, songWithAnimalsHashtagsPrompt, songWithAnimalsHashtagsPromptLyricsOnly, songWithAnimalsVideoPrompt, logVideoPrompt, logTitleDescPrompt } from './song_with_animals/index.js';
+import { imagePrompt, songWithAnimalsTitlePrompt, songWithAnimalsVideoPrompt, logVideoPrompt, logTitlePrompt } from './song_with_animals/index.js';
 import { horrorVideoPrompt, horrorTitleDescPrompt, horrorHashtagsPrompt } from './horror/index.js';
 import { shortStudyVideoPrompt, shortStudyTitleDescPrompt, shortStudyHashtagsPrompt, shortStudySongPrompt, logTitleDescPrompt as shortStudyLogTitleDescPrompt } from './short_study/index.js';
 
@@ -27,12 +27,10 @@ export {
     characterPrompt,
     shortenVideoPrompt,
     imagePrompt,
-    songWithAnimalsTitleDescPrompt,
-    songWithAnimalsHashtagsPrompt,
-    songWithAnimalsHashtagsPromptLyricsOnly,
+    songWithAnimalsTitlePrompt,
     songWithAnimalsVideoPrompt,
     logVideoPrompt,
-    logTitleDescPrompt,
+    logTitlePrompt,
     horrorVideoPrompt,
     horrorTitleDescPrompt,
     horrorHashtagsPrompt,

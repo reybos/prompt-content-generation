@@ -1,7 +1,7 @@
 import { HorrorInput, HorrorOutput, HorrorImagePrompt, HorrorVideoPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
 import { horrorImagePrompt } from '../promts/horror/imagePrompt.js';
-import { horrorVideoPrompt, horrorTitleDescPrompt, horrorHashtagsPrompt, logVideoPrompt, logTitleDescPrompt } from '../promts/index.js';
+import { horrorVideoPrompt, horrorTitleDescPrompt, horrorHashtagsPrompt, logVideoPrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
 import fs from 'fs/promises';
@@ -161,7 +161,10 @@ export async function runHorrorPipeline(
           const titleDescChain = createChain(horrorTitleDescPrompt, { model: titleDescModel, temperature: titleDescTemperature });
           
           // Логируем title/description промт в консоль
-          logTitleDescPrompt(animalLine, animalVideoPrompt, '');
+          console.log('\n=== HORROR TITLE & DESCRIPTION PROMPT ===');
+          console.log('Animal Description:', animalLine);
+          console.log('Video Prompt:', animalVideoPrompt);
+          console.log('==========================================\n');
           
           titleDescJson = await executePipelineStep(
             'HORROR TITLE & DESCRIPTION',

@@ -162,8 +162,6 @@ export interface SongWithAnimalsOutput {
     prompts: SongWithAnimalsImagePrompt[];
     video_prompts: SongWithAnimalsVideoPrompt[];
     titles: string[];
-    descriptions: string[];
-    hashtags: string[];
 }
 
 /**
