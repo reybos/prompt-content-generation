@@ -1,41 +1,41 @@
-// Short Study Title and Description Prompt
-// Generates SEO-optimized title and description for children's educational videos
+// Optimized Short Study Title and Description Prompt for YouTube Shorts
+// Generates concise, SEO-optimized, engaging titles, descriptions, and hashtags for children's educational Shorts
 
 import {PromptTemplate} from '@langchain/core/prompts';
 
 export const shortStudyTitleDescPrompt = new PromptTemplate({
     inputVariables: ["topicDescription", "song_text"],
-    template: `You are a senior YouTube content strategist and SEO expert specializing in **children's educational YouTube Shorts**. 
+    template: `You are a senior YouTube content strategist and SEO expert specializing in **children's educational Shorts**.  
 
 Input: study topic description ({topicDescription}) and song text ({song_text}).
 
 TASK:
-1. Generate an **engaging, SEO-optimized title** (max 70 characters) for toddlers (ages 2-6) and parents. Make it catchy, curiosity-driven, and include main keywords from the topic (e.g., "firefighter song", "builder song", "animal sounds").  
-2. Generate an **educational and fun description** (up to 1000 characters) optimized for YouTube search, following this structure:  
-   - Hook: 1-2 sentences that grab attention  
-   - Learning Summary: what children will learn (vocabulary, sounds, actions, pretend play)  
-   - Parent Appeal: why this is safe, educational, and engaging  
-   - Call-to-Action: like, subscribe, watch more  
-   - Naturally include relevant keywords from topic and song text  
-   - Use playful emojis to make it friendly for kids and parents  
+1. Generate a **catchy, SEO-optimized title** (max 70 characters) for toddlers (ages 2-6) and parents:
+   • Include main keywords from topic and song (e.g., "firefighter song", "animal sounds")  
+   • Make it curiosity-driven, fun, and easy to read  
+   • Add 1–2 relevant emojis (🎶 🐶 👷‍♂️ 🐞 🚀 etc.)  
+   • Keep it short, punchy, **Shorts-friendly**, and suitable to catch attention in the first 3 seconds
 
-3. Make description **ONE continuous string** with escaped newlines (\\n) and quotes (\\"), fully suitable for **YouTube Shorts format**.  
-4. Avoid repetition, filler phrases, and overly long blocks. Keep it **clear, concise, and persuasive**.  
-5. Ensure **SEO keywords are in the first 1-2 sentences** where possible.  
+2. Generate an **educational, engaging description** (50–100 words optimized for Shorts audience):
+   • Hook: 1–2 sentences with emojis that immediately grab attention  
+   • Learning Summary: 3–4 bullet points of what children will learn (vocabulary, sounds, actions, pretend play)  
+   • Naturally include main keywords in first 1–2 sentences  
+   • Escape newlines (\\n) and quotes (\\"), fully suitable for Shorts format
+
+3. Avoid repetition, filler phrases, or long blocks; keep it **clear, concise, persuasive**  
+4. Ensure **SEO keywords appear early**, and description is optimized for YouTube Shorts audience and recommendation algorithms  
 
 CRITICAL OUTPUT FORMAT:
-1. Return ONLY valid JSON, no markdown or extra text  
-2. Start with {{ and end with }}  
-3. Double quotes for all strings  
-4. Escape all special characters:
-   - Newlines: \\n
-   - Quotes: \\"  
-   - Backslashes: \\\\
+• Return ONLY valid JSON, no markdown or extra text  
+• Start with {{ and end with }}  
+• Double quotes for all strings  
+• Escape special characters
+• NO control characters, NO unescaped newlines, NO unescaped quotes
 
 EXAMPLE OUTPUT:
 {{
-  "title": "Fun Learning Song for Kids",
-  "description": "Sing, clap, and dance along with this fun kids song!\\n\\nWhat kids will learn:\\n- Basic concepts\\n- Vocabulary\\n- Movement skills\\n\\nSafe, parent-approved content! Subscribe for more fun learning videos."
+  "title": "Hello Teacher Song 👩‍🏫 | Clap, Sing & Move 🎶",
+  "description": "Clap, sing, and move along with the cheerful Hello Teacher Song! 🌟\\n\\nWhat kids will learn:\\n- Greet teachers & classmates 🙋‍♂️🙋‍♀️\\n- Fun clapping & tapping rhythm 👏\\n- Boost confidence & love for learning 🌈\\n\\nSafe, playful, and educational! Perfect for toddlers & preschoolers.\\nSubscribe for more fun kids songs & interactive Shorts! 🔔\\n#shorts #kidsongs #nurseryrhymes #teacher #learningfun"
 }}
 
 INPUT:
@@ -45,10 +45,9 @@ Song Text: {song_text}
 OUTPUT (JSON ONLY):`
 });
 
-export function logTitleDescPrompt(topicDescription: string, songText: string, globalStyle: string): void {
-  console.log('\n=== SHORT STUDY TITLE & DESCRIPTION PROMPT ===');
-  console.log('Topic Description:', topicDescription);
-  console.log('Song Text:', songText);
-  console.log('Global Style:', globalStyle);
-  console.log('===============================================\n');
+export function logTitleDescPrompt(topicDescription: string, songText: string): void {
+    console.log('\n=== SHORT STUDY TITLE & DESCRIPTION PROMPT ===');
+    console.log('Topic Description:', topicDescription);
+    console.log('Song Text:', songText);
+    console.log('===============================================\n');
 }

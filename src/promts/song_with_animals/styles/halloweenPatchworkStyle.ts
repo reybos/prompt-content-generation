@@ -1,13 +1,35 @@
 export const halloweenPatchworkStyle = {
   name: "halloweenPatchwork",
-  displayName: "Halloween",
-  description: "Family-friendly spooky Frankenstein-inspired 3D cartoon style",
+  displayName: "Halloween Patchwork",
+  description: "Family-friendly spooky 3D cartoon style with patchwork, stitched animals. Characters are slightly eerie but whimsical, perfect for Halloween-themed children's content.",
 
-  characterStyle: "Characters are creatures stitched together from different animal parts. Each character is visibly assembled from mismatched pieces: a cat's head sewn to a rabbit's body, a bird's wings attached to a dog's torso, or a mouse's tail connected to a bear's form. Bodies show clear, thick black stitches holding different colored sections together, with visible thread ends and uneven seams. Each body part has distinct textures and colors - some parts are furry, others are smooth fabric, creating a mismatched appearance. Some parts have small fabric patches sewn on like repairs. Eyes: glowing green orbs without pupils, bright and expressive, emitting eerie unnatural light. Mouths: crooked smiles with stitches or missing teeth, sometimes showing a mischievous grin. Characters have a textured appearance with visible stitching details and some parts feature red accessories (bow ties, scarves) for contrast. The overall look is playful yet eerie, like animated stitched toys in a Halloween world with a horror-comedy aesthetic.",
+  characterStyle: `
+Tall upright {{character}} character in a spooky but child-friendly 3D cartoon style.
+Body appears stitched together from various fabric pieces, with irregular patches and visible seams.
+Limbs are elongated, head slightly oversized, exaggerated cartoon proportions.
+Neutral or slightly eerie expression, no cheerful smile.
+Eyes glow bright solid green without pupils, creating a haunting effect.
+Mouth slightly open with a hint of teeth (if applicable), but not friendly.
+Ears, tails, horns, or other appendages have frayed edges or visible stitching.
+Character stands upright, facing camera or in 3/4 view, arms slightly away from body.
+Patchwork texture, frayed edges, and visible stitching enhance whimsical yet spooky vibe.
+`,
 
-  environmentStyle: "Spooky but fun Halloween backdrops in 3D: glowing pumpkins with carved faces, crooked trees silhouetted against dark sky, haunted houses with warm lights, full moon and light fog. Atmosphere is playful, not scary — closer to a family Halloween special. Add cartoon bats with glowing green eyes, flickering lanterns, or smiling jack-o'-lanterns for extra charm. Background features misty forest scenes with bare trees and dimly lit environments.",
+  environmentStyle: `
+Halloween-themed environment with dim reddish or purplish lighting.
+Mist or fog swirling near the ground, creating atmospheric depth.
+Silhouettes of crooked trees, fences, or tombstones in the soft-focused background.
+Scattered glowing jack-o’-lanterns casting warm orange highlights.
+Ground textured like dirt, stone, or autumn leaves, minimal clutter to keep focus on character.
+Background emphasizes spooky yet whimsical atmosphere, child-friendly but slightly eerie.
+`,
 
-  colorPalette: "Primary colors: muted greens, bluish greys, soft blacks, dark fabric tones. Accent colors: glowing green (eyes), pumpkin orange, neon purple, bright red for accessories. Backgrounds: midnight blue, foggy teal, violet, dark silhouettes. Strong contrast between muted bodies and glowing details. The green eyes provide stark contrast against dark surroundings.",
+  colorPalette: `
+Muted grays, browns, and reds for body patches, soft beige highlights.
+Bright solid green for eyes without pupils.
+Warm orange for jack-o’-lanterns, subtle blue/purple shadows in background.
+Colors are slightly desaturated for a soft, spooky effect but remain visually appealing to children.
+`,
 
-  renderStyle: "High-quality 3D animation, Pixar-like smooth surfaces with Tim Burton/Coraline atmosphere. Rounded proportions (big head, short limbs) with clear fabric seams, stitches, and patches. Glowing eyes as the main light source, casting faint green glow on surroundings. Soft dramatic lighting with moonlight + pumpkin glow. Movements slightly puppet-like but bouncy and playful. Textures are detailed but not realistic, giving a playful, exaggerated feel with handcrafted quality."
+  renderStyle: "High-quality 3D render with smooth padded textures, dramatic side and backlighting to emphasize patchwork seams and glowing eyes, slightly cartoonish proportions, soft-focused background."
 };

@@ -6,43 +6,44 @@
 import {PromptTemplate} from '@langchain/core/prompts';
 import { getStyle, VisualStyle } from './styles/styleConfig.js';
 
-const imagePromptTemplate: string = `You are a senior visual director and prompt engineer specializing in viral content suitable for both children and adults.
-Input is a sequence of valid call-and-response lines from a children\'s song ({songLyrics}).
+const imagePromptTemplate: string = `You are a senior visual director and prompt engineer specializing in viral content for children.
+Input is a sequence of valid call-and-response lines from a children's song ({songLyrics}).
 
 VISUAL STYLE CONFIGURATION:
 {styleConfiguration}
 
 TASK
-1. Use the lines in the given order; each line will get exactly one image prompt.
-2. Use the provided visual style configuration to enhance and modify the base style.
-3. Background rule: every image gets a background that fits the character\'s nature and the specified environment style. The background must stay uncluttered and secondary to the character.
-4. For each line craft an English prompt:
-detailed description of the character, pose, emotion, background concept per rule above, colors, lighting, camera, keywords
+1. Use the lines in the given order; each line produces exactly one image prompt.
+2. Enhance the base style with the provided style configuration.
+3. Background rule: each image has a fitting background, atmospheric but simplified and soft-focused, keeping the character as the main subject.
+4. For each line, craft an English prompt including:
+   - Character description (appearance, pose, emotion). The description should be detailed.
+   - Background concept (following environment style, uncluttered)
+   - Colors, lighting, camera perspective
+   - Keywords for mood and consistency
 
 BASE STYLE REQUIREMENTS (apply to all images):
-• Characters should look at camera or slightly to the side (3/4 view)
-• Characters should occupy no more than half of the image space
-• Colorful, friendly, highly detailed, eye-catching
-• Exaggerated, expressive features typical of cartoon animation
-• NO text, letters, words, symbols, or any written content on the image
-• NO speech bubbles, signs, labels, or any textual elements
-• NO sound effects, sound waves, or any visual representations of sounds
+• Characters should look at the camera or in a 3/4 playful view
+• Characters should be fully visible and occupy up to half of the frame
+• Colorful, friendly, detailed, eye-catching
+• Cartoonish, exaggerated expressions
+• NO text, letters, symbols, or written elements
+• NO speech bubbles, labels, or sound effects
 
 STYLE ENHANCEMENTS:
-• Apply the specified character style from the visual configuration
-• Use the specified environment style for backgrounds
-• Follow the specified color palette from the visual configuration
-• The style configuration should enhance and modify the base requirements, not replace them
+• Apply the specified character style
+• Apply the specified environment style
+• Follow the specified color palette
+• Style configuration enhances, not replaces, the base requirements
 
 GLOBAL STYLE GENERATION:
-• Create a single "global_style" that describes the overall visual approach for all images
-• This global style should combine the base requirements with the selected style enhancements
-• It should ensure all images in the group have consistent visual characteristics
-• Write this as ONE comprehensive sentence that covers art style, rendering approach, and visual mood
+• Create one "global_style" describing overall art style, rendering approach, and visual mood
+• This style must combine base requirements and style enhancements
+• Ensure all images share consistent visual characteristics
+• Write this as ONE clear sentence
 
-OUTPUT (JSON, no extra commentary):
-{{ "global_style": "comprehensive global style description for all images", "prompts": [ {{ "line": "original song line", "prompt": "generation prompt for image #1" }}, {{ "line": "original song line", "prompt": "generation prompt for image #2" }} ... ] }}
-Return valid JSON, escape all inner double quotes
+OUTPUT (JSON only, no commentary):
+{{ "global_style": "comprehensive global style description", "prompts": [ {{ "line": "original song line", "prompt": "image prompt #1" }}, {{ "line": "original song line", "prompt": "image prompt #2" }} ... ] }}
 
 INPUT:
 {songLyrics}

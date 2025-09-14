@@ -179,7 +179,7 @@ export async function runShortStudyPipeline(
           const titleDescChain = createChain(shortStudyTitleDescPrompt, { model: titleDescModel, temperature: titleDescTemperature });
           
           // Логируем title/description промт в консоль
-          shortStudyLogTitleDescPrompt(topicLine, songText, '');
+          shortStudyLogTitleDescPrompt(topicLine, songText);
           
           titleDescJson = await executePipelineStep(
             'SHORT STUDY TITLE & DESCRIPTION',

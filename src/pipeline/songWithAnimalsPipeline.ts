@@ -68,12 +68,12 @@ export async function runSongWithAnimalsPipeline(
 
     // Set models and temperatures for each step
     const imageModel = 'anthropic/claude-3.7-sonnet';
-    const imageTemperature = 0.3;
+    const imageTemperature = 0.5;
     const videoModel = 'anthropic/claude-3.7-sonnet';
     const videoTemperature = 0.5;
-    const titleDescModel = 'anthropic/claude-3.7-sonnet';
+    const titleDescModel = 'openai/gpt-5-chat';
     const titleDescTemperature = 0.7;
-    const hashtagsModel = 'anthropic/claude-3.7-sonnet';
+    const hashtagsModel = 'openai/gpt-5-chat';
     const hashtagsTemperature = 0.4;
 
     let attempt = 0;
