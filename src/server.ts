@@ -13,7 +13,7 @@ import crypto from 'crypto';
 import { runContentPipeline } from './pipeline/index.js';
 // Utility functions removed: not implemented
 import config from './config/index.js';
-import { ContentPackage, PipelineOptions } from './types/pipeline.js';
+import { ContentPackage, PipelineOptions, HalloweenInput } from './types/pipeline.js';
 
 // Get the directory name using ES modules approach
 const __filename: string = fileURLToPath(import.meta.url);
@@ -155,7 +155,28 @@ app.post('/api/generate-short-study', async (req, res) => {
     }
 });
 
-
+// API endpoint for Halloween generation
+app.post('/api/generate-halloween', async (req, res) => {
+    try {
+        const { input } = req.body;
+        if (!input) {
+            return res.status(400).json({ error: 'Missing input' });
+        }
+        // Generate a unique requestId for this generation
+        const requestId = crypto.randomUUID();
+        // Start Halloween generation in the background (do not await)
+        processHalloweenGeneration(input, requestId)
+            .catch(err => {
+                console.error('Error in background Halloween generation:', err);
+                emitLog('Error during Halloween generation: ' + (err?.message || err), requestId);
+            });
+        // Respond immediately so frontend can connect to SSE
+        return res.json({ success: true, requestId });
+    } catch (err) {
+        console.error('Error in /api/generate-halloween:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // API endpoint for getting available styles
 app.get('/api/styles', async (req, res) => {
@@ -342,7 +363,30 @@ async function processShortStudyGeneration(
     }
 }
 
+// Halloween generation processor
+async function processHalloweenGeneration(
+    input: HalloweenInput,
+    requestId: string
+): Promise<void> {
+    const logs: string[] = [];
 
+    // Wait for SSE client to connect
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log(`[HALLOWEEN] Checking for active connection for requestId: ${requestId}`);
+    console.log(`[HALLOWEEN] Active connections: ${activeConnections.size}`);
+
+    try {
+        const result = await import('./pipeline/halloweenPipeline.js').then(m => m.runHalloweenPipeline(input, { requestId, emitLog: (log: string, reqId?: string) => emitLog(log, reqId) }));
+        
+        // Emit completion message with results
+        emitLog(`Halloween generation complete. Generated ${result.length} song(s).`, requestId);
+    } catch (err) {
+        const error = `Error during Halloween generation: ${err}`;
+        logs.push(error);
+        emitLog(error, requestId);
+    }
+}
 
 // Utility to resolve the generations directory
 export function getGenerationsDir() {

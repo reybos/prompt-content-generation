@@ -249,3 +249,40 @@ export interface ShortStudyOutput {
     hashtags: string;
 }
 
+/**
+ * Halloween input: array of song objects with lyrics
+ */
+export interface HalloweenInputItem {
+    lyrics: string; // The song lyrics as a string
+}
+
+export type HalloweenInput = HalloweenInputItem[];
+
+/**
+ * Halloween image prompt (output of image generation step)
+ */
+export interface HalloweenImagePrompt {
+    index: number; // Scene index starting from 0 for easier identification
+    line: string;
+    prompt: string;
+}
+
+/**
+ * Halloween video prompt (output of video generation step)
+ */
+export interface HalloweenVideoPrompt {
+    index: number; // Scene index starting from 0 for easier identification
+    line: string;
+    video_prompt: string;
+}
+
+/**
+ * Halloween output (final result)
+ */
+export interface HalloweenOutput {
+    global_style: string;
+    prompts: HalloweenImagePrompt[];
+    video_prompts: HalloweenVideoPrompt[];
+    titles: string[];
+}
+

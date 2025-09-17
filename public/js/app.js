@@ -56,6 +56,16 @@ const songWithAnimalsErrorAlert = document.getElementById('songWithAnimalsErrorA
 const songWithAnimalsErrorMessage = document.getElementById('songWithAnimalsErrorMessage');
 const songWithAnimalsLoadingSpinner = document.getElementById('songWithAnimalsLoadingSpinner');
 
+// DOM Elements for Halloween Generation
+const halloweenLink = document.getElementById('halloween-link');
+const halloweenContent = document.getElementById('halloween-content');
+const halloweenForm = document.getElementById('halloweenForm');
+const halloweenResultsSection = document.getElementById('halloweenResultsSection');
+const halloweenResultsContainer = document.getElementById('halloweenResultsContainer');
+const halloweenErrorAlert = document.getElementById('halloweenErrorAlert');
+const halloweenErrorMessage = document.getElementById('halloweenErrorMessage');
+const halloweenLoadingSpinner = document.getElementById('halloweenLoadingSpinner');
+
 // DOM Elements for Horror Generation
 const horrorLink = document.getElementById('horror-link');
 const horrorContent = document.getElementById('horror-content');
@@ -87,6 +97,7 @@ const viewModal = new window.bootstrap.Modal(viewGenerationModal);
 let generatedContent = null;
 let logEventSource = null;
 let songWithAnimalsLogEventSource = null;
+let halloweenLogEventSource = null;
 let horrorLogEventSource = null;
 let shortStudyLogEventSource = null;
 
@@ -237,6 +248,120 @@ function appendSongWithAnimalsLogEntry(log, timestamp) {
 
     // Scroll to the bottom
     songWithAnimalsResultsContainer.scrollTop = songWithAnimalsResultsContainer.scrollHeight;
+}
+
+/**
+ * Connect to the SSE log stream for Halloween generation
+ * @param {string} requestId - The request ID to filter logs by
+ */
+function connectToHalloweenLogStream(requestId) {
+    // Close any existing connection
+    if (halloweenLogEventSource) {
+        console.log('Closing existing Halloween log stream connection');
+        halloweenLogEventSource.close();
+    }
+
+    console.log(`Connecting to Halloween log stream with requestId: ${requestId}`);
+
+    // Create a new EventSource connection
+    halloweenLogEventSource = new EventSource(`/api/logs/stream?requestId=${requestId}`);
+
+    // Handle connection open
+    halloweenLogEventSource.onopen = () => {
+        console.log('Halloween log stream connection established');
+        if (halloweenResultsContainer && halloweenResultsContainer.querySelector('.list-group')) {
+            halloweenResultsContainer.innerHTML = '<div class="alert alert-info">Connected to log stream. Waiting for logs...</div>';
+        }
+    };
+
+    // Handle incoming messages
+    halloweenLogEventSource.onmessage = (event) => {
+        console.log('Received Halloween SSE message:', event.data);
+        try {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'connected') {
+                console.log('Connected to Halloween log stream');
+            } else if (data.type === 'log') {
+                console.log('Received Halloween log:', data.log, 'timestamp:', data.timestamp);
+                if (halloweenResultsContainer && halloweenResultsContainer.querySelector('.alert-info')) {
+                    halloweenResultsContainer.innerHTML = '';
+                }
+                appendHalloweenLogEntry(data.log, data.timestamp);
+            } else if (data.type === 'complete') {
+                console.log('Halloween generation complete:', data.message);
+                appendHalloweenLogEntry(data.message, data.timestamp);
+                if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.add('d-none');
+                setTimeout(() => {
+                    if (halloweenLogEventSource) {
+                        console.log('Closing Halloween log stream connection after completion');
+                        halloweenLogEventSource.close();
+                        halloweenLogEventSource = null;
+                    }
+                }, 1000);
+            } else {
+                console.warn('Unknown Halloween message type:', data.type);
+            }
+        } catch (error) {
+            console.error('Error parsing Halloween SSE message:', error, event.data);
+        }
+    };
+
+    // Handle errors
+    halloweenLogEventSource.onerror = (error) => {
+        console.error('Halloween log stream error:', error);
+        if (halloweenResultsContainer && halloweenResultsContainer.querySelector('.alert-info')) {
+            halloweenResultsContainer.innerHTML = '<div class="alert alert-danger">Error connecting to log stream. Logs may be unavailable.</div>';
+        }
+        if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.add('d-none');
+        halloweenLogEventSource.close();
+        halloweenLogEventSource = null;
+    };
+}
+
+/**
+ * Append a single log entry to the Halloween display
+ * @param {string} log - The log message to append
+ * @param {string} timestamp - The timestamp for the log entry
+ */
+function appendHalloweenLogEntry(log, timestamp) {
+    // Skip logs containing "Using default channel name"
+    if (log && log.includes("Using default channel name")) {
+        console.log('Skipping channel name log:', log);
+        return;
+    }
+
+    console.log('Appending Halloween log entry:', log, 'timestamp:', timestamp);
+
+    // Make sure the results section is visible
+    if (halloweenResultsSection) {
+        halloweenResultsSection.classList.remove('d-none');
+    }
+
+    // Create or get the log list
+    let logList = halloweenResultsContainer.querySelector('.list-group');
+    if (!logList) {
+        logList = document.createElement('div');
+        logList.className = 'list-group';
+        halloweenResultsContainer.appendChild(logList);
+    }
+
+    // Create log entry
+    const logItem = document.createElement('div');
+    logItem.className = 'list-group-item list-group-item-action';
+    
+    const time = new Date(timestamp).toLocaleTimeString();
+    logItem.innerHTML = `
+        <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">${log}</h6>
+            <small class="text-muted">${time}</small>
+        </div>
+    `;
+
+    logList.appendChild(logItem);
+
+    // Scroll to the bottom
+    halloweenResultsContainer.scrollTop = halloweenResultsContainer.scrollHeight;
 }
 
 /**
@@ -810,6 +935,7 @@ if (savedLink) {
         savedLink.classList.add('active');
         if (generateLink) generateLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
+        if (halloweenLink) halloweenLink.classList.remove('active');
         if (horrorLink) horrorLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
@@ -819,6 +945,9 @@ if (savedLink) {
         if (songWithAnimalsContent) songWithAnimalsContent.classList.add('d-none');
         if (songWithAnimalsResultsSection) songWithAnimalsResultsSection.classList.add('d-none');
         if (songWithAnimalsErrorAlert) songWithAnimalsErrorAlert.classList.add('d-none');
+        if (halloweenContent) halloweenContent.classList.add('d-none');
+        if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
+        if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
         if (horrorResultsSection) horrorResultsSection.classList.add('d-none');
         if (horrorErrorAlert) horrorErrorAlert.classList.add('d-none');
         if (shortStudyResultsSection) shortStudyResultsSection.classList.add('d-none');
@@ -846,6 +975,9 @@ if (generateLink) {
         if (songWithAnimalsContent) songWithAnimalsContent.classList.add('d-none');
         if (songWithAnimalsResultsSection) songWithAnimalsResultsSection.classList.add('d-none');
         if (songWithAnimalsErrorAlert) songWithAnimalsErrorAlert.classList.add('d-none');
+        if (halloweenContent) halloweenContent.classList.add('d-none');
+        if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
+        if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
         if (horrorResultsSection) horrorResultsSection.classList.add('d-none');
         if (horrorErrorAlert) horrorErrorAlert.classList.add('d-none');
         if (shortStudyResultsSection) shortStudyResultsSection.classList.add('d-none');
@@ -874,6 +1006,27 @@ if (songWithAnimalsLink) {
     });
 }
 
+if (halloweenLink) {
+    halloweenLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        halloweenLink.classList.add('active');
+        if (generateLink) generateLink.classList.remove('active');
+        if (savedLink) savedLink.classList.remove('active');
+        if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
+        if (horrorLink) horrorLink.classList.remove('active');
+        if (shortStudyLink) shortStudyLink.classList.remove('active');
+        if (generateContent) generateContent.classList.add('d-none');
+        if (savedContent) savedContent.classList.add('d-none');
+        if (songWithAnimalsContent) songWithAnimalsContent.classList.add('d-none');
+        if (horrorContent) horrorContent.classList.add('d-none');
+        if (shortStudyContent) shortStudyContent.classList.add('d-none');
+        if (resultsSection) resultsSection.classList.add('d-none');
+        if (halloweenContent) halloweenContent.classList.remove('d-none');
+        if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
+        if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
+    });
+}
+
 if (horrorLink) {
     horrorLink.addEventListener('click', (e) => {
         e.preventDefault();
@@ -881,10 +1034,12 @@ if (horrorLink) {
         if (generateLink) generateLink.classList.remove('active');
         if (savedLink) savedLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
+        if (halloweenLink) halloweenLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
         if (savedContent) savedContent.classList.add('d-none');
         if (songWithAnimalsContent) songWithAnimalsContent.classList.add('d-none');
+        if (halloweenContent) halloweenContent.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.add('d-none');
         if (horrorContent) horrorContent.classList.remove('d-none');
@@ -993,6 +1148,59 @@ if (songWithAnimalsForm) {
         }
         if (songWithAnimalsLoadingSpinner) songWithAnimalsLoadingSpinner.classList.add('d-none');
     }
+    });
+}
+
+if (halloweenForm) {
+    halloweenForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
+        if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
+        if (halloweenResultsContainer) halloweenResultsContainer.innerHTML = '';
+        if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.remove('d-none');
+        
+        const lyricsElem = document.getElementById('halloweenLyrics');
+        const lyricsText = lyricsElem && lyricsElem.value ? lyricsElem.value.trim() : '';
+        
+        if (!lyricsText) {
+            if (halloweenErrorAlert && halloweenErrorMessage) {
+                halloweenErrorMessage.textContent = 'Please enter song lyrics';
+                halloweenErrorAlert.classList.remove('d-none');
+            }
+            if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.add('d-none');
+            return;
+        }
+        
+        // Create the input format expected by the pipeline
+        const songs = [{ lyrics: lyricsText }];
+        
+        try {
+            const response = await fetch('/api/generate-halloween', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    input: songs
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'An error occurred during Halloween generation');
+            }
+
+            // Start listening for logs via SSE
+            if (data.requestId) {
+                connectToHalloweenLogStream(data.requestId);
+            }
+        } catch (error) {
+            console.error('Error generating Halloween content:', error);
+            if (halloweenErrorAlert && halloweenErrorMessage) {
+                halloweenErrorMessage.textContent = error.message || 'An error occurred during Halloween generation';
+                halloweenErrorAlert.classList.remove('d-none');
+            }
+            if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.add('d-none');
+        }
     });
 }
 

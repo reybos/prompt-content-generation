@@ -1,7 +1,7 @@
-import { SongWithAnimalsInput, SongWithAnimalsOutput, SongWithAnimalsImagePrompt, SongWithAnimalsVideoPrompt } from '../types/pipeline.js';
+import { HalloweenInput, HalloweenOutput, HalloweenImagePrompt, HalloweenVideoPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
-import { createImagePromptWithStyle } from '../promts/song_with_animals/imagePrompt.js';
-import { songWithAnimalsVideoPrompt, songWithAnimalsTitlePrompt, logVideoPrompt, logTitlePrompt } from '../promts/index.js';
+import { createImagePromptWithStyle } from '../promts/halloween/imagePrompt.js';
+import { halloweenVideoPrompt, halloweenTitlePrompt, halloweenLogVideoPrompt, halloweenLogTitlePrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
 import config from '../config/index.js';
@@ -35,8 +35,8 @@ function splitLyricsIntoSegments(lyrics: string): string[] {
  * @param video_prompts - Array of video prompts
  * @returns Array of segments with configured number of video prompts
  */
-function groupVideoPromptsIntoSegments(video_prompts: SongWithAnimalsVideoPrompt[]): SongWithAnimalsVideoPrompt[][] {
-    const segments: SongWithAnimalsVideoPrompt[][] = [];
+function groupVideoPromptsIntoSegments(video_prompts: HalloweenVideoPrompt[]): HalloweenVideoPrompt[][] {
+    const segments: HalloweenVideoPrompt[][] = [];
     const segmentLines = config.songSegmentLines;
     
     for (let i = 0; i < video_prompts.length; i += segmentLines) {
@@ -50,17 +50,17 @@ function groupVideoPromptsIntoSegments(video_prompts: SongWithAnimalsVideoPrompt
 }
 
 /**
- * Run the complete song with animals generation pipeline (including titles, descriptions and hashtags)
- * @param input - The song with animals input (array of song objects with lyrics)
+ * Run the complete Halloween song generation pipeline (including titles)
+ * @param input - The Halloween input (array of song objects with lyrics)
  * @param options - Pipeline options
- * @returns The generated song with animals outputs (one per song)
+ * @returns The generated Halloween outputs (one per song)
  */
-export async function runSongWithAnimalsPipeline(
-  input: SongWithAnimalsInput,
+export async function runHalloweenPipeline(
+  input: HalloweenInput,
   options: PipelineOptions = {}
-): Promise<SongWithAnimalsOutput[]> {
-  const results: SongWithAnimalsOutput[] = [];
-  const selectedStyle = options.style || 'default'; // Используем переданный стиль или дефолтный
+): Promise<HalloweenOutput[]> {
+  const results: HalloweenOutput[] = [];
+  const selectedStyle = 'halloweenPatchwork'; // Fixed style for Halloween pipeline
 
   for (const song of input) {
     const lyrics = song.lyrics;
@@ -81,27 +81,27 @@ export async function runSongWithAnimalsPipeline(
       attempt++;
       try {
         if (options.emitLog && options.requestId) {
-          options.emitLog(`🎵 Generating song with animals with ${selectedStyle} style... (Attempt ${attempt})`, options.requestId);
+          options.emitLog(`🎃 Generating Halloween song with ${selectedStyle} style... (Attempt ${attempt})`, options.requestId);
         }
 
-        // Step 1: Generate image prompts with selected style
+        // Step 1: Generate image prompts with Halloween style
         if (options.emitLog && options.requestId) {
           options.emitLog(`🖼️ Generating image prompts for ${segments.length} segments using ${selectedStyle} style...`, options.requestId);
         }
         
-        // Создаем промт с выбранным стилем
+        // Создаем промт с Halloween стилем
         const imagePromptWithStyle = createImagePromptWithStyle(selectedStyle);
         const imageChain = createChain(imagePromptWithStyle, { model: imageModel, temperature: imageTemperature });
         
         const imageJson: string | Record<string, any> | null = await executePipelineStep(
-          'SONG WITH ANIMALS IMAGE PROMPTS',
+          'HALLOWEEN IMAGE PROMPTS',
           imageChain,
           { songLyrics: lyrics }
         );
         let globalStyle = '';
-        let prompts: SongWithAnimalsImagePrompt[] = [];
+        let prompts: HalloweenImagePrompt[] = [];
         if (imageJson) {
-          const parsed = typeof imageJson === 'string' ? safeJsonParse(imageJson, 'SONG WITH ANIMALS IMAGE PROMPTS') : imageJson;
+          const parsed = typeof imageJson === 'string' ? safeJsonParse(imageJson, 'HALLOWEEN IMAGE PROMPTS') : imageJson;
           if (parsed && typeof parsed === 'object') {
             globalStyle = parsed.global_style || '';
             const rawPrompts = Array.isArray(parsed.prompts) ? parsed.prompts : [];
@@ -122,19 +122,19 @@ export async function runSongWithAnimalsPipeline(
         if (options.emitLog && options.requestId) {
           options.emitLog(`🎬 Generating video prompts for ${prompts.length} image prompts...`, options.requestId);
         }
-        let videoPrompts: SongWithAnimalsVideoPrompt[] = [];
+        let videoPrompts: HalloweenVideoPrompt[] = [];
         let videoJson: string | Record<string, any> | null = null;
         try {
-          const videoChain = createChain(songWithAnimalsVideoPrompt, { model: videoModel, temperature: videoTemperature });
+          const videoChain = createChain(halloweenVideoPrompt, { model: videoModel, temperature: videoTemperature });
           
           // Prepare image prompts as formatted string for the prompt
           const imagePromptsFormatted = prompts.map(p => `Line: "${p.line}"\nPrompt: ${p.prompt}`).join('\n\n');
           
           // Логируем видео промт в консоль
-          logVideoPrompt(globalStyle, imagePromptsFormatted);
+          halloweenLogVideoPrompt(globalStyle, imagePromptsFormatted);
           
           videoJson = await executePipelineStep(
-            'SONG WITH ANIMALS VIDEO PROMPTS',
+            'HALLOWEEN VIDEO PROMPTS',
             videoChain,
             { 
               global_style: globalStyle,
@@ -142,7 +142,7 @@ export async function runSongWithAnimalsPipeline(
             }
           );
           if (videoJson) {
-            const parsed = typeof videoJson === 'string' ? safeJsonParse(videoJson, 'SONG WITH ANIMALS VIDEO PROMPTS') : videoJson;
+            const parsed = typeof videoJson === 'string' ? safeJsonParse(videoJson, 'HALLOWEEN VIDEO PROMPTS') : videoJson;
             if (options.emitLog && options.requestId) {
               options.emitLog(`🔍 Video prompts parsing: ${JSON.stringify(parsed).substring(0, 200)}...`, options.requestId);
             }
@@ -213,13 +213,13 @@ export async function runSongWithAnimalsPipeline(
           let title = '';
           let titleJson: string | Record<string, any> | null = null;
           try {
-            const titleChain = createChain(songWithAnimalsTitlePrompt, { model: titleModel, temperature: titleTemperature });
+            const titleChain = createChain(halloweenTitlePrompt, { model: titleModel, temperature: titleTemperature });
             
             // Логируем title промт в консоль
-            logTitlePrompt(segmentLines, segmentVideoPrompts, globalStyle);
+            halloweenLogTitlePrompt(segmentLines, segmentVideoPrompts, globalStyle);
             
             titleJson = await executePipelineStep(
-              'SONG WITH ANIMALS TITLE',
+              'HALLOWEEN TITLE',
               titleChain,
               { 
                 songLyrics: segmentLines,
@@ -228,7 +228,7 @@ export async function runSongWithAnimalsPipeline(
               }
             );
             if (titleJson) {
-              const parsed = typeof titleJson === 'string' ? safeJsonParse(titleJson, 'SONG WITH ANIMALS TITLE') : titleJson;
+              const parsed = typeof titleJson === 'string' ? safeJsonParse(titleJson, 'HALLOWEEN TITLE') : titleJson;
               if (parsed && typeof parsed === 'object') {
                 title = parsed.title || '';
               }
@@ -261,7 +261,7 @@ export async function runSongWithAnimalsPipeline(
           continue; // Retry the whole song
         }
 
-        const songResult: SongWithAnimalsOutput = {
+        const songResult: HalloweenOutput = {
           global_style: globalStyle,
           prompts,
           video_prompts: videoPrompts,
@@ -300,4 +300,4 @@ export async function runSongWithAnimalsPipeline(
   }
 
   return results;
-} 
+}

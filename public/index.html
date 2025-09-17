@@ -57,6 +57,11 @@
                             <i class="fas fa-paw"></i> Shorts by Song
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="halloween-link" href="#">
+                            <i class="fas fa-ghost"></i> Shorts Halloween
+                        </a>
+                    </li>
                     
                     <!-- Happy Barn Group -->
                     <li class="nav-item">
@@ -66,7 +71,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="horror-link" href="#">
-                            <i class="fas fa-ghost"></i> Horror Animals
+                            <i class="fas fa-skull"></i> Horror Animals
                         </a>
                     </li>
                     
@@ -284,6 +289,69 @@ The robot fish says, "Blub, blub, blub!"</textarea>
                 </div>
                 
 
+            </div>
+
+            <!-- Halloween Generation Content -->
+            <div id="halloween-content" class="content-section d-none">
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="card shadow">
+                            <div class="card-header bg-danger text-white">
+                                <h2 class="h4 mb-0">Mini Discoveries - Halloween Shorts</h2>
+                            </div>
+                            <div class="card-body">
+                                <form id="halloweenForm">
+                                    <div class="mb-3">
+                                        <label for="halloweenLyrics" class="form-label">
+                                            Song Lyrics <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea
+                                                class="form-control"
+                                                id="halloweenLyrics"
+                                                rows="10"
+                                                required
+                                        >The spooky cat says, "Meow, meow, meow!"
+The ghostly dog says, "Woof, woof, woof!"
+The witch's owl says, "Hoot, hoot, hoot!"
+The vampire bat says, "Squeak, squeak, squeak!"</textarea>
+                                        <div class="form-text">
+                                            Enter the lyrics of your Halloween children's song with spooky animals. Each line will become an image prompt with Halloween patchwork style.
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-danger" id="halloweenGenerateBtn">
+                                            <span
+                                                class="spinner-border spinner-border-sm d-none"
+                                                id="halloweenLoadingSpinner"
+                                                role="status"
+                                                aria-hidden="true"
+                                            ></span>
+                                            Generate Halloween Shorts
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 d-none" id="halloweenResultsSection">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h2 class="h4 mb-0">Halloween Generation Results</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="halloweenResultsContainer" class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto;">
+                                    <!-- Halloween results will be dynamically added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-danger mt-4 d-none" id="halloweenErrorAlert" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="halloweenErrorMessage"></span>
+                </div>
             </div>
 
             <!-- Short Study Generation Content -->
