@@ -32,6 +32,7 @@ export interface VisualStyle {
   environmentStyle: string;
   colorPalette: string;
   renderStyle?: string;
+  globalStyle?: string; // Готовый глобальный стиль, если задан, используется вместо генерации в промте
 }
 
 // Функция для получения стиля по имени

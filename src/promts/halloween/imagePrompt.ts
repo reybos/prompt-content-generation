@@ -20,6 +20,7 @@ TASK
    - Mouth slightly open with a hint of teeth if applicable
    - Ears, tails, horns, or other appendages with frayed edges and stitching
    - Pose: upright, arms slightly away from body, facing the camera
+   - **No sound effects or text imitating sounds should appear in prompts**
 
 3. Background: Halloween-themed, atmospheric, highly detailed
    - Dim reddish/purplish lighting, soft fog or mist near the ground
@@ -45,19 +46,19 @@ TASK
 
 EXAMPLES:
 
-Input line: "The rabbit says, 'Hop-hop-hoot!'"
+Input line: "The rabbit"
 Output prompt:
 "A tall, upright rabbit character designed in a spooky yet family-friendly 3D cartoon style. Its patchwork body is made from muted gray fabric with red and brown irregular patches, visible seams and frayed edges. Elongated arms, slightly shorter legs ending in small rounded feet, and a slightly oversized head with long upright ears that are frayed at the tips. **Bright solid green pupil-less eyes stare directly at the camera**, mouth slightly open with a hint of sharp teeth. The rabbit stands upright, centered, arms slightly away from body. 
 
 The background is a Halloween-themed environment: dim reddish lighting casts soft shadows, a dark sky with silhouettes of crooked trees and a wooden fence in the distance, scattered glowing jack-o’-lanterns emitting warm orange highlights, the ground is a dirt path covered with scattered autumn leaves, curling mist swirls around the rabbit’s feet. Small tombstones and a faint shadow of a scarecrow are visible in the soft-focused distance, creating a whimsical but spooky Halloween scene."
 
-Input line: "The donkey says, 'Hee-haw-boo!'"
+Input line: "The donkey"
 Output prompt:
 "A tall, upright donkey character in spooky family-friendly 3D cartoon style. Patchwork body with muted gray fabric, scattered patches in muted reds and browns, thick visible stitching along seams, frayed edges on ears and tail. Elongated arms hanging slightly low, shorter legs ending in black hooves, slightly oversized head with upright ears and small tuft of hair. **Bright solid green pupil-less eyes stare directly at the camera**, mouth slightly open in neutral expression. Character upright, arms slightly away from body.
 
 Background: dim purplish lighting highlights donkey’s patchwork texture, fog swirling near hooves. Dark night sky with silhouettes of twisted trees and wooden fences, scattered jack-o’-lanterns casting warm orange highlights across the ground and character. Ground textured with dirt and scattered dry leaves, small gravestones and an old barn appear softly in the background, creating a whimsical, spooky, child-friendly Halloween atmosphere."
 
-Input line: "The cat says, 'Meow-ooo!'"
+Input line: "The cat"
 Output prompt:
 "A tall, upright cat character in spooky family-friendly 3D cartoon style. Patchwork body made from muted gray, red, and brown fabric, thick visible seams and frayed edges. Long thin arms, slightly shorter legs ending in large paw-like feet, slightly oversized head with upright pointed ears with frayed tips. **Bright solid green pupil-less eyes stare directly at the camera**, mouth slightly open with a hint of teeth. Long tail curved upwards with visible stitching. Character upright, arms slightly away from body.
 

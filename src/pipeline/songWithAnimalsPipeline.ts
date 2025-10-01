@@ -1,6 +1,7 @@
 import { SongWithAnimalsInput, SongWithAnimalsOutput, SongWithAnimalsImagePrompt, SongWithAnimalsVideoPrompt } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
 import { createImagePromptWithStyle } from '../promts/song_with_animals/imagePrompt.js';
+import { getStyle } from '../promts/song_with_animals/styles/styleConfig.js';
 import { songWithAnimalsVideoPrompt, songWithAnimalsTitlePrompt, logVideoPrompt, logTitlePrompt } from '../promts/index.js';
 import { createChain } from '../chains/index.js';
 import { executePipelineStep, safeJsonParse } from '../utils/index.js';
@@ -67,7 +68,7 @@ export async function runSongWithAnimalsPipeline(
     const segments = splitLyricsIntoSegments(lyrics);
 
     // Set models and temperatures for each step
-    const imageModel = 'anthropic/claude-3.7-sonnet';
+    const imageModel = 'openai/gpt-5-chat';
     const imageTemperature = 0.3;
     const videoModel = 'anthropic/claude-3.7-sonnet';
     const videoTemperature = 0.5;
@@ -89,6 +90,22 @@ export async function runSongWithAnimalsPipeline(
           options.emitLog(`🖼️ Generating image prompts for ${segments.length} segments using ${selectedStyle} style...`, options.requestId);
         }
         
+        // Получаем стиль и устанавливаем globalStyle на уровне пайплайна
+        let globalStyle = '';
+        try {
+          const style = getStyle(selectedStyle);
+          if (style.globalStyle) {
+            globalStyle = style.globalStyle;
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`🎨 Using predefined globalStyle from ${selectedStyle} style`, options.requestId);
+            }
+          }
+        } catch (error) {
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`⚠️ Could not load style ${selectedStyle}: ${error instanceof Error ? error.message : String(error)}`, options.requestId);
+          }
+        }
+
         // Создаем промт с выбранным стилем
         const imagePromptWithStyle = createImagePromptWithStyle(selectedStyle);
         const imageChain = createChain(imagePromptWithStyle, { model: imageModel, temperature: imageTemperature });
@@ -98,12 +115,17 @@ export async function runSongWithAnimalsPipeline(
           imageChain,
           { songLyrics: lyrics }
         );
-        let globalStyle = '';
         let prompts: SongWithAnimalsImagePrompt[] = [];
         if (imageJson) {
           const parsed = typeof imageJson === 'string' ? safeJsonParse(imageJson, 'SONG WITH ANIMALS IMAGE PROMPTS') : imageJson;
           if (parsed && typeof parsed === 'object') {
-            globalStyle = parsed.global_style || '';
+            // Если globalStyle не был установлен из стиля, используем сгенерированный
+            if (!globalStyle && parsed.global_style) {
+              globalStyle = parsed.global_style;
+              if (options.emitLog && options.requestId) {
+                options.emitLog(`🎨 Using generated globalStyle from LLM`, options.requestId);
+              }
+            }
             const rawPrompts = Array.isArray(parsed.prompts) ? parsed.prompts : [];
             // Add indices to image prompts (starting from 0)
             prompts = rawPrompts.map((prompt, index) => ({
@@ -268,6 +290,11 @@ export async function runSongWithAnimalsPipeline(
           titles
         };
         results.push(songResult);
+
+        // Логируем финальный globalStyle для отладки
+        if (options.emitLog && options.requestId) {
+          options.emitLog(`🎨 Final globalStyle used: ${globalStyle.substring(0, 100)}...`, options.requestId);
+        }
 
         // Save to file in unprocessed folder
         if (options.emitLog && options.requestId) {

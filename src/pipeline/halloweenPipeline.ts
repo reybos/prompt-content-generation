@@ -60,7 +60,7 @@ export async function runHalloweenPipeline(
   options: PipelineOptions = {}
 ): Promise<HalloweenOutput[]> {
   const results: HalloweenOutput[] = [];
-  const selectedStyle = 'halloweenPatchwork'; // Fixed style for Halloween pipeline
+  const selectedStyle = 'halloweenNew'; // Fixed style for Halloween pipeline
 
   for (const song of input) {
     const lyrics = song.lyrics;
