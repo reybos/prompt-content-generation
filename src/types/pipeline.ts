@@ -123,6 +123,7 @@ export interface PipelineOptions {
     requestId?: string;
     emitLog?: (log: string, requestId: string | undefined) => void;
     style?: string; // Visual style for song with animals pipeline
+    generateAdditionalFrames?: boolean; // Flag to generate additional frames
 }
 
 /* END GENAI */
@@ -155,6 +156,16 @@ export interface SongWithAnimalsVideoPrompt {
 }
 
 /**
+ * Song with animals additional frame prompt (group image)
+ */
+export interface SongWithAnimalsAdditionalFramePrompt {
+    index: number; // Frame index starting from 0 for easier identification
+    lines: string[]; // Array of 3 lines that were grouped together
+    group_image_prompt: string; // Group image prompt for thumbnail
+    group_video_prompt: string; // Group video prompt for animation
+}
+
+/**
  * Song with animals output (final result)
  */
 export interface SongWithAnimalsOutput {
@@ -162,6 +173,7 @@ export interface SongWithAnimalsOutput {
     prompts: SongWithAnimalsImagePrompt[];
     video_prompts: SongWithAnimalsVideoPrompt[];
     titles: string[];
+    additional_frames?: SongWithAnimalsAdditionalFramePrompt[]; // Optional additional frames
 }
 
 /**
@@ -277,6 +289,16 @@ export interface HalloweenVideoPrompt {
 }
 
 /**
+ * Halloween additional frame prompt (group image)
+ */
+export interface HalloweenAdditionalFramePrompt {
+    index: number; // Frame index starting from 0 for easier identification
+    lines: string[]; // Array of 3 lines that were grouped together
+    group_image_prompt: string; // Group image prompt for thumbnail
+    group_video_prompt: string; // Group video prompt for animation
+}
+
+/**
  * Halloween output (final result)
  */
 export interface HalloweenOutput {
@@ -284,5 +306,6 @@ export interface HalloweenOutput {
     prompts: HalloweenImagePrompt[];
     video_prompts: HalloweenVideoPrompt[];
     titles: string[];
+    additional_frames?: HalloweenAdditionalFramePrompt[]; // Optional additional frames
 }
 

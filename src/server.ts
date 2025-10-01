@@ -86,7 +86,7 @@ app.post('/api/generate', async (req, res) => {
 // API endpoint for song with animals generation
 app.post('/api/generate-song-with-animals', async (req, res) => {
     try {
-        const { input, style } = req.body;
+        const { input, style, generateAdditionalFrames } = req.body;
         if (!input) {
             return res.status(400).json({ error: 'Missing input' });
         }
@@ -96,7 +96,7 @@ app.post('/api/generate-song-with-animals', async (req, res) => {
         // Generate a unique requestId for this generation
         const requestId = crypto.randomUUID();
         // Start song with animals generation in the background (do not await)
-        processSongWithAnimalsGeneration(input, requestId, style)
+        processSongWithAnimalsGeneration(input, requestId, style, generateAdditionalFrames)
             .catch(err => {
                 console.error('Error in background song with animals generation:', err);
                 emitLog('Error during song with animals generation: ' + (err?.message || err), requestId);
@@ -158,14 +158,14 @@ app.post('/api/generate-short-study', async (req, res) => {
 // API endpoint for Halloween generation
 app.post('/api/generate-halloween', async (req, res) => {
     try {
-        const { input } = req.body;
+        const { input, generateAdditionalFrames } = req.body;
         if (!input) {
             return res.status(400).json({ error: 'Missing input' });
         }
         // Generate a unique requestId for this generation
         const requestId = crypto.randomUUID();
         // Start Halloween generation in the background (do not await)
-        processHalloweenGeneration(input, requestId)
+        processHalloweenGeneration(input, requestId, generateAdditionalFrames)
             .catch(err => {
                 console.error('Error in background Halloween generation:', err);
                 emitLog('Error during Halloween generation: ' + (err?.message || err), requestId);
@@ -291,7 +291,8 @@ async function processContentGeneration(
 async function processSongWithAnimalsGeneration(
     input: any,
     requestId: string,
-    style: string
+    style: string,
+    generateAdditionalFrames?: boolean
 ): Promise<void> {
     const logs: string[] = [];
 
@@ -302,10 +303,16 @@ async function processSongWithAnimalsGeneration(
     console.log(`[SONG WITH ANIMALS] Active connections: ${activeConnections.size}`);
 
     try {
-        const result = await import('./pipeline/songWithAnimalsPipeline.js').then(m => m.runSongWithAnimalsPipeline(input, { requestId, emitLog: (log: string, reqId?: string) => emitLog(log, reqId), style }));
+        const result = await import('./pipeline/songWithAnimalsPipeline.js').then(m => m.runSongWithAnimalsPipeline(input, { 
+            requestId, 
+            emitLog: (log: string, reqId?: string) => emitLog(log, reqId), 
+            style,
+            generateAdditionalFrames: generateAdditionalFrames || false
+        }));
         
         // Emit completion message with results
-        emitLog(`Song with animals generation complete with ${style} style. Generated ${result.length} song(s).`, requestId);
+        const additionalFramesInfo = generateAdditionalFrames ? ' (with additional frames)' : '';
+        emitLog(`Song with animals generation complete with ${style} style${additionalFramesInfo}. Generated ${result.length} song(s).`, requestId);
     } catch (err) {
         const error = `Error during song with animals generation: ${err}`;
         logs.push(error);
@@ -366,7 +373,8 @@ async function processShortStudyGeneration(
 // Halloween generation processor
 async function processHalloweenGeneration(
     input: HalloweenInput,
-    requestId: string
+    requestId: string,
+    generateAdditionalFrames?: boolean
 ): Promise<void> {
     const logs: string[] = [];
 
@@ -377,10 +385,15 @@ async function processHalloweenGeneration(
     console.log(`[HALLOWEEN] Active connections: ${activeConnections.size}`);
 
     try {
-        const result = await import('./pipeline/halloweenPipeline.js').then(m => m.runHalloweenPipeline(input, { requestId, emitLog: (log: string, reqId?: string) => emitLog(log, reqId) }));
+        const result = await import('./pipeline/halloweenPipeline.js').then(m => m.runHalloweenPipeline(input, { 
+            requestId, 
+            emitLog: (log: string, reqId?: string) => emitLog(log, reqId),
+            generateAdditionalFrames: generateAdditionalFrames || false
+        }));
         
         // Emit completion message with results
-        emitLog(`Halloween generation complete. Generated ${result.length} song(s).`, requestId);
+        const additionalFramesInfo = generateAdditionalFrames ? ' (with additional frames)' : '';
+        emitLog(`Halloween generation complete${additionalFramesInfo}. Generated ${result.length} song(s).`, requestId);
     } catch (err) {
         const error = `Error during Halloween generation: ${err}`;
         logs.push(error);

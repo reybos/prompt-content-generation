@@ -50,6 +50,7 @@ const songWithAnimalsLink = document.getElementById('song-with-animals-link');
 const songWithAnimalsContent = document.getElementById('song-with-animals-content');
 const songWithAnimalsForm = document.getElementById('songWithAnimalsForm');
 const songWithAnimalsStyle = document.getElementById('songWithAnimalsStyle');
+const songWithAnimalsAdditionalFrames = document.getElementById('songWithAnimalsAdditionalFrames');
 const songWithAnimalsResultsSection = document.getElementById('songWithAnimalsResultsSection');
 const songWithAnimalsResultsContainer = document.getElementById('songWithAnimalsResultsContainer');
 const songWithAnimalsErrorAlert = document.getElementById('songWithAnimalsErrorAlert');
@@ -60,6 +61,7 @@ const songWithAnimalsLoadingSpinner = document.getElementById('songWithAnimalsLo
 const halloweenLink = document.getElementById('halloween-link');
 const halloweenContent = document.getElementById('halloween-content');
 const halloweenForm = document.getElementById('halloweenForm');
+const halloweenAdditionalFrames = document.getElementById('halloweenAdditionalFrames');
 const halloweenResultsSection = document.getElementById('halloweenResultsSection');
 const halloweenResultsContainer = document.getElementById('halloweenResultsContainer');
 const halloweenErrorAlert = document.getElementById('halloweenErrorAlert');
@@ -1094,8 +1096,10 @@ if (songWithAnimalsForm) {
         
         const lyricsElem = document.getElementById('songWithAnimalsLyrics');
         const styleElem = document.getElementById('songWithAnimalsStyle');
+        const additionalFramesElem = document.getElementById('songWithAnimalsAdditionalFrames');
         const lyricsText = lyricsElem && lyricsElem.value ? lyricsElem.value.trim() : '';
         const selectedStyle = styleElem && styleElem.value ? styleElem.value : '';
+        const generateAdditionalFrames = additionalFramesElem && additionalFramesElem.checked;
         
         if (!lyricsText) {
             if (songWithAnimalsErrorAlert && songWithAnimalsErrorMessage) {
@@ -1124,7 +1128,8 @@ if (songWithAnimalsForm) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     input: songs,
-                    style: selectedStyle
+                    style: selectedStyle,
+                    generateAdditionalFrames: generateAdditionalFrames
                 })
             });
 
@@ -1177,7 +1182,9 @@ if (halloweenForm) {
         if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.remove('d-none');
         
         const lyricsElem = document.getElementById('halloweenLyrics');
+        const additionalFramesElem = document.getElementById('halloweenAdditionalFrames');
         const lyricsText = lyricsElem && lyricsElem.value ? lyricsElem.value.trim() : '';
+        const generateAdditionalFrames = additionalFramesElem && additionalFramesElem.checked;
         
         if (!lyricsText) {
             if (halloweenErrorAlert && halloweenErrorMessage) {
@@ -1196,7 +1203,8 @@ if (halloweenForm) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    input: songs
+                    input: songs,
+                    generateAdditionalFrames: generateAdditionalFrames
                 })
             });
 

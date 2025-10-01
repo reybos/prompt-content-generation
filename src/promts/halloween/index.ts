@@ -8,4 +8,10 @@ export {
     halloweenTitlePrompt, 
     logTitlePrompt
 } from './titleDescPrompt.js';
-export { halloweenVideoPrompt, logVideoPrompt } from './videoPrompt.js'; 
+export { halloweenVideoPrompt, logVideoPrompt } from './videoPrompt.js';
+export { 
+    halloweenGroupImagePrompt,
+    halloweenGroupVideoPrompt,
+    logHalloweenGroupImagePrompt,
+    logHalloweenGroupVideoPrompt
+} from './additionalFramesPrompt.js'; 

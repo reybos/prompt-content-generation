@@ -8,4 +8,10 @@ export {
     songWithAnimalsTitlePrompt, 
     logTitlePrompt
 } from './titleDescPrompt.js';
-export { songWithAnimalsVideoPrompt, logVideoPrompt } from './videoPrompt.js'; 
+export { songWithAnimalsVideoPrompt, logVideoPrompt } from './videoPrompt.js';
+export { 
+    songWithAnimalsGroupImagePrompt,
+    songWithAnimalsGroupVideoPrompt,
+    logSongWithAnimalsGroupImagePrompt,
+    logSongWithAnimalsGroupVideoPrompt
+} from './additionalFramesPrompt.js'; 
