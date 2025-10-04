@@ -25,6 +25,16 @@ Instructions:
 
 Now combine the provided global_style and three prompts into one final thumbnail prompt.
 
+Format of the answer:
+Rewrite the scene description in this format:
+A group of three [style] characters stand together in [environment]:
+ • Character 1 — [short physical description]. 
+ • Character 2 — [short physical description]. 
+ • Character 3 — [short physical description]. 
+
+Environment Animation:  
+[Describe subtle].
+
 Global Style: {globalStyle}
 
 Three Character Prompts:
