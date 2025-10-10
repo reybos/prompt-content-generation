@@ -62,6 +62,11 @@
                             <i class="fas fa-ghost"></i> Shorts Halloween
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="halloween-appear-link" href="#">
+                            <i class="fas fa-magic"></i> Halloween Appear
+                        </a>
+                    </li>
                     
                     <!-- Happy Barn Group -->
                     <li class="nav-item">
@@ -373,6 +378,80 @@ The vampire bat says, "Squeak, squeak, squeak!"</textarea>
                 <div class="alert alert-danger mt-4 d-none" id="halloweenErrorAlert" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     <span id="halloweenErrorMessage"></span>
+                </div>
+            </div>
+
+            <!-- Halloween Appear Generation Content -->
+            <div id="halloween-appear-content" class="content-section d-none">
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="card shadow">
+                            <div class="card-header bg-danger text-white">
+                                <h2 class="h4 mb-0">Mini Discoveries - Halloween Appear Shorts</h2>
+                            </div>
+                            <div class="card-body">
+                                <form id="halloweenAppearForm">
+                                    <div class="mb-3">
+                                        <label for="halloweenAppearLyrics" class="form-label">
+                                            Song Lyrics <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea
+                                                class="form-control"
+                                                id="halloweenAppearLyrics"
+                                                rows="10"
+                                                required
+                                        >The spooky cat says, "Meow, meow, meow!"
+The ghostly dog says, "Woof, woof, woof!"
+The witch's owl says, "Hoot, hoot, hoot!"
+The vampire bat says, "Squeak, squeak, squeak!"</textarea>
+                                        <div class="form-text">
+                                            Enter the lyrics of your Halloween children's song with spooky animals. Each line will become an image prompt with Halloween appear style.
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="halloweenAppearAdditionalFrames">
+                                            <label class="form-check-label" for="halloweenAppearAdditionalFrames">
+                                                Generate additional frames
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Generate extra visual frames for enhanced video variety and transitions.
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-danger" id="halloweenAppearGenerateBtn">
+                                            <span
+                                                class="spinner-border spinner-border-sm d-none"
+                                                id="halloweenAppearLoadingSpinner"
+                                                role="status"
+                                                aria-hidden="true"
+                                            ></span>
+                                            Generate Halloween Appear Shorts
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 d-none" id="halloweenAppearResultsSection">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h2 class="h4 mb-0">Halloween Appear Generation Results</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="halloweenAppearResultsContainer" class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto;">
+                                    <!-- Halloween Appear results will be dynamically added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-danger mt-4 d-none" id="halloweenAppearErrorAlert" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="halloweenAppearErrorMessage"></span>
                 </div>
             </div>
 
