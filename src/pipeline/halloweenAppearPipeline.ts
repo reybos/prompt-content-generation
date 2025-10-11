@@ -1,4 +1,4 @@
-import { HalloweenInput, HalloweenOutput, HalloweenImagePrompt, HalloweenVideoPrompt, HalloweenAdditionalFramePrompt } from '../types/pipeline.js';
+import { HalloweenInput, HalloweenOutput, HalloweenImagePrompt, HalloweenVideoPrompt, HalloweenAdditionalFramePrompt, HalloweenAppearVideoPrompt, HalloweenAppearOutput } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
 import { createImagePromptWithStyle } from '../promts/halloween_appear/imagePrompt.js';
 import { halloweenAppearVideoPrompt, halloweenAppearTitlePrompt, halloweenAppearLogVideoPrompt, halloweenAppearLogTitlePrompt, halloweenAppearGroupImagePrompt, halloweenAppearGroupVideoPrompt, logHalloweenAppearGroupImagePrompt, logHalloweenAppearGroupVideoPrompt } from '../promts/index.js';
@@ -35,8 +35,8 @@ function splitLyricsIntoSegments(lyrics: string): string[] {
  * @param video_prompts - Array of video prompts
  * @returns Array of segments with configured number of video prompts
  */
-function groupVideoPromptsIntoSegments(video_prompts: HalloweenVideoPrompt[]): HalloweenVideoPrompt[][] {
-    const segments: HalloweenVideoPrompt[][] = [];
+function groupVideoPromptsIntoSegments(video_prompts: HalloweenAppearVideoPrompt[]): HalloweenAppearVideoPrompt[][] {
+    const segments: HalloweenAppearVideoPrompt[][] = [];
     const segmentLines = config.songSegmentLines;
     
     for (let i = 0; i < video_prompts.length; i += segmentLines) {
@@ -58,8 +58,8 @@ function groupVideoPromptsIntoSegments(video_prompts: HalloweenVideoPrompt[]): H
 export async function runHalloweenAppearPipeline(
   input: HalloweenInput,
   options: PipelineOptions = {}
-): Promise<HalloweenOutput[]> {
-  const results: HalloweenOutput[] = [];
+): Promise<HalloweenAppearOutput[]> {
+  const results: HalloweenAppearOutput[] = [];
   const selectedStyle = 'halloweenAppear'; // Fixed style for Halloween Appear pipeline
 
   for (const song of input) {
@@ -122,23 +122,26 @@ export async function runHalloweenAppearPipeline(
         if (options.emitLog && options.requestId) {
           options.emitLog(`🎬 Generating video prompts for ${prompts.length} image prompts...`, options.requestId);
         }
-        let videoPrompts: HalloweenVideoPrompt[] = [];
+        let videoPrompts: HalloweenAppearVideoPrompt[] = [];
         let videoJson: string | Record<string, any> | null = null;
         try {
           const videoChain = createChain(halloweenAppearVideoPrompt, { model: videoModel, temperature: videoTemperature });
           
-          // Prepare image prompts as formatted string for the prompt
-          const imagePromptsFormatted = prompts.map(p => `Line: "${p.line}"\nPrompt: ${p.prompt}`).join('\n\n');
+          // Prepare image prompts as JSON array for the prompt
+          const imagePromptsJson = JSON.stringify(prompts.map(p => ({
+            line: p.line,
+            prompt: p.prompt,
+            index: p.index
+          })));
           
           // Логируем видео промт в консоль
-          halloweenAppearLogVideoPrompt(globalStyle, imagePromptsFormatted);
+          halloweenAppearLogVideoPrompt(imagePromptsJson);
           
           videoJson = await executePipelineStep(
             'HALLOWEEN APPEAR VIDEO PROMPTS',
             videoChain,
             { 
-              global_style: globalStyle,
-              image_prompts: imagePromptsFormatted
+              image_prompts: imagePromptsJson
             }
           );
           if (videoJson) {
@@ -146,19 +149,22 @@ export async function runHalloweenAppearPipeline(
             if (options.emitLog && options.requestId) {
               options.emitLog(`🔍 Video prompts parsing: ${JSON.stringify(parsed).substring(0, 200)}...`, options.requestId);
             }
-            if (parsed && typeof parsed === 'object' && Array.isArray(parsed.video_prompts)) {
-              const rawVideoPrompts = parsed.video_prompts;
-              // Add indices to video prompts (starting from 0)
+            if (parsed && typeof parsed === 'object' && Array.isArray(parsed)) {
+              // The new prompt returns an array directly, not wrapped in video_prompts
+              const rawVideoPrompts = parsed;
+              // Add indices to video prompts (starting from 0) and ensure all required fields exist
               videoPrompts = rawVideoPrompts.map((prompt, index) => ({
-                ...prompt,
-                index: index
+                line: prompt.line || '',
+                prompt: prompt.prompt || '', // Starting image prompt
+                video_prompt: prompt.video_prompt || '', // Transformation video prompt
+                index: prompt.index !== undefined ? prompt.index : index
               }));
               if (options.emitLog && options.requestId) {
-                options.emitLog(`✅ Successfully parsed ${videoPrompts.length} video prompts`, options.requestId);
+                options.emitLog(`✅ Successfully parsed ${videoPrompts.length} video transformation prompts`, options.requestId);
               }
             } else {
               if (options.emitLog && options.requestId) {
-                options.emitLog(`⚠️ Video prompts parsing issue: parsed.video_prompts is not an array`, options.requestId);
+                options.emitLog(`⚠️ Video prompts parsing issue: parsed result is not an array`, options.requestId);
               }
             }
           } else {
@@ -445,7 +451,7 @@ export async function runHalloweenAppearPipeline(
           }
         }
 
-        const songResult: HalloweenOutput = {
+        const songResult: HalloweenAppearOutput = {
           global_style: globalStyle,
           prompts,
           video_prompts: videoPrompts,

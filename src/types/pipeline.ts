@@ -309,3 +309,24 @@ export interface HalloweenOutput {
     additional_frames?: HalloweenAdditionalFramePrompt[]; // Optional additional frames
 }
 
+/**
+ * Halloween Appear video prompt (output of video generation step with transformation)
+ */
+export interface HalloweenAppearVideoPrompt {
+    index: number; // Scene index starting from 0 for easier identification
+    line: string;
+    prompt: string; // Starting image prompt (friendly, neutral form)
+    video_prompt: string; // Transformation video prompt (6-second creative transformation)
+}
+
+/**
+ * Halloween Appear output (final result with transformation videos)
+ */
+export interface HalloweenAppearOutput {
+    global_style: string;
+    prompts: HalloweenImagePrompt[];
+    video_prompts: HalloweenAppearVideoPrompt[];
+    titles: string[];
+    additional_frames?: HalloweenAdditionalFramePrompt[]; // Optional additional frames
+}
+

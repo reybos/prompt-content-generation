@@ -20,23 +20,22 @@ if (fs.existsSync(actualPath)) {
 }
 
 export const halloweenAppearVideoPrompt = new PromptTemplate({
-    inputVariables: ["global_style", "image_prompts"],
+    inputVariables: ["image_prompts"],
     template: videoPromptTemplate
 });
 
 // Функция для логирования видео промта
-export function logVideoPrompt(global_style: string, image_prompts: string): void {
+export function logVideoPrompt(image_prompts: string): void {
     const fullVideoPrompt = videoPromptTemplate
-        .replace('{global_style}', global_style)
         .replace('{image_prompts}', image_prompts);
     
-    console.log('=== HALLOWEEN APPEAR VIDEO PROMPT SENT TO LLM ===');
+    console.log('=== HALLOWEEN APPEAR VIDEO TRANSFORMATION PROMPT SENT TO LLM ===');
     console.log('Full Video Prompt:');
     console.log(fullVideoPrompt);
     console.log('=== END VIDEO PROMPT ===');
 }
 
 // Функция для логирования видео промта (алиас для совместимости)
-export function halloweenAppearLogVideoPrompt(global_style: string, image_prompts: string): void {
-    logVideoPrompt(global_style, image_prompts);
+export function halloweenAppearLogVideoPrompt(image_prompts: string): void {
+    logVideoPrompt(image_prompts);
 } 
