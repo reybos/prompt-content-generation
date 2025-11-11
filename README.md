@@ -79,11 +79,6 @@ The web interface provides:
 - Includes image prompts, video prompts, titles, and descriptions
 - Specialized for spooky but child-friendly content
 
-#### 👻 Horror Pipeline  
-- Creates horror-themed educational content
-- Advanced prompt engineering for engaging scary content
-- Includes hashtag generation for social media
-
 #### 📚 Study Pipelines
 - **Short Study**: Quick educational content generation
 - **Long Study**: Comprehensive educational content with async processing

@@ -110,11 +110,6 @@ src/promts/
 │   │   ├── *.prompt.template.txt
 │   │   └── *.prompt.txt (gitignored)
 │   └── *.ts            # TypeScript logic files
-├── horror/              # Horror content prompts
-│   ├── prompts/         # All prompt files organized here
-│   │   ├── *.prompt.template.txt
-│   │   └── *.prompt.txt (gitignored)
-│   └── *.ts            # TypeScript logic files
 ├── halloween/           # Halloween-themed content prompts
 │   ├── prompts/         # All prompt files organized here
 │   │   ├── *.prompt.template.txt
