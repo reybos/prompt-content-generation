@@ -150,7 +150,7 @@ app.post('/api/generate-halloween', async (req, res) => {
         // Respond immediately so frontend can connect to SSE
         return res.json({ success: true, requestId });
     } catch (err) {
-        console.error('Error in /api/generate-halloween:', err);
+        console.error('Error in /api/generate-halloween_dance:', err);
         return res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -173,7 +173,7 @@ app.post('/api/generate-halloween-transform', async (req, res) => {
         // Respond immediately so frontend can connect to SSE
         return res.json({ success: true, requestId });
     } catch (err) {
-        console.error('Error in /api/generate-halloween-transform:', err);
+        console.error('Error in /api/generate-halloween_dance-transform:', err);
         return res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -361,7 +361,7 @@ async function processHalloweenGeneration(
     console.log(`[HALLOWEEN] Active connections: ${activeConnections.size}`);
 
     try {
-        const result = await import('./pipeline/halloweenPipeline.js').then(m => m.runHalloweenPipeline(input, { 
+        const result = await import('./pipeline/halloweenDancePipeline.js').then(m => m.runHalloweenPipeline(input, {
             requestId, 
             emitLog: (log: string, reqId?: string) => emitLog(log, reqId),
             generateAdditionalFrames: generateAdditionalFrames || false

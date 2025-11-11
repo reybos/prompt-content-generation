@@ -58,8 +58,8 @@ const songWithAnimalsErrorMessage = document.getElementById('songWithAnimalsErro
 const songWithAnimalsLoadingSpinner = document.getElementById('songWithAnimalsLoadingSpinner');
 
 // DOM Elements for Halloween Generation
-const halloweenLink = document.getElementById('halloween-link');
-const halloweenContent = document.getElementById('halloween-content');
+const halloweenLink = document.getElementById('halloween_dance-link');
+const halloweenContent = document.getElementById('halloween_dance-content');
 const halloweenForm = document.getElementById('halloweenForm');
 const halloweenAdditionalFrames = document.getElementById('halloweenAdditionalFrames');
 const halloweenResultsSection = document.getElementById('halloweenResultsSection');
@@ -69,8 +69,8 @@ const halloweenErrorMessage = document.getElementById('halloweenErrorMessage');
 const halloweenLoadingSpinner = document.getElementById('halloweenLoadingSpinner');
 
 // DOM Elements for Halloween Transform Generation
-const halloweenTransformLink = document.getElementById('halloween-transform-link');
-const halloweenTransformContent = document.getElementById('halloween-transform-content');
+const halloweenTransformLink = document.getElementById('halloween_dance-transform-link');
+const halloweenTransformContent = document.getElementById('halloween_dance-transform-content');
 const halloweenTransformForm = document.getElementById('halloweenTransformForm');
 const halloweenTransformAdditionalFrames = document.getElementById('halloweenTransformAdditionalFrames');
 const halloweenTransformResultsSection = document.getElementById('halloweenTransformResultsSection');

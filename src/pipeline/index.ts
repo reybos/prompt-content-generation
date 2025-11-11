@@ -4,5 +4,5 @@ export {
 export { runContentPipelineAsync } from './longStudyPipelineAsync.js';
 export { runSongWithAnimalsPipeline } from './songWithAnimalsPipeline.js';
 export { runShortStudyPipeline } from './shortStudyPipeline.js';
-export { runHalloweenPipeline } from './halloweenPipeline.js';
+export { runHalloweenPipeline } from './halloweenDancePipeline.js';
 export { runHalloweenTransformPipeline } from './halloweenTransformPipeline.js';
