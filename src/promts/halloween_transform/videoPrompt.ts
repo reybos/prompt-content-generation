@@ -19,7 +19,7 @@ if (fs.existsSync(actualPath)) {
     console.warn('⚠️  Using template prompt for halloweenVideoPrompt. Copy .template.txt to .txt for production use.');
 }
 
-export const halloweenAppearVideoPrompt = new PromptTemplate({
+export const halloweenTransformVideoPrompt = new PromptTemplate({
     inputVariables: ["image_prompts"],
     template: videoPromptTemplate
 });
@@ -29,13 +29,13 @@ export function logVideoPrompt(image_prompts: string): void {
     const fullVideoPrompt = videoPromptTemplate
         .replace('{image_prompts}', image_prompts);
     
-    console.log('=== HALLOWEEN APPEAR VIDEO TRANSFORMATION PROMPT SENT TO LLM ===');
+    console.log('=== HALLOWEEN TRANSFORM VIDEO TRANSFORMATION PROMPT SENT TO LLM ===');
     console.log('Full Video Prompt:');
     console.log(fullVideoPrompt);
     console.log('=== END VIDEO PROMPT ===');
 }
 
 // Функция для логирования видео промта (алиас для совместимости)
-export function halloweenAppearLogVideoPrompt(image_prompts: string): void {
+export function halloweenTransformLogVideoPrompt(image_prompts: string): void {
     logVideoPrompt(image_prompts);
 } 

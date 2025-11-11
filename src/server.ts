@@ -10,7 +10,7 @@ import { EventEmitter } from 'events';
 import fs from 'fs';
 import crypto from 'crypto';
 
-import { runContentPipeline, runHalloweenAppearPipeline } from './pipeline/index.js';
+import { runContentPipeline, runHalloweenTransformPipeline } from './pipeline/index.js';
 // Utility functions removed: not implemented
 import config from './config/index.js';
 import { ContentPackage, PipelineOptions, HalloweenInput } from './types/pipeline.js';
@@ -178,8 +178,8 @@ app.post('/api/generate-halloween', async (req, res) => {
     }
 });
 
-// API endpoint for Halloween Appear generation
-app.post('/api/generate-halloween-appear', async (req, res) => {
+// API endpoint for Halloween Transform generation
+app.post('/api/generate-halloween-transform', async (req, res) => {
     try {
         const { input, generateAdditionalFrames } = req.body;
         if (!input) {
@@ -187,16 +187,16 @@ app.post('/api/generate-halloween-appear', async (req, res) => {
         }
         // Generate a unique requestId for this generation
         const requestId = crypto.randomUUID();
-        // Start Halloween Appear generation in the background (do not await)
-        processHalloweenAppearGeneration(input, requestId, generateAdditionalFrames)
+        // Start Halloween Transform generation in the background (do not await)
+        processHalloweenTransformGeneration(input, requestId, generateAdditionalFrames)
             .catch(err => {
-                console.error('Error in background Halloween Appear generation:', err);
-                emitLog('Error during Halloween Appear generation: ' + (err?.message || err), requestId);
+                console.error('Error in background Halloween Transform generation:', err);
+                emitLog('Error during Halloween Transform generation: ' + (err?.message || err), requestId);
             });
         // Respond immediately so frontend can connect to SSE
         return res.json({ success: true, requestId });
     } catch (err) {
-        console.error('Error in /api/generate-halloween-appear:', err);
+        console.error('Error in /api/generate-halloween-transform:', err);
         return res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -425,8 +425,8 @@ async function processHalloweenGeneration(
     }
 }
 
-// Halloween Appear generation processor
-async function processHalloweenAppearGeneration(
+// Halloween Transform generation processor
+async function processHalloweenTransformGeneration(
     input: HalloweenInput,
     requestId: string,
     generateAdditionalFrames?: boolean
@@ -436,11 +436,11 @@ async function processHalloweenAppearGeneration(
     // Wait for SSE client to connect
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(`[HALLOWEEN APPEAR] Checking for active connection for requestId: ${requestId}`);
-    console.log(`[HALLOWEEN APPEAR] Active connections: ${activeConnections.size}`);
+    console.log(`[HALLOWEEN TRANSFORM] Checking for active connection for requestId: ${requestId}`);
+    console.log(`[HALLOWEEN TRANSFORM] Active connections: ${activeConnections.size}`);
 
     try {
-        const result = await runHalloweenAppearPipeline(input, { 
+        const result = await runHalloweenTransformPipeline(input, { 
             requestId, 
             emitLog: (log: string, reqId?: string) => emitLog(log, reqId),
             generateAdditionalFrames: generateAdditionalFrames || false
@@ -448,9 +448,9 @@ async function processHalloweenAppearGeneration(
         
         // Emit completion message with results
         const additionalFramesInfo = generateAdditionalFrames ? ' (with additional frames)' : '';
-        emitLog(`Halloween Appear generation complete${additionalFramesInfo}. Generated ${result.length} song(s).`, requestId);
+        emitLog(`Halloween Transform generation complete${additionalFramesInfo}. Generated ${result.length} song(s).`, requestId);
     } catch (err) {
-        const error = `Error during Halloween Appear generation: ${err}`;
+        const error = `Error during Halloween Transform generation: ${err}`;
         logs.push(error);
         emitLog(error, requestId);
     }

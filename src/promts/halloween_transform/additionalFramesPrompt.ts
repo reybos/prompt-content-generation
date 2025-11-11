@@ -20,19 +20,19 @@ if (fs.existsSync(actualPath)) {
 }
 
 /**
- * Halloween Appear group image prompt template
+ * Halloween Transform group image prompt template
  * Creates group thumbnails for every 3 characters
  */
-export const halloweenAppearGroupImagePrompt = new PromptTemplate({ 
+export const halloweenTransformGroupImagePrompt = new PromptTemplate({ 
     inputVariables: ["globalStyle", "prompts"],
     template: additionalFramesPromptTemplate 
 });
 
 /**
- * Halloween Appear group video prompt template
+ * Halloween Transform group video prompt template
  * Creates animated video prompts for group thumbnails
  */
-export const halloweenAppearGroupVideoPrompt = PromptTemplate.fromTemplate(`
+export const halloweenTransformGroupVideoPrompt = PromptTemplate.fromTemplate(`
 You are an expert in creating short animated video prompts for YouTube. You will receive a description of a static illustration showing three characters and their environment. Your task is to transform it into a video description with subtle, natural motions.
 
 Rules:
@@ -72,11 +72,11 @@ Return your response as a JSON object with the following structure:
  * @param globalStyle - The global style
  * @param prompts - The three character prompts
  */
-export function logHalloweenAppearGroupImagePrompt(
+export function logHalloweenTransformGroupImagePrompt(
   globalStyle: string,
   prompts: string
 ): void {
-  console.log('=== HALLOWEEN APPEAR GROUP IMAGE PROMPT ===');
+  console.log('=== HALLOWEEN TRANSFORM GROUP IMAGE PROMPT ===');
   console.log('Global Style:', globalStyle);
   console.log('Three Character Prompts:', prompts);
   console.log('===========================================');
@@ -86,10 +86,10 @@ export function logHalloweenAppearGroupImagePrompt(
  * Log the group video prompt for debugging
  * @param groupImagePrompt - The group image prompt
  */
-export function logHalloweenAppearGroupVideoPrompt(
+export function logHalloweenTransformGroupVideoPrompt(
   groupImagePrompt: string
 ): void {
-  console.log('=== HALLOWEEN APPEAR GROUP VIDEO PROMPT ===');
+  console.log('=== HALLOWEEN TRANSFORM GROUP VIDEO PROMPT ===');
   console.log('Group Image Prompt:', groupImagePrompt);
   console.log('==========================================');
 }

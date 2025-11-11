@@ -6,4 +6,4 @@ export { runSongWithAnimalsPipeline } from './songWithAnimalsPipeline.js';
 export { runHorrorPipeline } from './horrorPipeline.js';
 export { runShortStudyPipeline } from './shortStudyPipeline.js';
 export { runHalloweenPipeline } from './halloweenPipeline.js';
-export { runHalloweenAppearPipeline } from './halloweenAppearPipeline.js';
+export { runHalloweenTransformPipeline } from './halloweenTransformPipeline.js';

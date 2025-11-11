@@ -68,16 +68,16 @@ const halloweenErrorAlert = document.getElementById('halloweenErrorAlert');
 const halloweenErrorMessage = document.getElementById('halloweenErrorMessage');
 const halloweenLoadingSpinner = document.getElementById('halloweenLoadingSpinner');
 
-// DOM Elements for Halloween Appear Generation
-const halloweenAppearLink = document.getElementById('halloween-appear-link');
-const halloweenAppearContent = document.getElementById('halloween-appear-content');
-const halloweenAppearForm = document.getElementById('halloweenAppearForm');
-const halloweenAppearAdditionalFrames = document.getElementById('halloweenAppearAdditionalFrames');
-const halloweenAppearResultsSection = document.getElementById('halloweenAppearResultsSection');
-const halloweenAppearResultsContainer = document.getElementById('halloweenAppearResultsContainer');
-const halloweenAppearErrorAlert = document.getElementById('halloweenAppearErrorAlert');
-const halloweenAppearErrorMessage = document.getElementById('halloweenAppearErrorMessage');
-const halloweenAppearLoadingSpinner = document.getElementById('halloweenAppearLoadingSpinner');
+// DOM Elements for Halloween Transform Generation
+const halloweenTransformLink = document.getElementById('halloween-transform-link');
+const halloweenTransformContent = document.getElementById('halloween-transform-content');
+const halloweenTransformForm = document.getElementById('halloweenTransformForm');
+const halloweenTransformAdditionalFrames = document.getElementById('halloweenTransformAdditionalFrames');
+const halloweenTransformResultsSection = document.getElementById('halloweenTransformResultsSection');
+const halloweenTransformResultsContainer = document.getElementById('halloweenTransformResultsContainer');
+const halloweenTransformErrorAlert = document.getElementById('halloweenTransformErrorAlert');
+const halloweenTransformErrorMessage = document.getElementById('halloweenTransformErrorMessage');
+const halloweenTransformLoadingSpinner = document.getElementById('halloweenTransformLoadingSpinner');
 
 // DOM Elements for Horror Generation
 const horrorLink = document.getElementById('horror-link');
@@ -111,7 +111,7 @@ let generatedContent = null;
 let logEventSource = null;
 let songWithAnimalsLogEventSource = null;
 let halloweenLogEventSource = null;
-let halloweenAppearLogEventSource = null;
+let halloweenTransformLogEventSource = null;
 let horrorLogEventSource = null;
 let shortStudyLogEventSource = null;
 
@@ -379,99 +379,99 @@ function appendHalloweenLogEntry(log, timestamp) {
 }
 
 /**
- * Connect to the SSE log stream for Halloween Appear generation
+ * Connect to the SSE log stream for Halloween Transform generation
  * @param {string} requestId - The request ID to filter logs by
  */
-function connectToHalloweenAppearLogStream(requestId) {
+function connectToHalloweenTransformLogStream(requestId) {
     // Close any existing connection
-    if (halloweenAppearLogEventSource) {
-        console.log('Closing existing Halloween Appear log stream connection');
-        halloweenAppearLogEventSource.close();
+    if (halloweenTransformLogEventSource) {
+        console.log('Closing existing Halloween Transform log stream connection');
+        halloweenTransformLogEventSource.close();
     }
 
-    console.log(`Connecting to Halloween Appear log stream with requestId: ${requestId}`);
+    console.log(`Connecting to Halloween Transform log stream with requestId: ${requestId}`);
 
     // Create a new EventSource connection
-    halloweenAppearLogEventSource = new EventSource(`/api/logs/stream?requestId=${requestId}`);
+    halloweenTransformLogEventSource = new EventSource(`/api/logs/stream?requestId=${requestId}`);
 
     // Handle connection open
-    halloweenAppearLogEventSource.onopen = () => {
-        console.log('Halloween Appear log stream connection established');
-        if (halloweenAppearResultsContainer && halloweenAppearResultsContainer.querySelector('.list-group')) {
-            halloweenAppearResultsContainer.innerHTML = '<div class="alert alert-info">Connected to log stream. Waiting for logs...</div>';
+    halloweenTransformLogEventSource.onopen = () => {
+        console.log('Halloween Transform log stream connection established');
+        if (halloweenTransformResultsContainer && halloweenTransformResultsContainer.querySelector('.list-group')) {
+            halloweenTransformResultsContainer.innerHTML = '<div class="alert alert-info">Connected to log stream. Waiting for logs...</div>';
         }
     };
 
     // Handle incoming messages
-    halloweenAppearLogEventSource.onmessage = (event) => {
-        console.log('Received Halloween Appear SSE message:', event.data);
+    halloweenTransformLogEventSource.onmessage = (event) => {
+        console.log('Received Halloween Transform SSE message:', event.data);
         try {
             const data = JSON.parse(event.data);
 
             if (data.type === 'connected') {
-                console.log('Connected to Halloween Appear log stream');
+                console.log('Connected to Halloween Transform log stream');
             } else if (data.type === 'log') {
-                console.log('Received Halloween Appear log:', data.log, 'timestamp:', data.timestamp);
-                if (halloweenAppearResultsContainer && halloweenAppearResultsContainer.querySelector('.alert-info')) {
-                    halloweenAppearResultsContainer.innerHTML = '';
+                console.log('Received Halloween Transform log:', data.log, 'timestamp:', data.timestamp);
+                if (halloweenTransformResultsContainer && halloweenTransformResultsContainer.querySelector('.alert-info')) {
+                    halloweenTransformResultsContainer.innerHTML = '';
                 }
-                appendHalloweenAppearLogEntry(data.log, data.timestamp);
+                appendHalloweenTransformLogEntry(data.log, data.timestamp);
             } else if (data.type === 'complete') {
-                console.log('Halloween Appear generation complete:', data.message);
-                appendHalloweenAppearLogEntry(data.message, data.timestamp);
-                if (halloweenAppearLoadingSpinner) halloweenAppearLoadingSpinner.classList.add('d-none');
+                console.log('Halloween Transform generation complete:', data.message);
+                appendHalloweenTransformLogEntry(data.message, data.timestamp);
+                if (halloweenTransformLoadingSpinner) halloweenTransformLoadingSpinner.classList.add('d-none');
                 setTimeout(() => {
-                    if (halloweenAppearLogEventSource) {
-                        console.log('Closing Halloween Appear log stream connection after completion');
-                        halloweenAppearLogEventSource.close();
-                        halloweenAppearLogEventSource = null;
+                    if (halloweenTransformLogEventSource) {
+                        console.log('Closing Halloween Transform log stream connection after completion');
+                        halloweenTransformLogEventSource.close();
+                        halloweenTransformLogEventSource = null;
                     }
                 }, 1000);
             } else {
-                console.warn('Unknown Halloween Appear message type:', data.type);
+                console.warn('Unknown Halloween Transform message type:', data.type);
             }
         } catch (error) {
-            console.error('Error parsing Halloween Appear SSE message:', error, event.data);
+            console.error('Error parsing Halloween Transform SSE message:', error, event.data);
         }
     };
 
     // Handle errors
-    halloweenAppearLogEventSource.onerror = (error) => {
-        console.error('Halloween Appear log stream error:', error);
-        if (halloweenAppearResultsContainer && halloweenAppearResultsContainer.querySelector('.alert-info')) {
-            halloweenAppearResultsContainer.innerHTML = '<div class="alert alert-danger">Error connecting to log stream. Logs may be unavailable.</div>';
+    halloweenTransformLogEventSource.onerror = (error) => {
+        console.error('Halloween Transform log stream error:', error);
+        if (halloweenTransformResultsContainer && halloweenTransformResultsContainer.querySelector('.alert-info')) {
+            halloweenTransformResultsContainer.innerHTML = '<div class="alert alert-danger">Error connecting to log stream. Logs may be unavailable.</div>';
         }
-        if (halloweenAppearLoadingSpinner) halloweenAppearLoadingSpinner.classList.add('d-none');
-        halloweenAppearLogEventSource.close();
-        halloweenAppearLogEventSource = null;
+        if (halloweenTransformLoadingSpinner) halloweenTransformLoadingSpinner.classList.add('d-none');
+        halloweenTransformLogEventSource.close();
+        halloweenTransformLogEventSource = null;
     };
 }
 
 /**
- * Append a single log entry to the Halloween Appear display
+ * Append a single log entry to the Halloween Transform display
  * @param {string} log - The log message to append
  * @param {string} timestamp - The timestamp for the log entry
  */
-function appendHalloweenAppearLogEntry(log, timestamp) {
+function appendHalloweenTransformLogEntry(log, timestamp) {
     // Skip logs containing "Using default channel name"
     if (log && log.includes("Using default channel name")) {
         console.log('Skipping channel name log:', log);
         return;
     }
 
-    console.log('Appending Halloween Appear log entry:', log, 'timestamp:', timestamp);
+    console.log('Appending Halloween Transform log entry:', log, 'timestamp:', timestamp);
 
     // Make sure the results section is visible
-    if (halloweenAppearResultsSection) {
-        halloweenAppearResultsSection.classList.remove('d-none');
+    if (halloweenTransformResultsSection) {
+        halloweenTransformResultsSection.classList.remove('d-none');
     }
 
     // Create or get the log list
-    let logList = halloweenAppearResultsContainer.querySelector('.list-group');
+    let logList = halloweenTransformResultsContainer.querySelector('.list-group');
     if (!logList) {
         logList = document.createElement('div');
         logList.className = 'list-group';
-        halloweenAppearResultsContainer.appendChild(logList);
+        halloweenTransformResultsContainer.appendChild(logList);
     }
 
     // Create log entry
@@ -489,7 +489,7 @@ function appendHalloweenAppearLogEntry(log, timestamp) {
     logList.appendChild(logItem);
 
     // Scroll to the bottom
-    halloweenAppearResultsContainer.scrollTop = halloweenAppearResultsContainer.scrollHeight;
+    halloweenTransformResultsContainer.scrollTop = halloweenTransformResultsContainer.scrollHeight;
 }
 
 /**
@@ -1064,7 +1064,7 @@ if (savedLink) {
         if (generateLink) generateLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
         if (halloweenLink) halloweenLink.classList.remove('active');
-        if (halloweenAppearLink) halloweenAppearLink.classList.remove('active');
+        if (halloweenTransformLink) halloweenTransformLink.classList.remove('active');
         if (horrorLink) horrorLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
@@ -1074,9 +1074,9 @@ if (savedLink) {
         if (halloweenContent) halloweenContent.classList.add('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
         if (horrorContent) horrorContent.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.add('d-none');
@@ -1098,7 +1098,7 @@ if (generateLink) {
         if (savedLink) savedLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
         if (halloweenLink) halloweenLink.classList.remove('active');
-        if (halloweenAppearLink) halloweenAppearLink.classList.remove('active');
+        if (halloweenTransformLink) halloweenTransformLink.classList.remove('active');
         if (horrorLink) horrorLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.remove('d-none');
@@ -1109,9 +1109,9 @@ if (generateLink) {
         if (halloweenContent) halloweenContent.classList.add('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
         if (horrorContent) horrorContent.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.remove('d-none');
@@ -1129,7 +1129,7 @@ if (songWithAnimalsLink) {
         if (generateLink) generateLink.classList.remove('active');
         if (savedLink) savedLink.classList.remove('active');
         if (halloweenLink) halloweenLink.classList.remove('active');
-        if (halloweenAppearLink) halloweenAppearLink.classList.remove('active');
+        if (halloweenTransformLink) halloweenTransformLink.classList.remove('active');
         if (horrorLink) horrorLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
@@ -1137,9 +1137,9 @@ if (songWithAnimalsLink) {
         if (halloweenContent) halloweenContent.classList.add('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
         if (horrorContent) horrorContent.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.add('d-none');
@@ -1171,21 +1171,21 @@ if (halloweenLink) {
         if (halloweenContent) halloweenContent.classList.remove('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
     });
 }
 
-if (halloweenAppearLink) {
-    halloweenAppearLink.addEventListener('click', (e) => {
+if (halloweenTransformLink) {
+    halloweenTransformLink.addEventListener('click', (e) => {
         e.preventDefault();
-        halloweenAppearLink.classList.add('active');
+        halloweenTransformLink.classList.add('active');
         if (generateLink) generateLink.classList.remove('active');
         if (savedLink) savedLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
         if (halloweenLink) halloweenLink.classList.remove('active');
-        if (halloweenAppearLink) halloweenAppearLink.classList.remove('active');
+        if (halloweenTransformLink) halloweenTransformLink.classList.remove('active');
         if (horrorLink) horrorLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
@@ -1197,9 +1197,9 @@ if (halloweenAppearLink) {
         if (horrorContent) horrorContent.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.remove('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.remove('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
     });
 }
 
@@ -1211,7 +1211,7 @@ if (horrorLink) {
         if (savedLink) savedLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
         if (halloweenLink) halloweenLink.classList.remove('active');
-        if (halloweenAppearLink) halloweenAppearLink.classList.remove('active');
+        if (halloweenTransformLink) halloweenTransformLink.classList.remove('active');
         if (shortStudyLink) shortStudyLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
         if (savedContent) savedContent.classList.add('d-none');
@@ -1221,9 +1221,9 @@ if (horrorLink) {
         if (halloweenContent) halloweenContent.classList.add('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.add('d-none');
         if (horrorContent) horrorContent.classList.remove('d-none');
@@ -1240,7 +1240,7 @@ if (shortStudyLink) {
         if (savedLink) savedLink.classList.remove('active');
         if (songWithAnimalsLink) songWithAnimalsLink.classList.remove('active');
         if (halloweenLink) halloweenLink.classList.remove('active');
-        if (halloweenAppearLink) halloweenAppearLink.classList.remove('active');
+        if (halloweenTransformLink) halloweenTransformLink.classList.remove('active');
         if (horrorLink) horrorLink.classList.remove('active');
         if (generateContent) generateContent.classList.add('d-none');
         if (savedContent) savedContent.classList.add('d-none');
@@ -1250,9 +1250,9 @@ if (shortStudyLink) {
         if (halloweenContent) halloweenContent.classList.add('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
         if (horrorContent) horrorContent.classList.add('d-none');
         if (resultsSection) resultsSection.classList.add('d-none');
         if (shortStudyContent) shortStudyContent.classList.remove('d-none');
@@ -1352,9 +1352,9 @@ if (halloweenForm) {
     halloweenForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (halloweenErrorAlert) halloweenErrorAlert.classList.add('d-none');
-        if (halloweenAppearContent) halloweenAppearContent.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
+        if (halloweenTransformContent) halloweenTransformContent.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
         if (halloweenResultsSection) halloweenResultsSection.classList.add('d-none');
         if (halloweenResultsContainer) halloweenResultsContainer.innerHTML = '';
         if (halloweenLoadingSpinner) halloweenLoadingSpinner.classList.remove('d-none');
@@ -1407,25 +1407,25 @@ if (halloweenForm) {
     });
 }
 
-if (halloweenAppearForm) {
-    halloweenAppearForm.addEventListener('submit', async (e) => {
+if (halloweenTransformForm) {
+    halloweenTransformForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (halloweenAppearErrorAlert) halloweenAppearErrorAlert.classList.add('d-none');
-        if (halloweenAppearResultsSection) halloweenAppearResultsSection.classList.add('d-none');
-        if (halloweenAppearResultsContainer) halloweenAppearResultsContainer.innerHTML = '';
-        if (halloweenAppearLoadingSpinner) halloweenAppearLoadingSpinner.classList.remove('d-none');
+        if (halloweenTransformErrorAlert) halloweenTransformErrorAlert.classList.add('d-none');
+        if (halloweenTransformResultsSection) halloweenTransformResultsSection.classList.add('d-none');
+        if (halloweenTransformResultsContainer) halloweenTransformResultsContainer.innerHTML = '';
+        if (halloweenTransformLoadingSpinner) halloweenTransformLoadingSpinner.classList.remove('d-none');
         
-        const lyricsElem = document.getElementById('halloweenAppearLyrics');
-        const additionalFramesElem = document.getElementById('halloweenAppearAdditionalFrames');
+        const lyricsElem = document.getElementById('halloweenTransformLyrics');
+        const additionalFramesElem = document.getElementById('halloweenTransformAdditionalFrames');
         const lyricsText = lyricsElem && lyricsElem.value ? lyricsElem.value.trim() : '';
         const generateAdditionalFrames = additionalFramesElem && additionalFramesElem.checked;
         
         if (!lyricsText) {
-            if (halloweenAppearErrorAlert && halloweenAppearErrorMessage) {
-                halloweenAppearErrorMessage.textContent = 'Please enter song lyrics';
-                halloweenAppearErrorAlert.classList.remove('d-none');
+            if (halloweenTransformErrorAlert && halloweenTransformErrorMessage) {
+                halloweenTransformErrorMessage.textContent = 'Please enter song lyrics';
+                halloweenTransformErrorAlert.classList.remove('d-none');
             }
-            if (halloweenAppearLoadingSpinner) halloweenAppearLoadingSpinner.classList.add('d-none');
+            if (halloweenTransformLoadingSpinner) halloweenTransformLoadingSpinner.classList.add('d-none');
             return;
         }
         
@@ -1433,7 +1433,7 @@ if (halloweenAppearForm) {
         const songs = [{ lyrics: lyricsText }];
         
         try {
-            const response = await fetch('/api/generate-halloween-appear', {
+            const response = await fetch('/api/generate-halloween-transform', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -1445,20 +1445,20 @@ if (halloweenAppearForm) {
             const data = await response.json();
 
             if (!response.ok || !data.success) {
-                throw new Error(data.error || 'An error occurred during Halloween Appear generation');
+                throw new Error(data.error || 'An error occurred during Halloween Transform generation');
             }
 
             // Start listening for logs via SSE
             if (data.requestId) {
-                connectToHalloweenAppearLogStream(data.requestId);
+                connectToHalloweenTransformLogStream(data.requestId);
             }
         } catch (error) {
-            console.error('Error generating Halloween Appear content:', error);
-            if (halloweenAppearErrorAlert && halloweenAppearErrorMessage) {
-                halloweenAppearErrorMessage.textContent = error.message || 'An error occurred during Halloween Appear generation';
-                halloweenAppearErrorAlert.classList.remove('d-none');
+            console.error('Error generating Halloween Transform content:', error);
+            if (halloweenTransformErrorAlert && halloweenTransformErrorMessage) {
+                halloweenTransformErrorMessage.textContent = error.message || 'An error occurred during Halloween Transform generation';
+                halloweenTransformErrorAlert.classList.remove('d-none');
             }
-            if (halloweenAppearLoadingSpinner) halloweenAppearLoadingSpinner.classList.add('d-none');
+            if (halloweenTransformLoadingSpinner) halloweenTransformLoadingSpinner.classList.add('d-none');
         }
     });
 }

@@ -24,13 +24,13 @@ if (fs.existsSync(actualPath)) {
     console.warn('⚠️  Using template prompt for titleDescPrompt. Copy .template.txt to .txt for production use.');
 }
 
-const halloweenAppearTitlePrompt: PromptTemplate = new PromptTemplate({
+const halloweenTransformTitlePrompt: PromptTemplate = new PromptTemplate({
     inputVariables: ["songLyrics", "videoPrompt", "globalStyle"],
     template: titleDescPromptTemplate
 });
 
 export function logTitlePrompt(songLyrics: string, videoPrompt: string, globalStyle: string): void {
-    console.log('\n=== HALLOWEEN APPEAR TITLE PROMPT ===');
+    console.log('\n=== HALLOWEEN TRANSFORM TITLE PROMPT ===');
     console.log('Song Lyrics:', songLyrics);
     console.log('Video Prompt:', videoPrompt);
     console.log('Global Style:', globalStyle);
@@ -38,10 +38,10 @@ export function logTitlePrompt(songLyrics: string, videoPrompt: string, globalSt
 }
 
 // Функция для логирования title промта (алиас для совместимости)
-export function halloweenAppearLogTitlePrompt(songLyrics: string, videoPrompt: string, globalStyle: string): void {
+export function halloweenTransformLogTitlePrompt(songLyrics: string, videoPrompt: string, globalStyle: string): void {
     logTitlePrompt(songLyrics, videoPrompt, globalStyle);
 }
 
 export {
-    halloweenAppearTitlePrompt,
+    halloweenTransformTitlePrompt,
 };
