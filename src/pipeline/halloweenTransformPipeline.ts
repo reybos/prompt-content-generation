@@ -46,7 +46,7 @@ export async function runHalloweenTransformPipeline(
     const imageTemperature = 0.3;
     const videoModel = 'anthropic/claude-3.7-sonnet';
     const videoTemperature = 0.5;
-    const titleModel = 'openai/gpt-5-chat';
+    const titleModel = 'anthropic/claude-sonnet-4.5';
     const titleTemperature = 0.7;
 
     let attempt = 0;

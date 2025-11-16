@@ -40,11 +40,12 @@ const submitToQueue = async (
     const model = options.model || config.falDefaultModel || 'anthropic/claude-3.7-sonnet';
     const temperature = options.temperature || config.defaultTemperature;
 
-    const { request_id } = await fal.queue.submit('fal-ai/any-llm', {
+    const { request_id } = await fal.queue.submit('openrouter/router', {
         input: {
-            model,
             prompt,
             system_prompt: systemPrompt,
+            model,
+            // temperature,
         },
         // webhookUrl: 'https://optional.webhook.url/for/results', // if needed
     });
@@ -91,7 +92,7 @@ const checkQueueStatus = async (requestId: string): Promise<QueueStatus> => {
         throw new Error('FAL API key is not configured.');
     }
 
-    const status = await fal.queue.status('fal-ai/any-llm', {
+    const status = await fal.queue.status('openrouter/router', {
         requestId,
         logs: true,
     });
@@ -108,7 +109,7 @@ const getQueueResult = async (requestId: string): Promise<any> => {
         throw new Error('FAL API key is not configured.');
     }
 
-    return await fal.queue.result('fal-ai/any-llm', {
+    return await fal.queue.result('openrouter/router', {
         requestId,
     });
 };
