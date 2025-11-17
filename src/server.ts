@@ -222,7 +222,7 @@ const activeConnections = new Map<string, Response>();
 // Emit log helper
 function emitLog(log: string, requestId?: string): void {
     const now = new Date();
-    const timestamp = now.toLocaleTimeString() || now.toISOString();
+    const timestamp = now.toISOString();
     const safeRequestId = requestId || 'anonymous';
 
     console.log(`[LOG EMITTER] ${log} (requestId: ${safeRequestId}, time: ${timestamp})`);

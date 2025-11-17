@@ -236,11 +236,22 @@ function appendSongWithAnimalsLogEntry(log, timestamp) {
     const logItem = document.createElement('div');
     logItem.className = 'list-group-item';
 
-    if (timestamp && timestamp !== 'Invalid Date') {
+    if (timestamp) {
+        let formattedTime;
+        try {
+            const date = new Date(timestamp);
+            if (!isNaN(date.getTime())) {
+                formattedTime = date.toLocaleTimeString();
+            } else {
+                formattedTime = timestamp;
+            }
+        } catch (e) {
+            formattedTime = timestamp;
+        }
         logItem.innerHTML = `
       <div class="d-flex justify-content-between align-items-start">
         <p class="mb-0">${log}</p>
-        <small class="text-muted ms-2">${timestamp}</small>
+        <small class="text-muted ms-2">${formattedTime}</small>
       </div>
     `;
     } else {
@@ -353,11 +364,24 @@ function appendHalloweenLogEntry(log, timestamp) {
     const logItem = document.createElement('div');
     logItem.className = 'list-group-item list-group-item-action';
     
-    const time = new Date(timestamp).toLocaleTimeString();
+    let formattedTime = '';
+    if (timestamp) {
+        try {
+            const date = new Date(timestamp);
+            if (!isNaN(date.getTime())) {
+                formattedTime = date.toLocaleTimeString();
+            } else {
+                formattedTime = timestamp;
+            }
+        } catch (e) {
+            formattedTime = timestamp;
+        }
+    }
+    
     logItem.innerHTML = `
         <div class="d-flex w-100 justify-content-between">
             <h6 class="mb-1">${log}</h6>
-            <small class="text-muted">${time}</small>
+            <small class="text-muted">${formattedTime}</small>
         </div>
     `;
 
@@ -467,11 +491,24 @@ function appendHalloweenTransformLogEntry(log, timestamp) {
     const logItem = document.createElement('div');
     logItem.className = 'list-group-item list-group-item-action';
     
-    const time = new Date(timestamp).toLocaleTimeString();
+    let formattedTime = '';
+    if (timestamp) {
+        try {
+            const date = new Date(timestamp);
+            if (!isNaN(date.getTime())) {
+                formattedTime = date.toLocaleTimeString();
+            } else {
+                formattedTime = timestamp;
+            }
+        } catch (e) {
+            formattedTime = timestamp;
+        }
+    }
+    
     logItem.innerHTML = `
         <div class="d-flex w-100 justify-content-between">
             <h6 class="mb-1">${log}</h6>
-            <small class="text-muted">${time}</small>
+            <small class="text-muted">${formattedTime}</small>
         </div>
     `;
 
@@ -581,11 +618,22 @@ function appendShortStudyLogEntry(log, timestamp) {
     const logItem = document.createElement('div');
     logItem.className = 'list-group-item';
 
-    if (timestamp && timestamp !== 'Invalid Date') {
+    if (timestamp) {
+        let formattedTime;
+        try {
+            const date = new Date(timestamp);
+            if (!isNaN(date.getTime())) {
+                formattedTime = date.toLocaleTimeString();
+            } else {
+                formattedTime = timestamp;
+            }
+        } catch (e) {
+            formattedTime = timestamp;
+        }
         logItem.innerHTML = `
       <div class="d-flex justify-content-between align-items-start">
         <p class="mb-0">${log}</p>
-        <small class="text-muted ms-2">${timestamp}</small>
+        <small class="text-muted ms-2">${formattedTime}</small>
       </div>
     `;
     } else {
@@ -702,11 +750,22 @@ function appendLogEntry(log, timestamp) {
     const logItem = document.createElement('div');
     logItem.className = 'list-group-item';
 
-    if (timestamp && timestamp !== 'Invalid Date') {
+    if (timestamp) {
+        let formattedTime;
+        try {
+            const date = new Date(timestamp);
+            if (!isNaN(date.getTime())) {
+                formattedTime = date.toLocaleTimeString();
+            } else {
+                formattedTime = timestamp;
+            }
+        } catch (e) {
+            formattedTime = timestamp;
+        }
         logItem.innerHTML = `
       <div class="d-flex justify-content-between align-items-start">
         <p class="mb-0">${log}</p>
-        <small class="text-muted ms-2">${timestamp}</small>
+        <small class="text-muted ms-2">${formattedTime}</small>
       </div>
     `;
     } else {
