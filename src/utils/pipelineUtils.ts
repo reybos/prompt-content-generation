@@ -9,7 +9,7 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChainParameters } from '../types/llm.js';
 import { safeJsonParse } from './jsonParser.js';
 import { LLMRequest } from '../types/pipeline.js';
-import { FalChatModel } from '../services/falLangChainAdapter.js';
+import { FalChatModel } from '../llm/falLangChainAdapter.js';
 import { LLMOptions } from '../types/config.js';
 import { extractSystemPrompt } from './promptUtils.js';
 

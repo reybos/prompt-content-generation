@@ -1,7 +1,7 @@
 /* START GENAI */
 /**
- * Services module
- * Exports all services
+ * LLM module
+ * Exports all LLM-related services and utilities
  */
 
 export { createFalLLM } from './falLlmService.js';
@@ -17,5 +17,6 @@ export {
     removeRequest,
     getRequest,
 } from './falQueueService.js';
+export { createChain, createAsyncChain } from './chainFactory.js';
 
 /* END GENAI */

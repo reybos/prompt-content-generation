@@ -7,10 +7,10 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { RunnableSequence, Runnable } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
-import { FalChatModel } from '../services/falLangChainAdapter.js';
+import { FalChatModel } from './falLangChainAdapter.js';
 import { LLMOptions } from '../types/config.js';
 import { ChainFactory } from '../types/llm.js';
-import { submitToQueueWithTracking } from '../services/falQueueService.js';
+import { submitToQueueWithTracking } from './falQueueService.js';
 
 /**
  * Create a LangChain chain with the given prompt template using LCEL
@@ -70,3 +70,4 @@ export {
     createAsyncChain,
 };
 /* END GENAI */
+

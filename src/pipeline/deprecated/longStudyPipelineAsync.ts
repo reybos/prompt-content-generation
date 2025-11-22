@@ -3,7 +3,7 @@
  * Async Content Pipeline
  * Implements the main content generation pipeline using FAL.AI queue for async processing
  */
-import { createChain } from '../../chains/index.js';
+import { createChain } from '../../llm/index.js';
 import { safeJsonParse, extractSystemPrompt } from '../../utils/index.js';
 import {
     scriptPrompt,
@@ -28,7 +28,7 @@ import {
     getQueueResult, 
     updateRequestStatus,
     removeRequest
-} from '../../services/index.js';
+} from '../../llm/index.js';
 
 // Interface for pipeline step
 interface PipelineStep {
