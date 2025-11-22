@@ -1,7 +1,6 @@
 Generate a YouTube TITLE for a kids' Halloween song video featuring spooky animal characters based on these inputs:
 - Song Lyrics: {songLyrics}
 - Video Prompt: {videoPrompt}
-- Global Style: {globalStyle}
 
 GOALS:
 
@@ -21,7 +20,6 @@ OUTPUT (STRICT JSON ONLY, NO EXTRA TEXT):
 INPUT:
 Song Lyrics: {songLyrics}
 Video Prompt: {videoPrompt}
-Global Style: {globalStyle}
 
 OUTPUT:
 (Return only valid JSON as shown above)

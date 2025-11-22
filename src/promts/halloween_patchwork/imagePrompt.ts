@@ -36,8 +36,6 @@ ENVIRONMENT STYLE: Whimsical Halloween-inspired 3D backdrops that feel spooky bu
 COLOR PALETTE: Primary colors: muted greens, bluish greys, soft blacks, dark fabric tones. Accent colors: glowing green (eyes), pumpkin orange, neon purple, bright red for accessories. Backgrounds: midnight blue, foggy teal, violet, dark silhouettes. Strong contrast between muted bodies and glowing details. The green eyes provide stark contrast against dark surroundings, but always with a playful warmth.
 
 RENDER STYLE: High-quality 3D animation, Pixar-like smooth surfaces with Tim Burton/Coraline atmosphere. Rounded proportions (big head, short limbs) with clear fabric seams, stitches, and patches. Glowing eyes as the main light source, casting a faint magical green glow on surroundings. Lighting mixes moonlight + pumpkin glow for a soft cozy feel. Movements slightly puppet-like but bouncy and playful. Textures are detailed but not realistic, giving a handcrafted quality that feels whimsical rather than scary.
-
-IMPORTANT: The global_style you generate should combine the base cartoon/animated requirements with these style enhancements to create a consistent visual approach for all images in the group.
 `;
 
 // Replace styleConfiguration placeholder in template

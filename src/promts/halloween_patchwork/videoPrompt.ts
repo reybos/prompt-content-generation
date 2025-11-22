@@ -20,14 +20,13 @@ if (fs.existsSync(actualPath)) {
 }
 
 export const halloweenPatchworkVideoPrompt = new PromptTemplate({
-    inputVariables: ["global_style", "image_prompts"],
+    inputVariables: ["image_prompts"],
     template: videoPromptTemplate
 });
 
 // Функция для логирования видео промта
-export function logVideoPrompt(global_style: string, image_prompts: string): void {
+export function logVideoPrompt(image_prompts: string): void {
     const fullVideoPrompt = videoPromptTemplate
-        .replace('{global_style}', global_style)
         .replace('{image_prompts}', image_prompts);
     
     console.log('=== VIDEO PROMPT SENT TO LLM ===');

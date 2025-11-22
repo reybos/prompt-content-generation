@@ -25,21 +25,20 @@ if (fs.existsSync(actualPath)) {
 }
 
 const halloweenTransformTwoFrameTitlePrompt: PromptTemplate = new PromptTemplate({
-    inputVariables: ["songLyrics", "videoPrompt", "globalStyle"],
+    inputVariables: ["songLyrics", "videoPrompt"],
     template: titleDescPromptTemplate
 });
 
-export function logTitlePrompt(songLyrics: string, videoPrompt: string, globalStyle: string): void {
+export function logTitlePrompt(songLyrics: string, videoPrompt: string): void {
     console.log('\n=== HALLOWEEN TRANSFORM TWO FRAME TITLE PROMPT ===');
     console.log('Song Lyrics:', songLyrics);
     console.log('Video Prompt:', videoPrompt);
-    console.log('Global Style:', globalStyle);
     console.log('=====================================\n');
 }
 
 // Функция для логирования title промта (алиас для совместимости)
-export function halloweenTransformTwoFrameLogTitlePrompt(songLyrics: string, videoPrompt: string, globalStyle: string): void {
-    logTitlePrompt(songLyrics, videoPrompt, globalStyle);
+export function halloweenTransformTwoFrameLogTitlePrompt(songLyrics: string, videoPrompt: string): void {
+    logTitlePrompt(songLyrics, videoPrompt);
 }
 
 export {

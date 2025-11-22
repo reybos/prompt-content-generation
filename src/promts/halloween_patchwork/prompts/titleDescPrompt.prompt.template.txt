@@ -2,7 +2,6 @@ You are a senior YouTube content strategist and SEO expert specializing in child
 Generate a YouTube TITLE for a kids' song video featuring animal characters based on these inputs:
 - Song Lyrics: {songLyrics}
 - Video Prompt: {videoPrompt}
-- Global Style: {globalStyle}
 
 GOALS:
 
@@ -22,7 +21,6 @@ OUTPUT (STRICT JSON ONLY, NO EXTRA TEXT):
 INPUT:
 Song Lyrics: {songLyrics}
 Video Prompt: {videoPrompt}
-Global Style: {globalStyle}
 
 OUTPUT:
 (Return only valid JSON as shown above)

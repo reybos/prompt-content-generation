@@ -7,7 +7,6 @@ EXAMPLES:
 
 OUTPUT (JSON only, no commentary):
 {{
-  "global_style": "",
   "prompts": [
     {{ "line": "original song line", "prompt": "detailed image prompt for this line" }}
   ]

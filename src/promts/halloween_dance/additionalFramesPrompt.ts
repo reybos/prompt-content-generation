@@ -24,7 +24,7 @@ if (fs.existsSync(actualPath)) {
  * Creates group thumbnails for every 3 characters
  */
 export const halloweenGroupImagePrompt = new PromptTemplate({ 
-    inputVariables: ["globalStyle", "prompts"],
+    inputVariables: ["prompts"],
     template: additionalFramesPromptTemplate 
 });
 
@@ -69,15 +69,12 @@ Return your response as a JSON object with the following structure:
 
 /**
  * Log the group image prompt for debugging
- * @param globalStyle - The global style
  * @param prompts - The three character prompts
  */
 export function logHalloweenGroupImagePrompt(
-  globalStyle: string,
   prompts: string
 ): void {
   console.log('=== HALLOWEEN GROUP IMAGE PROMPT ===');
-  console.log('Global Style:', globalStyle);
   console.log('Three Character Prompts:', prompts);
   console.log('====================================');
 }

@@ -32,7 +32,6 @@ export interface AdditionalFrameResult {
 /**
  * Generate additional group frames (every 3 characters)
  * @param prompts - Array of image prompts to group
- * @param globalStyle - Global style string
  * @param config - Pipeline configuration
  * @param options - Pipeline options
  * @param requests - Array to track LLM requests
@@ -40,7 +39,6 @@ export interface AdditionalFrameResult {
  */
 export async function generateGroupFrames<TImagePrompt extends ImagePromptWithLine>(
   prompts: TImagePrompt[],
-  globalStyle: string,
   config: PipelineConfig<TImagePrompt, any>,
   options: PipelineOptions,
   requests: LLMRequest[]
@@ -93,7 +91,7 @@ export async function generateGroupFrames<TImagePrompt extends ImagePromptWithLi
           options.emitLog(`🖼️ Generating group image prompt (attempt ${imageAttempts}/${maxImageAttempts})...`, options.requestId);
         }
         
-        config.loggers.logGroupImagePrompt(globalStyle, threePrompts);
+        config.loggers.logGroupImagePrompt(threePrompts);
         
         const groupImageJson: string | Record<string, any> | null = await executePipelineStepWithTracking({
           stepName: config.stepNames.groupImage,
@@ -103,7 +101,6 @@ export async function generateGroupFrames<TImagePrompt extends ImagePromptWithLi
             temperature: config.models.groupImage.temperature 
           },
           params: { 
-            globalStyle: globalStyle,
             prompts: threePrompts
           },
           requests

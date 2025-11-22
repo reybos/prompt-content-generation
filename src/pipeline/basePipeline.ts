@@ -15,7 +15,6 @@ import config from '../config/index.js';
  * Base pipeline result structure
  */
 export interface BasePipelineResult<TImagePrompt, TVideoPrompt, TAdditionalFrame> {
-  global_style: string;
   prompts: TImagePrompt[];
   video_prompts: TVideoPrompt[];
   titles: string[];
@@ -71,12 +70,6 @@ export async function runBasePipeline<
         if (options.emitLog && options.requestId) {
           options.emitLog(`🖼️ Generating image prompts for ${segments.length} segments...`, options.requestId);
         }
-        
-        // Get initial global style if configured
-        let globalStyle = '';
-        if (pipelineConfig.globalStyle?.getInitial) {
-          globalStyle = await pipelineConfig.globalStyle.getInitial(pipelineIdentifier, options);
-        }
 
         // Create image prompt with style
         const imagePromptWithStyle = pipelineConfig.prompts.createImagePrompt(pipelineIdentifier);
@@ -98,13 +91,6 @@ export async function runBasePipeline<
             : imageJson;
           
           if (parsed && typeof parsed === 'object') {
-            // Extract global style if configured
-            if (pipelineConfig.globalStyle?.extractFromImageJson) {
-              globalStyle = pipelineConfig.globalStyle.extractFromImageJson(parsed, globalStyle);
-            } else if (!globalStyle && parsed.global_style) {
-              globalStyle = parsed.global_style || '';
-            }
-            
             const rawPrompts = Array.isArray(parsed.prompts) ? parsed.prompts : [];
             // Add indices to image prompts (starting from 0)
             prompts = rawPrompts.map((prompt: any, index: number) => ({
@@ -132,13 +118,12 @@ export async function runBasePipeline<
           const imagePromptsFormatted = pipelineConfig.formatters.formatImagePromptsForVideo(prompts);
           
           // Log video prompt
-          pipelineConfig.loggers.logVideoPrompt(globalStyle, imagePromptsFormatted);
+          pipelineConfig.loggers.logVideoPrompt(imagePromptsFormatted);
           
           // Build params for video step (use custom builder if provided, otherwise default)
           const videoParams = pipelineConfig.formatters.buildVideoParams
-            ? pipelineConfig.formatters.buildVideoParams(globalStyle, imagePromptsFormatted)
+            ? pipelineConfig.formatters.buildVideoParams(imagePromptsFormatted)
             : { 
-                global_style: globalStyle,
                 image_prompts: imagePromptsFormatted
               };
           
@@ -231,7 +216,7 @@ export async function runBasePipeline<
           
           try {
             // Log title prompt
-            pipelineConfig.loggers.logTitlePrompt(segmentLines, segmentVideoPrompts, globalStyle);
+            pipelineConfig.loggers.logTitlePrompt(segmentLines, segmentVideoPrompts);
             
             titleJson = await executePipelineStepWithTracking({
               stepName: pipelineConfig.stepNames.title,
@@ -242,8 +227,7 @@ export async function runBasePipeline<
               },
               params: { 
                 songLyrics: segmentLines,
-                videoPrompt: segmentVideoPrompts,
-                globalStyle: globalStyle
+                videoPrompt: segmentVideoPrompts
               },
               requests
             });
@@ -287,7 +271,6 @@ export async function runBasePipeline<
         // Step 4: Generate additional group frames (if requested)
         const additionalFrames = await generateGroupFrames(
           prompts,
-          globalStyle,
           pipelineConfig,
           options,
           requests
@@ -295,7 +278,6 @@ export async function runBasePipeline<
 
         // Create result object
         const songResult = {
-          global_style: globalStyle,
           prompts,
           video_prompts: videoPrompts,
           titles,

@@ -20,14 +20,13 @@ if (fs.existsSync(actualPath)) {
 }
 
 export const poemsVideoPrompt = new PromptTemplate({
-    inputVariables: ["global_style", "image_prompts"],
+    inputVariables: ["image_prompts"],
     template: videoPromptTemplate
 });
 
 // Функция для логирования видео промта
-export function logPoemsVideoPrompt(global_style: string, image_prompts: string): void {
+export function logPoemsVideoPrompt(image_prompts: string): void {
     const fullVideoPrompt = videoPromptTemplate
-        .replace('{global_style}', global_style)
         .replace('{image_prompts}', image_prompts);
     
     console.log('=== POEMS VIDEO PROMPT SENT TO LLM ===');

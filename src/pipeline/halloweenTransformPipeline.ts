@@ -41,8 +41,8 @@ function createHalloweenTransformConfig(): PipelineConfig<HalloweenImagePrompt, 
         // For transform pipelines, format as JSON string
         return JSON.stringify(prompts.map(p => ({ line: p.line, prompt: p.prompt, index: p.index })));
       },
-      buildVideoParams: (globalStyle, imagePromptsFormatted) => {
-        // Transform pipelines only use image_prompts, not global_style
+      buildVideoParams: (imagePromptsFormatted) => {
+        // Transform pipelines only use image_prompts
         return { image_prompts: imagePromptsFormatted };
       }
     },

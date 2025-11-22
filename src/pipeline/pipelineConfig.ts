@@ -24,7 +24,7 @@ export type ImagePromptsFormatter = (prompts: any[]) => string;
 /**
  * Function to create params for video generation step
  */
-export type VideoParamsBuilder = (globalStyle: string, imagePromptsFormatted: string) => Record<string, any>;
+export type VideoParamsBuilder = (imagePromptsFormatted: string) => Record<string, any>;
 
 /**
  * Function to parse video prompts from LLM response
@@ -43,19 +43,6 @@ export type LogVideoPromptFn = (...args: any[]) => void;
  * Function to log title prompt (for debugging)
  */
 export type LogTitlePromptFn = (...args: any[]) => void;
-
-/**
- * Function to get initial global style (optional, for special cases)
- */
-export type GetGlobalStyleFn = (
-  style: string,
-  options: PipelineOptions
-) => Promise<string>;
-
-/**
- * Function to extract global style from parsed image JSON
- */
-export type ExtractGlobalStyleFn = (parsed: any, currentGlobalStyle: string) => string;
 
 /**
  * Configuration for a complete pipeline
@@ -96,17 +83,11 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
   // Data formatting and parsing
   formatters: {
     formatImagePromptsForVideo: ImagePromptsFormatter;
-    buildVideoParams?: VideoParamsBuilder; // Optional, defaults to { global_style, image_prompts }
+    buildVideoParams?: VideoParamsBuilder; // Optional, defaults to { image_prompts }
   };
   
   parsers: {
     parseVideoPrompts: VideoPromptsParser<TVideoPrompt>;
-  };
-  
-  // Global style handling (optional)
-  globalStyle?: {
-    getInitial?: GetGlobalStyleFn;
-    extractFromImageJson?: ExtractGlobalStyleFn;
   };
   
   // Step names for tracking

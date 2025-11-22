@@ -56,24 +56,6 @@ function createHalloweenPatchworkConfig(): PipelineConfig<HalloweenPatchworkImag
       }
     },
     
-    globalStyle: {
-      getInitial: async (style: string, options: PipelineOptions) => {
-        // Use hardcoded global style from Halloween Patchwork
-        const globalStyle = "Spooky-cute 3D cartoon characters stitched together from mismatched animal parts with visible black thread, glowing playful green pupil-less eyes, and patchwork bodies rendered in a Pixar-meets-Tim Burton animation style. Atmosphere is family-friendly Halloween with soft fog, glowing pumpkins, and cozy moonlit backdrops — eerie but always charming.";
-        if (options.emitLog && options.requestId) {
-          options.emitLog(`🎨 Using Halloween Patchwork globalStyle`, options.requestId);
-        }
-        return globalStyle;
-      },
-      extractFromImageJson: (parsed, currentGlobalStyle) => {
-        // If globalStyle wasn't set from style, use generated one
-        if (!currentGlobalStyle && parsed.global_style) {
-          return parsed.global_style;
-        }
-        return currentGlobalStyle;
-      }
-    },
-    
     stepNames: {
       image: 'HALLOWEEN PATCHWORK IMAGE PROMPTS',
       video: 'HALLOWEEN PATCHWORK VIDEO PROMPTS',

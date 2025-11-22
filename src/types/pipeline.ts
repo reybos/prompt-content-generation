@@ -168,7 +168,6 @@ export const SongWithAnimalsAdditionalFramePromptSchema = z.object({
  * Song with animals output schema
  */
 export const SongWithAnimalsOutputSchema = z.object({
-    global_style: z.string(),
     prompts: z.array(SongWithAnimalsImagePromptSchema),
     video_prompts: z.array(SongWithAnimalsVideoPromptSchema),
     titles: z.array(z.string()),
@@ -215,7 +214,6 @@ export const HalloweenPatchworkAdditionalFramePromptSchema = z.object({
  * Halloween Patchwork output schema
  */
 export const HalloweenPatchworkOutputSchema = z.object({
-    global_style: z.string(),
     prompts: z.array(HalloweenPatchworkImagePromptSchema),
     video_prompts: z.array(HalloweenPatchworkVideoPromptSchema),
     titles: z.array(z.string()),
@@ -307,7 +305,6 @@ export const HalloweenAdditionalFramePromptSchema = z.object({
  * Halloween output schema
  */
 export const HalloweenOutputSchema = z.object({
-    global_style: z.string(),
     prompts: z.array(HalloweenImagePromptSchema),
     video_prompts: z.array(HalloweenVideoPromptSchema),
     titles: z.array(z.string()),
@@ -329,7 +326,6 @@ export const HalloweenTransformVideoPromptSchema = z.object({
  * Halloween Transform output schema
  */
 export const HalloweenTransformOutputSchema = z.object({
-    global_style: z.string(),
     prompts: z.array(HalloweenImagePromptSchema),
     video_prompts: z.array(HalloweenTransformVideoPromptSchema),
     titles: z.array(z.string()),
@@ -376,7 +372,6 @@ export const PoemsAdditionalFramePromptSchema = z.object({
  * Poems output schema
  */
 export const PoemsOutputSchema = z.object({
-    global_style: z.string(),
     prompts: z.array(PoemsImagePromptSchema),
     video_prompts: z.array(PoemsVideoPromptSchema),
     titles: z.array(z.string()),
