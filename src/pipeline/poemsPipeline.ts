@@ -2,8 +2,10 @@ import { PoemsInput, PoemsOutput, PoemsImagePrompt, PoemsVideoPrompt, PoemsAddit
 import { PipelineOptions } from '../types/pipeline.js';
 import { createImagePromptWithStyle } from '../promts/poems/imagePrompt.js';
 import { poemsVideoPrompt, poemsTitlePrompt, logPoemsVideoPrompt, logPoemsTitlePrompt, poemsGroupImagePrompt, poemsGroupVideoPrompt, logPoemsGroupImagePrompt, logPoemsGroupVideoPrompt } from '../promts/poems/index.js';
+import { getImagePromptStyleSuffix } from '../promts/poems/imagePromptStyle.js';
 import { PipelineConfig } from './pipelineConfig.js';
 import { runBasePipeline } from './basePipeline.js';
+import { AdditionalFrameResult } from './generateGroupFrames.js';
 
 /**
  * Create pipeline configuration for Poems
@@ -53,6 +55,24 @@ function createPoemsConfig(): PipelineConfig<PoemsImagePrompt, PoemsVideoPrompt>
         }
         return null;
       }
+    },
+    
+    // Post-processing: append style suffix to image prompts
+    postProcessImagePrompts: (prompts: PoemsImagePrompt[]) => {
+      const styleSuffix = getImagePromptStyleSuffix();
+      return prompts.map(prompt => ({
+        ...prompt,
+        prompt: prompt.prompt + "; " + styleSuffix
+      }));
+    },
+    
+    // Post-processing: append style suffix to group image prompts in additional frames
+    postProcessAdditionalFrames: (frames: AdditionalFrameResult[]) => {
+      const styleSuffix = getImagePromptStyleSuffix();
+      return frames.map(frame => ({
+        ...frame,
+        group_image_prompt: frame.group_image_prompt + "; " + styleSuffix
+      }));
     },
     
     stepNames: {

@@ -7,6 +7,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { LLMOptions } from '../types/config.js';
 import { PipelineOptions } from '../types/pipeline.js';
+import { AdditionalFrameResult } from './generateGroupFrames.js';
 
 /**
  * Model and temperature configuration for a pipeline step
@@ -89,6 +90,10 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
   parsers: {
     parseVideoPrompts: VideoPromptsParser<TVideoPrompt>;
   };
+  
+  // Post-processing hooks
+  postProcessImagePrompts?: (prompts: TImagePrompt[]) => TImagePrompt[];
+  postProcessAdditionalFrames?: (frames: AdditionalFrameResult[]) => AdditionalFrameResult[];
   
   // Step names for tracking
   stepNames: {

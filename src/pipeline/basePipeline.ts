@@ -97,6 +97,11 @@ export async function runBasePipeline<
               ...prompt,
               index: index
             })) as TImagePrompt[];
+            
+            // Apply post-processing if configured
+            if (pipelineConfig.postProcessImagePrompts) {
+              prompts = pipelineConfig.postProcessImagePrompts(prompts);
+            }
           }
         } else {
           if (options.emitLog && options.requestId) {
@@ -269,12 +274,17 @@ export async function runBasePipeline<
         }
 
         // Step 4: Generate additional group frames (if requested)
-        const additionalFrames = await generateGroupFrames(
+        let additionalFrames = await generateGroupFrames(
           prompts,
           pipelineConfig,
           options,
           requests
         );
+
+        // Apply post-processing to additional frames if configured
+        if (pipelineConfig.postProcessAdditionalFrames && additionalFrames.length > 0) {
+          additionalFrames = pipelineConfig.postProcessAdditionalFrames(additionalFrames);
+        }
 
         // Create result object
         const songResult = {

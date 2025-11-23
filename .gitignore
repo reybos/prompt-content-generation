@@ -32,3 +32,4 @@ src/promts/**/prompts/*.prompt.txt
 
 # Private style files
 src/promts/**/styles/styles/*.style.txt
+src/promts/**/prompts/*.style.txt
