@@ -1,7 +1,7 @@
-import { PoemsInput, PoemsOutput, PoemsImagePrompt, PoemsVideoPrompt } from '../types/pipeline.js';
+import { PoemsInput, PoemsOutput, PoemsImagePrompt, PoemsVideoPrompt, PoemsAdditionalFrame } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
 import { createImagePromptWithStyle } from '../promts/poems/imagePrompt.js';
-import { poemsVideoPrompt, poemsTitlePrompt, logPoemsVideoPrompt, logPoemsTitlePrompt } from '../promts/poems/index.js';
+import { poemsVideoPrompt, poemsTitlePrompt, logPoemsVideoPrompt, logPoemsTitlePrompt, poemsAdditionalFramePrompt, logPoemsAdditionalFramePrompt } from '../promts/poems/index.js';
 import { getImagePromptStyleSuffix } from '../promts/poems/imagePromptStyle.js';
 import { PipelineConfig } from './pipelineConfig.js';
 import { runBasePipeline } from './basePipeline.js';
@@ -19,7 +19,8 @@ function createPoemsConfig(): PipelineConfig<PoemsImagePrompt, PoemsVideoPrompt>
       video: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 },
       title: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.7 },
       groupImage: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.3 },
-      groupVideo: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 }
+      groupVideo: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 },
+      additionalFrame: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 }
     },
     
     prompts: {
@@ -27,14 +28,16 @@ function createPoemsConfig(): PipelineConfig<PoemsImagePrompt, PoemsVideoPrompt>
       videoPrompt: poemsVideoPrompt,
       titlePrompt: poemsTitlePrompt,
       groupImagePrompt: poemsVideoPrompt, // Placeholder, won't be used
-      groupVideoPrompt: poemsVideoPrompt // Placeholder, won't be used
+      groupVideoPrompt: poemsVideoPrompt, // Placeholder, won't be used
+      additionalFramePrompt: poemsAdditionalFramePrompt
     },
     
     loggers: {
       logVideoPrompt: logPoemsVideoPrompt,
       logTitlePrompt: logPoemsTitlePrompt,
       logGroupImagePrompt: () => {}, // Not used
-      logGroupVideoPrompt: () => {} // Not used
+      logGroupVideoPrompt: () => {}, // Not used
+      logAdditionalFramePrompt: logPoemsAdditionalFramePrompt
     },
     
     formatters: {
@@ -65,6 +68,16 @@ function createPoemsConfig(): PipelineConfig<PoemsImagePrompt, PoemsVideoPrompt>
       }));
     },
     
+    // Post-processing: append style suffix to additional frames
+    postProcessAdditionalFrames: (frames: PoemsAdditionalFrame[]) => {
+      const styleSuffix = getImagePromptStyleSuffix();
+      return frames.map(frame => ({
+        ...frame,
+        image_prompt: frame.image_prompt ? frame.image_prompt + "; " + styleSuffix : undefined,
+        video_prompt: frame.video_prompt + "; " + styleSuffix
+      }));
+    },
+    
     // Note: Group frames are not supported for poems pipeline
     
     stepNames: {
@@ -72,7 +85,8 @@ function createPoemsConfig(): PipelineConfig<PoemsImagePrompt, PoemsVideoPrompt>
       video: 'POEMS VIDEO PROMPTS',
       title: 'POEMS TITLE',
       groupImage: 'POEMS GROUP IMAGE',
-      groupVideo: 'POEMS GROUP VIDEO'
+      groupVideo: 'POEMS GROUP VIDEO',
+      additionalFrame: 'POEMS ADDITIONAL FRAMES'
     }
   };
 }

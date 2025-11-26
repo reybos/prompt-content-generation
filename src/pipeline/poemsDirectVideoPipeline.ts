@@ -1,6 +1,6 @@
-import { PoemsDirectVideoInput, PoemsDirectVideoOutput, PoemsDirectVideoVideoPrompt } from '../types/pipeline.js';
+import { PoemsDirectVideoInput, PoemsDirectVideoOutput, PoemsDirectVideoVideoPrompt, PoemsDirectVideoAdditionalFrame } from '../types/pipeline.js';
 import { PipelineOptions } from '../types/pipeline.js';
-import { poemsDirectVideoVideoPrompt, poemsDirectVideoTitlePrompt, logPoemsDirectVideoVideoPrompt, logPoemsDirectVideoTitlePrompt } from '../promts/poems_direct_video/index.js';
+import { poemsDirectVideoVideoPrompt, poemsDirectVideoTitlePrompt, logPoemsDirectVideoVideoPrompt, logPoemsDirectVideoTitlePrompt, poemsDirectVideoAdditionalFramePrompt, logPoemsDirectVideoAdditionalFramePrompt } from '../promts/poems_direct_video/index.js';
 import { getVideoPromptStyleSuffix } from '../promts/poems_direct_video/videoPromptStyle.js';
 import { PipelineConfig } from './pipelineConfig.js';
 import { runBasePipeline } from './basePipeline.js';
@@ -18,7 +18,8 @@ function createPoemsDirectVideoConfig(): PipelineConfig<any, PoemsDirectVideoVid
       video: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 },
       title: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.7 },
       groupImage: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.3 },
-      groupVideo: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 }
+      groupVideo: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 },
+      additionalFrame: { model: 'anthropic/claude-sonnet-4.5', temperature: 0.5 }
     },
     
     prompts: {
@@ -27,14 +28,16 @@ function createPoemsDirectVideoConfig(): PipelineConfig<any, PoemsDirectVideoVid
       titlePrompt: poemsDirectVideoTitlePrompt,
       // groupImagePrompt and groupVideoPrompt are not needed as group frames are not supported
       groupImagePrompt: poemsDirectVideoVideoPrompt, // Placeholder, won't be used
-      groupVideoPrompt: poemsDirectVideoVideoPrompt // Placeholder, won't be used
+      groupVideoPrompt: poemsDirectVideoVideoPrompt, // Placeholder, won't be used
+      additionalFramePrompt: poemsDirectVideoAdditionalFramePrompt
     },
     
     loggers: {
       logVideoPrompt: logPoemsDirectVideoVideoPrompt,
       logTitlePrompt: logPoemsDirectVideoTitlePrompt,
       logGroupImagePrompt: () => {}, // Not used
-      logGroupVideoPrompt: () => {} // Not used
+      logGroupVideoPrompt: () => {}, // Not used
+      logAdditionalFramePrompt: logPoemsDirectVideoAdditionalFramePrompt
     },
     
     formatters: {
@@ -66,6 +69,15 @@ function createPoemsDirectVideoConfig(): PipelineConfig<any, PoemsDirectVideoVid
       }));
     },
     
+    // Post-processing: append style suffix to additional frames
+    postProcessAdditionalFrames: (frames: PoemsDirectVideoAdditionalFrame[]) => {
+      const styleSuffix = getVideoPromptStyleSuffix();
+      return frames.map(frame => ({
+        ...frame,
+        video_prompt: frame.video_prompt + "; " + styleSuffix
+      }));
+    },
+    
     // Note: Group frames are not supported for direct video pipeline
     // as they require image prompts which are not generated
     
@@ -77,7 +89,8 @@ function createPoemsDirectVideoConfig(): PipelineConfig<any, PoemsDirectVideoVid
       video: 'POEMS DIRECT VIDEO VIDEO PROMPTS',
       title: 'POEMS DIRECT VIDEO TITLE',
       groupImage: 'POEMS DIRECT VIDEO GROUP IMAGE',
-      groupVideo: 'POEMS DIRECT VIDEO GROUP VIDEO'
+      groupVideo: 'POEMS DIRECT VIDEO GROUP VIDEO',
+      additionalFrame: 'POEMS DIRECT VIDEO ADDITIONAL FRAMES'
     }
   };
 }

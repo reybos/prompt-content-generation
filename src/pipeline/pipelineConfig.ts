@@ -62,6 +62,7 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
     title: StepModelConfig;
     groupImage: StepModelConfig;
     groupVideo: StepModelConfig;
+    additionalFrame?: StepModelConfig; // Optional, for generating additional frames
   };
   
   // Prompt templates
@@ -71,6 +72,7 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
     titlePrompt: PromptTemplate;
     groupImagePrompt: PromptTemplate;
     groupVideoPrompt: PromptTemplate;
+    additionalFramePrompt?: PromptTemplate; // Optional, for generating additional frames
   };
   
   // Logging functions
@@ -79,6 +81,7 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
     logTitlePrompt: LogTitlePromptFn;
     logGroupImagePrompt: LogVideoPromptFn;
     logGroupVideoPrompt: LogVideoPromptFn;
+    logAdditionalFramePrompt?: LogVideoPromptFn; // Optional, for logging additional frame prompts
   };
   
   // Data formatting and parsing
@@ -96,6 +99,7 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
   postProcessImagePrompts?: (prompts: TImagePrompt[]) => TImagePrompt[];
   postProcessVideoPrompts?: (prompts: TVideoPrompt[]) => TVideoPrompt[];
   postProcessGroupFrames?: (frames: GroupFrameResult[]) => GroupFrameResult[];
+  postProcessAdditionalFrames?: (frames: any[]) => any[]; // Optional, for post-processing additional frames
   
   // Step skipping options
   skipImageStep?: boolean; // If true, skip image prompt generation
@@ -108,6 +112,7 @@ export interface PipelineConfig<TImagePrompt, TVideoPrompt> {
     title: string;
     groupImage: string;
     groupVideo: string;
+    additionalFrame?: string; // Optional, for generating additional frames
   };
 }
 

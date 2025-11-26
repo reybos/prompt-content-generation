@@ -509,6 +509,38 @@ The fish says, "Blub, blub, blub!"</textarea>
                                             Number of song lines to combine into one video (will be used in future pipeline updates).
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="poemsGenerateAdditionalFrames">
+                                            <label class="form-check-label" for="poemsGenerateAdditionalFrames">
+                                                Generate additional frames
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Generate additional frames for musical bridge (prepev).
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-none" id="poemsAdditionalFramesCountContainer">
+                                        <label for="poemsAdditionalFramesCount" class="form-label">
+                                            Number of additional frames
+                                        </label>
+                                        <select
+                                                class="form-control"
+                                                id="poemsAdditionalFramesCount"
+                                        >
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                        </select>
+                                        <div class="form-text">
+                                            Number of additional frames to generate (maximum 8).
+                                        </div>
+                                    </div>
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-success" id="poemsGenerateBtn">
                                             <span
@@ -588,6 +620,38 @@ The fish says, "Blub, blub, blub!"</textarea>
                                         </select>
                                         <div class="form-text">
                                             Number of song lines to combine into one video (will be used in future pipeline updates).
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="poemsDirectVideoGenerateAdditionalFrames">
+                                            <label class="form-check-label" for="poemsDirectVideoGenerateAdditionalFrames">
+                                                Generate additional frames
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Generate additional frames for musical bridge (prepev).
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-none" id="poemsDirectVideoAdditionalFramesCountContainer">
+                                        <label for="poemsDirectVideoAdditionalFramesCount" class="form-label">
+                                            Number of additional frames
+                                        </label>
+                                        <select
+                                                class="form-control"
+                                                id="poemsDirectVideoAdditionalFramesCount"
+                                        >
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                        </select>
+                                        <div class="form-text">
+                                            Number of additional frames to generate (maximum 8).
                                         </div>
                                     </div>
                                     <div class="d-grid">

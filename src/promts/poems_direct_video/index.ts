@@ -8,6 +8,7 @@ export {
     poemsDirectVideoTitlePrompt, 
     logPoemsDirectVideoTitlePrompt
 } from './titleDescPrompt.js';
+export { poemsDirectVideoAdditionalFramePrompt, logPoemsDirectVideoAdditionalFramePrompt } from './additionalFramePrompt.js';
 // Note: Group frames are not supported for direct video pipeline
 // as they require image prompts which are not generated
 

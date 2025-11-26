@@ -155,14 +155,14 @@ app.post('/api/generate-halloween-transform-two-frame', async (req, res) => {
 // API endpoint for Poems generation
 app.post('/api/generate-poems', async (req, res) => {
     try {
-        const { input, linesPerVideo } = req.body;
+        const { input, linesPerVideo, generateAdditionalFrames, additionalFramesCount } = req.body;
         if (!input) {
             return res.status(400).json({ error: 'Missing input' });
         }
         // Generate a unique requestId for this generation
         const requestId = crypto.randomUUID();
         // Start Poems generation in the background (do not await)
-        processPoemsGeneration(input, requestId, linesPerVideo)
+        processPoemsGeneration(input, requestId, linesPerVideo, generateAdditionalFrames, additionalFramesCount)
             .catch(err => {
                 console.error('Error in background Poems generation:', err);
                 emitLog('Error during Poems generation: ' + (err?.message || err), requestId);
@@ -178,14 +178,14 @@ app.post('/api/generate-poems', async (req, res) => {
 // API endpoint for Poems Direct Video generation
 app.post('/api/generate-poems-direct-video', async (req, res) => {
     try {
-        const { input, linesPerVideo } = req.body;
+        const { input, linesPerVideo, generateAdditionalFrames, additionalFramesCount } = req.body;
         if (!input) {
             return res.status(400).json({ error: 'Missing input' });
         }
         // Generate a unique requestId for this generation
         const requestId = crypto.randomUUID();
         // Start Poems Direct Video generation in the background (do not await)
-        processPoemsDirectVideoGeneration(input, requestId, linesPerVideo)
+        processPoemsDirectVideoGeneration(input, requestId, linesPerVideo, generateAdditionalFrames, additionalFramesCount)
             .catch(err => {
                 console.error('Error in background Poems Direct Video generation:', err);
                 emitLog('Error during Poems Direct Video generation: ' + (err?.message || err), requestId);
@@ -366,7 +366,9 @@ async function processHalloweenTransformTwoFrameGeneration(
 async function processPoemsGeneration(
     input: PoemsInput,
     requestId: string,
-    linesPerVideo?: number
+    linesPerVideo?: number,
+    generateAdditionalFrames?: boolean,
+    additionalFramesCount?: number
 ): Promise<void> {
     const logs: string[] = [];
 
@@ -377,11 +379,18 @@ async function processPoemsGeneration(
     console.log(`[POEMS] Active connections: ${activeConnections.size}`);
 
     try {
-        const result = await runPoemsPipeline(input, {
+        const pipelineOptions: any = {
             requestId, 
             emitLog: (log: string, reqId?: string) => emitLog(log, reqId), 
             linesPerVideo: linesPerVideo || 1
-        });
+        };
+        
+        if (generateAdditionalFrames && additionalFramesCount) {
+            pipelineOptions.generateAdditionalFrames = true;
+            pipelineOptions.additionalFramesCount = additionalFramesCount;
+        }
+        
+        const result = await runPoemsPipeline(input, pipelineOptions);
         
         // Emit completion message with results
         emitLog(`Poems generation complete. Generated ${result.length} song(s).`, requestId);
@@ -396,7 +405,9 @@ async function processPoemsGeneration(
 async function processPoemsDirectVideoGeneration(
     input: PoemsDirectVideoInput,
     requestId: string,
-    linesPerVideo?: number
+    linesPerVideo?: number,
+    generateAdditionalFrames?: boolean,
+    additionalFramesCount?: number
 ): Promise<void> {
     const logs: string[] = [];
 
@@ -407,11 +418,18 @@ async function processPoemsDirectVideoGeneration(
     console.log(`[POEMS DIRECT VIDEO] Active connections: ${activeConnections.size}`);
 
     try {
-        const result = await runPoemsDirectVideoPipeline(input, {
+        const pipelineOptions: any = {
             requestId, 
             emitLog: (log: string, reqId?: string) => emitLog(log, reqId), 
             linesPerVideo: linesPerVideo || 1
-        });
+        };
+        
+        if (generateAdditionalFrames && additionalFramesCount) {
+            pipelineOptions.generateAdditionalFrames = true;
+            pipelineOptions.additionalFramesCount = additionalFramesCount;
+        }
+        
+        const result = await runPoemsDirectVideoPipeline(input, pipelineOptions);
         
         // Emit completion message with results
         emitLog(`Poems Direct Video generation complete. Generated ${result.length} song(s).`, requestId);

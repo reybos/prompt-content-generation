@@ -92,6 +92,9 @@ const poemsContent = document.getElementById('poems-content');
 const poemsForm = document.getElementById('poemsForm');
 const poemsLyrics = document.getElementById('poemsLyrics');
 const poemsLinesPerVideo = document.getElementById('poemsLinesPerVideo');
+const poemsGenerateAdditionalFrames = document.getElementById('poemsGenerateAdditionalFrames');
+const poemsAdditionalFramesCountContainer = document.getElementById('poemsAdditionalFramesCountContainer');
+const poemsAdditionalFramesCount = document.getElementById('poemsAdditionalFramesCount');
 const poemsResultsSection = document.getElementById('poemsResultsSection');
 const poemsResultsContainer = document.getElementById('poemsResultsContainer');
 const poemsErrorAlert = document.getElementById('poemsErrorAlert');
@@ -104,6 +107,9 @@ const poemsDirectVideoContent = document.getElementById('poems-direct-video-cont
 const poemsDirectVideoForm = document.getElementById('poemsDirectVideoForm');
 const poemsDirectVideoLyrics = document.getElementById('poemsDirectVideoLyrics');
 const poemsDirectVideoLinesPerVideo = document.getElementById('poemsDirectVideoLinesPerVideo');
+const poemsDirectVideoGenerateAdditionalFrames = document.getElementById('poemsDirectVideoGenerateAdditionalFrames');
+const poemsDirectVideoAdditionalFramesCountContainer = document.getElementById('poemsDirectVideoAdditionalFramesCountContainer');
+const poemsDirectVideoAdditionalFramesCount = document.getElementById('poemsDirectVideoAdditionalFramesCount');
 const poemsDirectVideoResultsSection = document.getElementById('poemsDirectVideoResultsSection');
 const poemsDirectVideoResultsContainer = document.getElementById('poemsDirectVideoResultsContainer');
 const poemsDirectVideoErrorAlert = document.getElementById('poemsDirectVideoErrorAlert');
@@ -1907,6 +1913,17 @@ if (poemsForm) {
         });
     }
     
+    // Handle additional frames checkbox
+    if (poemsGenerateAdditionalFrames && poemsAdditionalFramesCountContainer) {
+        poemsGenerateAdditionalFrames.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                poemsAdditionalFramesCountContainer.classList.remove('d-none');
+            } else {
+                poemsAdditionalFramesCountContainer.classList.add('d-none');
+            }
+        });
+    }
+    
     poemsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (poemsErrorAlert) poemsErrorAlert.classList.add('d-none');
@@ -1916,6 +1933,8 @@ if (poemsForm) {
         
         const lyricsText = poemsLyrics && poemsLyrics.value ? poemsLyrics.value.trim() : '';
         const linesPerVideo = poemsLinesPerVideo && poemsLinesPerVideo.value ? parseInt(poemsLinesPerVideo.value, 10) : 1;
+        const generateAdditionalFrames = poemsGenerateAdditionalFrames && poemsGenerateAdditionalFrames.checked;
+        const additionalFramesCount = generateAdditionalFrames && poemsAdditionalFramesCount && poemsAdditionalFramesCount.value ? parseInt(poemsAdditionalFramesCount.value, 10) : undefined;
         
         if (!lyricsText) {
             if (poemsErrorAlert && poemsErrorMessage) {
@@ -1929,14 +1948,21 @@ if (poemsForm) {
         // Create the input format expected by the pipeline
         const songs = [{ lyrics: lyricsText }];
         
+        const requestBody = { 
+            input: songs,
+            linesPerVideo: linesPerVideo
+        };
+        
+        if (generateAdditionalFrames && additionalFramesCount) {
+            requestBody.generateAdditionalFrames = true;
+            requestBody.additionalFramesCount = additionalFramesCount;
+        }
+        
         try {
             const response = await fetch('/api/generate-poems', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    input: songs,
-                    linesPerVideo: linesPerVideo
-                })
+                body: JSON.stringify(requestBody)
             });
 
             const data = await response.json();
@@ -2026,6 +2052,17 @@ if (poemsDirectVideoForm) {
         });
     }
     
+    // Handle additional frames checkbox
+    if (poemsDirectVideoGenerateAdditionalFrames && poemsDirectVideoAdditionalFramesCountContainer) {
+        poemsDirectVideoGenerateAdditionalFrames.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                poemsDirectVideoAdditionalFramesCountContainer.classList.remove('d-none');
+            } else {
+                poemsDirectVideoAdditionalFramesCountContainer.classList.add('d-none');
+            }
+        });
+    }
+    
     poemsDirectVideoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (poemsDirectVideoErrorAlert) poemsDirectVideoErrorAlert.classList.add('d-none');
@@ -2035,6 +2072,8 @@ if (poemsDirectVideoForm) {
         
         const lyricsText = poemsDirectVideoLyrics && poemsDirectVideoLyrics.value ? poemsDirectVideoLyrics.value.trim() : '';
         const linesPerVideo = poemsDirectVideoLinesPerVideo && poemsDirectVideoLinesPerVideo.value ? parseInt(poemsDirectVideoLinesPerVideo.value, 10) : 1;
+        const generateAdditionalFrames = poemsDirectVideoGenerateAdditionalFrames && poemsDirectVideoGenerateAdditionalFrames.checked;
+        const additionalFramesCount = generateAdditionalFrames && poemsDirectVideoAdditionalFramesCount && poemsDirectVideoAdditionalFramesCount.value ? parseInt(poemsDirectVideoAdditionalFramesCount.value, 10) : undefined;
         
         if (!lyricsText) {
             if (poemsDirectVideoErrorAlert && poemsDirectVideoErrorMessage) {
@@ -2048,14 +2087,21 @@ if (poemsDirectVideoForm) {
         // Create the input format expected by the pipeline
         const songs = [{ lyrics: lyricsText }];
         
+        const requestBody = { 
+            input: songs,
+            linesPerVideo: linesPerVideo
+        };
+        
+        if (generateAdditionalFrames && additionalFramesCount) {
+            requestBody.generateAdditionalFrames = true;
+            requestBody.additionalFramesCount = additionalFramesCount;
+        }
+        
         try {
             const response = await fetch('/api/generate-poems-direct-video', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    input: songs,
-                    linesPerVideo: linesPerVideo
-                })
+                body: JSON.stringify(requestBody)
             });
 
             const data = await response.json();

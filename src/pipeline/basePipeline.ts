@@ -332,6 +332,93 @@ export async function runBasePipeline<
           groupFrames = pipelineConfig.postProcessGroupFrames(groupFrames);
         }
 
+        // Step 5: Generate additional frames (if requested)
+        let additionalFrames: any[] = [];
+        
+        if (options.generateAdditionalFrames && options.additionalFramesCount && options.additionalFramesCount > 0 && pipelineConfig.prompts.additionalFramePrompt) {
+          if (options.emitLog && options.requestId) {
+            options.emitLog(`🎬 Generating ${options.additionalFramesCount} additional frames for musical bridge...`, options.requestId);
+          }
+          
+          try {
+            // Get last image prompt (if available) and last video prompt
+            const lastImagePrompt = prompts.length > 0 ? prompts[prompts.length - 1]?.prompt : '';
+            const lastVideoPrompt = videoPrompts.length > 0 ? (videoPrompts[videoPrompts.length - 1] as any).video_prompt : '';
+            
+            if (!lastVideoPrompt) {
+              if (options.emitLog && options.requestId) {
+                options.emitLog(`⚠️ No video prompts available for additional frames. Skipping...`, options.requestId);
+              }
+            } else {
+              // Log additional frame prompt
+              if (pipelineConfig.loggers.logAdditionalFramePrompt) {
+                if (lastImagePrompt) {
+                  pipelineConfig.loggers.logAdditionalFramePrompt(lyrics, lastImagePrompt, lastVideoPrompt, options.additionalFramesCount);
+                } else {
+                  pipelineConfig.loggers.logAdditionalFramePrompt(lyrics, lastVideoPrompt, options.additionalFramesCount);
+                }
+              }
+              
+              // Build params for additional frame step
+              const additionalFrameParams: Record<string, any> = {
+                songLyrics: lyrics,
+                lastVideoPrompt: lastVideoPrompt,
+                count: options.additionalFramesCount
+              };
+              
+              // Add lastImagePrompt only if available (for poems pipeline)
+              if (lastImagePrompt) {
+                additionalFrameParams.lastImagePrompt = lastImagePrompt;
+              }
+              
+              const additionalFrameJson: string | Record<string, any> | null = await executePipelineStepWithTracking({
+                stepName: pipelineConfig.stepNames.additionalFrame || 'ADDITIONAL FRAMES',
+                promptTemplate: pipelineConfig.prompts.additionalFramePrompt!,
+                options: { 
+                  model: pipelineConfig.models.additionalFrame?.model || 'anthropic/claude-sonnet-4.5', 
+                  temperature: pipelineConfig.models.additionalFrame?.temperature || 0.5
+                },
+                params: additionalFrameParams,
+                requests
+              });
+              
+              if (additionalFrameJson) {
+                const parsed = typeof additionalFrameJson === 'string' 
+                  ? safeJsonParse(additionalFrameJson, pipelineConfig.stepNames.additionalFrame || 'ADDITIONAL FRAMES') 
+                  : additionalFrameJson;
+                
+                if (parsed && typeof parsed === 'object' && Array.isArray(parsed.additional_frames)) {
+                  additionalFrames = parsed.additional_frames.map((frame: any, index: number) => ({
+                    ...frame,
+                    index: frame.index !== undefined ? frame.index : index
+                  }));
+                  
+                  // Apply post-processing if configured
+                  if (pipelineConfig.postProcessAdditionalFrames && additionalFrames.length > 0) {
+                    additionalFrames = pipelineConfig.postProcessAdditionalFrames(additionalFrames);
+                  }
+                  
+                  if (options.emitLog && options.requestId) {
+                    options.emitLog(`✅ Successfully generated ${additionalFrames.length} additional frames`, options.requestId);
+                  }
+                } else {
+                  if (options.emitLog && options.requestId) {
+                    options.emitLog(`⚠️ Failed to parse additional frames. Continuing without them...`, options.requestId);
+                  }
+                }
+              } else {
+                if (options.emitLog && options.requestId) {
+                  options.emitLog(`⚠️ Failed to generate additional frames. Continuing without them...`, options.requestId);
+                }
+              }
+            }
+          } catch (e) {
+            if (options.emitLog && options.requestId) {
+              options.emitLog(`❌ Error generating additional frames: ${e instanceof Error ? e.message : String(e)}. Continuing without them...`, options.requestId);
+            }
+          }
+        }
+
         // Create result object
         // If skipImageStep is true, don't include prompts field (undefined)
         const songResult: any = {
@@ -339,6 +426,7 @@ export async function runBasePipeline<
           video_prompts: videoPrompts,
           titles,
           group_frames: groupFrames.length > 0 ? groupFrames : undefined,
+          additional_frames: additionalFrames.length > 0 ? additionalFrames : undefined,
           requests: requests.length > 0 ? requests : undefined
         };
         

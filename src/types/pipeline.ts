@@ -369,6 +369,15 @@ export const PoemsGroupFramePromptSchema = z.object({
 });
 
 /**
+ * Poems additional frame prompt schema
+ */
+export const PoemsAdditionalFrameSchema = z.object({
+    index: z.number(),
+    image_prompt: z.string().optional(),
+    video_prompt: z.string(),
+});
+
+/**
  * Poems output schema
  */
 export const PoemsOutputSchema = z.object({
@@ -376,6 +385,7 @@ export const PoemsOutputSchema = z.object({
     video_prompts: z.array(PoemsVideoPromptSchema),
     titles: z.array(z.string()),
     group_frames: z.array(PoemsGroupFramePromptSchema).optional(),
+    additional_frames: z.array(PoemsAdditionalFrameSchema).optional(),
     requests: z.array(LLMRequestSchema).optional(),
 });
 
@@ -406,12 +416,21 @@ export const PoemsDirectVideoGroupFramePromptSchema = z.object({
 });
 
 /**
+ * Poems Direct Video additional frame prompt schema
+ */
+export const PoemsDirectVideoAdditionalFrameSchema = z.object({
+    index: z.number(),
+    video_prompt: z.string(),
+});
+
+/**
  * Poems Direct Video output schema
  */
 export const PoemsDirectVideoOutputSchema = z.object({
     video_prompts: z.array(PoemsDirectVideoVideoPromptSchema),
     titles: z.array(z.string()),
     group_frames: z.array(PoemsDirectVideoGroupFramePromptSchema).optional(),
+    additional_frames: z.array(PoemsDirectVideoAdditionalFrameSchema).optional(),
     requests: z.array(LLMRequestSchema).optional(),
 });
 
@@ -470,6 +489,8 @@ export interface PipelineOptions {
     style?: string; // Visual style for song with animals pipeline
     generateGroupFrames?: boolean; // Flag to generate group frames
     linesPerVideo?: number; // Number of song lines to combine into one video
+    generateAdditionalFrames?: boolean; // Flag to generate additional frames for musical bridge
+    additionalFramesCount?: number; // Number of additional frames to generate (1-8)
 }
 
 /**
@@ -628,6 +649,11 @@ export type PoemsVideoPrompt = z.infer<typeof PoemsVideoPromptSchema>;
 export type PoemsGroupFramePrompt = z.infer<typeof PoemsGroupFramePromptSchema>;
 
 /**
+ * Poems additional frame prompt type (inferred from schema)
+ */
+export type PoemsAdditionalFrame = z.infer<typeof PoemsAdditionalFrameSchema>;
+
+/**
  * Poems output type (inferred from schema)
  */
 export type PoemsOutput = z.infer<typeof PoemsOutputSchema>;
@@ -651,6 +677,11 @@ export type PoemsDirectVideoVideoPrompt = z.infer<typeof PoemsDirectVideoVideoPr
  * Poems Direct Video group frame prompt type (inferred from schema)
  */
 export type PoemsDirectVideoGroupFramePrompt = z.infer<typeof PoemsDirectVideoGroupFramePromptSchema>;
+
+/**
+ * Poems Direct Video additional frame prompt type (inferred from schema)
+ */
+export type PoemsDirectVideoAdditionalFrame = z.infer<typeof PoemsDirectVideoAdditionalFrameSchema>;
 
 /**
  * Poems Direct Video output type (inferred from schema)
