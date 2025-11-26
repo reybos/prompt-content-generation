@@ -1869,6 +1869,11 @@ if (poemsForm) {
         
         // Format lyrics as JSON array when textarea loses focus
         poemsLyrics.addEventListener('blur', () => {
+            // Don't format if Custom is selected
+            if (poemsLinesPerVideo.value === 'custom') {
+                return;
+            }
+            
             const currentValue = poemsLyrics.value.trim();
             
             // Only format if it's not already in JSON format
@@ -1892,6 +1897,11 @@ if (poemsForm) {
         
         // Handle select change to format lyrics
         poemsLinesPerVideo.addEventListener('change', (e) => {
+            // Don't format if Custom is selected
+            if (poemsLinesPerVideo.value === 'custom') {
+                return;
+            }
+            
             const linesPerVideo = parseInt(poemsLinesPerVideo.value, 10) || 1;
             
             // Update original if current text is in original format
@@ -1932,7 +1942,8 @@ if (poemsForm) {
         if (poemsLoadingSpinner) poemsLoadingSpinner.classList.remove('d-none');
         
         const lyricsText = poemsLyrics && poemsLyrics.value ? poemsLyrics.value.trim() : '';
-        const linesPerVideo = poemsLinesPerVideo && poemsLinesPerVideo.value ? parseInt(poemsLinesPerVideo.value, 10) : 1;
+        const linesPerVideoValue = poemsLinesPerVideo && poemsLinesPerVideo.value;
+        const linesPerVideo = linesPerVideoValue && linesPerVideoValue !== 'custom' ? parseInt(linesPerVideoValue, 10) : undefined;
         const generateAdditionalFrames = poemsGenerateAdditionalFrames && poemsGenerateAdditionalFrames.checked;
         const additionalFramesCount = generateAdditionalFrames && poemsAdditionalFramesCount && poemsAdditionalFramesCount.value ? parseInt(poemsAdditionalFramesCount.value, 10) : undefined;
         
@@ -1949,9 +1960,13 @@ if (poemsForm) {
         const songs = [{ lyrics: lyricsText }];
         
         const requestBody = { 
-            input: songs,
-            linesPerVideo: linesPerVideo
+            input: songs
         };
+        
+        // Only add linesPerVideo if it's not custom (since it's not used on backend anyway)
+        if (linesPerVideo !== undefined) {
+            requestBody.linesPerVideo = linesPerVideo;
+        }
         
         if (generateAdditionalFrames && additionalFramesCount) {
             requestBody.generateAdditionalFrames = true;
@@ -2008,6 +2023,11 @@ if (poemsDirectVideoForm) {
         
         // Format lyrics as JSON array when textarea loses focus
         poemsDirectVideoLyrics.addEventListener('blur', () => {
+            // Don't format if Custom is selected
+            if (poemsDirectVideoLinesPerVideo.value === 'custom') {
+                return;
+            }
+            
             const currentValue = poemsDirectVideoLyrics.value.trim();
             
             // Only format if it's not already in JSON format
@@ -2031,6 +2051,11 @@ if (poemsDirectVideoForm) {
         
         // Handle select change to format lyrics
         poemsDirectVideoLinesPerVideo.addEventListener('change', (e) => {
+            // Don't format if Custom is selected
+            if (poemsDirectVideoLinesPerVideo.value === 'custom') {
+                return;
+            }
+            
             const linesPerVideo = parseInt(poemsDirectVideoLinesPerVideo.value, 10) || 1;
             
             // Update original if current text is in original format
@@ -2071,7 +2096,8 @@ if (poemsDirectVideoForm) {
         if (poemsDirectVideoLoadingSpinner) poemsDirectVideoLoadingSpinner.classList.remove('d-none');
         
         const lyricsText = poemsDirectVideoLyrics && poemsDirectVideoLyrics.value ? poemsDirectVideoLyrics.value.trim() : '';
-        const linesPerVideo = poemsDirectVideoLinesPerVideo && poemsDirectVideoLinesPerVideo.value ? parseInt(poemsDirectVideoLinesPerVideo.value, 10) : 1;
+        const linesPerVideoValue = poemsDirectVideoLinesPerVideo && poemsDirectVideoLinesPerVideo.value;
+        const linesPerVideo = linesPerVideoValue && linesPerVideoValue !== 'custom' ? parseInt(linesPerVideoValue, 10) : undefined;
         const generateAdditionalFrames = poemsDirectVideoGenerateAdditionalFrames && poemsDirectVideoGenerateAdditionalFrames.checked;
         const additionalFramesCount = generateAdditionalFrames && poemsDirectVideoAdditionalFramesCount && poemsDirectVideoAdditionalFramesCount.value ? parseInt(poemsDirectVideoAdditionalFramesCount.value, 10) : undefined;
         
@@ -2088,9 +2114,13 @@ if (poemsDirectVideoForm) {
         const songs = [{ lyrics: lyricsText }];
         
         const requestBody = { 
-            input: songs,
-            linesPerVideo: linesPerVideo
+            input: songs
         };
+        
+        // Only add linesPerVideo if it's not custom (since it's not used on backend anyway)
+        if (linesPerVideo !== undefined) {
+            requestBody.linesPerVideo = linesPerVideo;
+        }
         
         if (generateAdditionalFrames && additionalFramesCount) {
             requestBody.generateAdditionalFrames = true;
